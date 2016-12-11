@@ -6,12 +6,12 @@ $container-width-pct: 80%;
 
 .detail-container {
     height: $container-height-pct;
-    left: ((100 - $container-width-pct) / 2);
+    left: (100 - $container-width-pct) / 2;
     opacity: 0;
     outline: 1px solid yellow;
     overflow: auto;
     position: absolute;
-    top: ((100 - $container-height-pct) / 2);
+    top: (100 - $container-height-pct) / 2;
     transform-origin: left top;
     transform-style: preserve-3d;
     transition: all linear 500ms;

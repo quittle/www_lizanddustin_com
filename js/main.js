@@ -63,20 +63,6 @@
         if (!adjustNav.wasOnTop) {
             adjustNav.wasOnTop = true;
         }
-        /*
-        //var wrapper = document.getElementById('wrapper');
-        //var names = document.getElementById('title-text-names');
-        var offset = 0; //offsetTop(names); //200;
-        console.log(offset);
-        if (window.pageYOffset > offset) {
-            //wrapper.setAttribute('class', 'scrolled');
-            if (adjustNav.wasOnTop) {
-                //location.hash = 'our-story';
-            }
-        } else {
-            //wrapper.setAttribute('class', '');
-        }
-        */
     }
 
     /**
@@ -84,49 +70,11 @@
      * @param {!Element} link The link for the section to inflate
      */
     function showDetail(link) {
-        //console.log(link);
         /** @type {string} */ const color = getComputedStyle(link).getPropertyValue('background-color');
-        /** @type {!HTMLCanvasElement} */ const canvas = /** @type {!HTMLCanvasElement} */ (document.createElement('canvas'));
-        canvas.style.position = 'fixed';
-        canvas.style.top = 0;
-        canvas.style.left = 0;
-//        canvas.style.width = window.innerWidth;
-//        canvas.style.height = window.innerHeight;
-        canvas.setAttribute('width', window.innerWidth);
-        canvas.setAttribute('height', window.innerHeight);
-        document.body.appendChild(canvas);
-
-        /** @type {!CanvasRenderingContext2D} */ const ctx = /** @type {!CanvasRenderingContext2D} */ (canvas.getContext('2d'));
-        ctx.fillStyle = color;
-        const interval = 20;
-        const animationTime = 500;
-        let duration = 0;
-
+        /** @type {!ClientRect} */ const boundingRect = link.getBoundingClientRect();
         setTimeout(() => {
-            /** @type {!ClientRect} */ const boundingRect = link.getBoundingClientRect();
-            link.getBoundingClientRect();
-            console.log(boundingRect);
-
-            /** @type {!number} */ const intervalTimer = setInterval(() => {
-                //let ratioComplete = duration / animationTime;
-                /*
-                let top = boundingRect.top * (1 - ratioComplete);
-                let left = boundingRect.left * (1 - ratioComplete);
-                let width = boundingRect.width + (parseInt(window.innerWidth, 10) - boundingRect.width) * (ratioComplete);
-                let height = boundingRect.height + (parseInt(window.innerHeight, 10) - boundingRect.height) * (ratioComplete);
-                //ctx.fillRect(left, top, width, height);
-                console.log(top + left + width + height);*/
-                ctx.clearRect(boundingRect.left, boundingRect.top, boundingRect.width, boundingRect.height);
-
-                duration += interval;
-                if (duration >= animationTime) {
-                    canvas.parentNode.removeChild(canvas);
-                    clearTimeout(intervalTimer);
-                }
-            }, interval);
-
-            let contents = document.createElement('div'); // Maybe details?
-            contents.classList.add('detail-container');
+            let contents = document.createElement('div'); // Maybe this should be details?
+            addClass(contents, 'detail-container');
             contents.style.backgroundColor = color;
             contents.appendChild(document.importNode(link.querySelector('section'), true));
             document.body.appendChild(contents);
@@ -136,36 +84,25 @@
             let translateX = -window.innerWidth * .1 + boundingRect.left;
             let translateY = -window.innerHeight * .1 + boundingRect.top;
 
-            contents.style.transform = `translateX(${translateX}px) translateY(${translateY}px) scaleX(${scaleX}) scaleY(${scaleY})`;
-            setTimeout(() => {
-                contents.classList.add('visible');
-            }, 500);
+            contents.style.transform =
+                    `translateX(${translateX}px)
+                     translateY(${translateY}px)
+                     scaleX(${scaleX})
+                     scaleY(${scaleY})`;
+
+            setTimeout(addClass.bind(null, contents, 'visible'), 500);
         }, 500);
     }
 
     /**
      * Initializer method
      */
-    function init() {/*
-        const sections = document.getElementsByTagName('section');
-        for(var i = 0; i < sections.length; i++) {
-            const section = sections[i];
-            section.addEventListener('click', function(e) {
-                for (var i = 0; i < sections.length; i++) {
-                    removeClass(sections[i], 'focused');
-                }
-
-                addClass(e.target, 'focused');
-            });
-        }*/
-
+    function init() {
         /** @type {!NodeList} */ const navLinks = document.body.querySelectorAll('main > a');
         for (let i = 0; i < navLinks.length; i++) {
             /** @type {!Node} */ const navLink = navLinks[i];
             navLink.addEventListener('click', e => {
                 const target = /** @type {!HTMLAnchorElement} */ (e.currentTarget);
-                // Prevent scrolling while preserving fragment change
-                //e.preventDefault();
                 if(history.pushState) {
                     history.pushState(null, '', target.getAttribute('href'));
                 } else {
@@ -173,24 +110,14 @@
                 }
 
                 showDetail(target);
-                //e.preventDefault();
-                //e.stopPropagation();
-                //return false;
             });
         }
 
         window.addEventListener('hashchange', e => {
-            //const target = /** @type {!HTMLAnchorElement} */ (e.currentTarget);
-                // Prevent scrolling while preserving fragment change
-                //e.preventDefault();
-                //location.hash = target.getAttribute('href') + 'zzz';
-
             /** @type {?Element} */ const el = document.getElementById(location.hash.substring(1));
-            console.log(el);
             if (el) {
                 showDetail(el);
             }
-            console.log('hash change');
             e.preventDefault();
             e.stopPropagation();
             return false;
