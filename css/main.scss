@@ -108,7 +108,7 @@ main {
 
         &:target {
             position: initial;
-            transition: transform 500ms linear, outline 250ms linear 500ms;
+            transition: transform 150ms linear, outline 150ms linear 150ms;
             transform: rotateY(180deg);
             //outline: 100vmax solid $background-color;
             transform-style: preserve-3d;
@@ -151,7 +151,7 @@ section {
 
     &::before {
         bottom: 0;
-        background: url(/media/images/flowers-white-60.png);
+        //background: url(/media/images/flowers-white-60.png);
         background-position-y: 1000px;
         background-size: $background-size-default;
         content: '';
@@ -340,6 +340,10 @@ nav {
     top: -$nav-font-size;
 }
 
+.disable-scrolling .parallax {
+    overflow: hidden;
+}
+
 .parallax {
     perspective: 2px;
     overflow-x: hidden;
@@ -353,4 +357,17 @@ nav {
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+main > a {
+    background-size: cover;
+    background-position: center;
+
+    &#our-story {
+        background-image: url(/media/images/flowers.jpg);
+    }
+
+    &#the-big-day {
+        background-image: url(/media/images/flowers.jpg);
+    }
 }

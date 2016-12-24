@@ -4,21 +4,27 @@
 $container-height-pct: 80%;
 $container-width-pct: 80%;
 
-.detail-container {
+#details-container {
     height: $container-height-pct;
     left: (100 - $container-width-pct) / 2;
-    opacity: 0;
-    outline: 1px solid yellow;
+    opacity: 0.6;
     overflow: auto;
     position: absolute;
     top: (100 - $container-height-pct) / 2;
     transform-origin: left top;
     transform-style: preserve-3d;
-    transition: all linear 500ms;
+    transition: all linear 150ms;
     width: $container-width-pct;
+
+    &:empty {
+        display: none;
+    }
 }
 
-.detail-container.visible {
-    transform: translate(0) scale(1) !important;
-    opacity: 1;
+.details-visible {
+    #details-container {
+        transform: translate(0) scale(1) !important;
+        opacity: 1;
+        //display: none;
+    }
 }

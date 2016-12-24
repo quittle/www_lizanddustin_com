@@ -5,6 +5,18 @@
     'use strict';
 
     /**
+     * Gets |document.body|, which should always be non-null.
+     * @return {!HTMLBodyElement} The document body element.
+     */
+    function getBody() {
+        /** @type {?HTMLBodyElement} */ const body = document.body;
+        if (!body) {
+            console.error('document.body was null');
+        }
+        return  /** @type {!HTMLBodyElement} */ (body);
+    }
+
+    /**
      * Calculates the node offset from the top of the page.
      * @param {!Node} node The node to analyze
      * @return {!number} The offset from the top of the page in pixels.
@@ -19,7 +31,7 @@
 
     /**
      * Adds a class to an element.
-     * @param {!Element} element The element to add the class to
+     * @param {!HTMLElement} element The element to add the class to
      * @param {!string} className The class to add.
      */
     function addClass(element, className) {
@@ -36,7 +48,7 @@
 
     /**
      * Removes a class from an element.
-     * @param {!Element} element The element to remove the class from
+     * @param {!HTMLElement} element The element to remove the class from
      * @param {!string} className The class to remove.
      */
     function removeClass(element, className) {
@@ -57,12 +69,26 @@
     }
 
     /**
-     * Adjusts the nav bar offset.
+     * Removes all the children of |el|
+     * @param {!Element} el The element to remove
      */
-    function adjustNav() {
-        if (!adjustNav.wasOnTop) {
-            adjustNav.wasOnTop = true;
+    function emptyContents(el) {
+        while (el.firstChild) {
+            el.removeChild(el.firstChild);
         }
+    }
+
+    /**
+     * Gets a required element.
+     * @param {!string} id The id of the element to get
+     * @return {?Element} The element if found or null if not found.
+     */
+    function getRequiredElement(id) {
+        /** @type {?Element} */ const element = document.getElementById(id);
+        if (!element) {
+            console.error('Unable to find required element: ' + id);
+        }
+        return element;
     }
 
     /**
@@ -70,28 +96,83 @@
      * @param {!Element} link The link for the section to inflate
      */
     function showDetail(link) {
+        addClass(getBody(), 'disable-scrolling');
+
         /** @type {string} */ const color = getComputedStyle(link).getPropertyValue('background-color');
         /** @type {!ClientRect} */ const boundingRect = link.getBoundingClientRect();
         setTimeout(() => {
-            let contents = document.createElement('div'); // Maybe this should be details?
-            addClass(contents, 'detail-container');
-            contents.style.backgroundColor = color;
-            contents.appendChild(document.importNode(link.querySelector('section'), true));
-            document.body.appendChild(contents);
+            /** @type {?Element} */ const detailsContainer = getRequiredElement('details-container');
+            if (!detailsContainer) {
+                return;
+            }
+            detailsContainer.style.backgroundColor = color;
+            emptyContents(detailsContainer);
+            detailsContainer.appendChild(document.importNode(link.querySelector('section'), true));
 
             let scaleX = boundingRect.width / window.innerWidth * .8;
             let scaleY = boundingRect.height / window.innerHeight * .8;
             let translateX = -window.innerWidth * .1 + boundingRect.left;
             let translateY = -window.innerHeight * .1 + boundingRect.top;
 
-            contents.style.transform =
+            detailsContainer.style.transform =
                     `translateX(${translateX}px)
                      translateY(${translateY}px)
                      scaleX(${scaleX})
                      scaleY(${scaleY})`;
 
-            setTimeout(addClass.bind(null, contents, 'visible'), 500);
-        }, 500);
+            setTimeout(addClass.bind(null, getBody(), 'details-visible'), 150);
+        }, 1);
+    }
+
+    /**
+     * Hides the detail section.
+     */
+    function hideDetail() {
+        removeClass(getBody(), 'details-visible');
+        removeClass(getBody(), 'disable-scrolling');
+
+        setTimeout(() => {
+            /** @type {?Element} */ const detailsContainer = getRequiredElement('details-container');
+            if (!detailsContainer) {
+                return;
+            }
+            emptyContents(detailsContainer);
+        }, 150);
+
+    }
+
+    /**
+     * Callback for the onkeydown event.
+     * @type {!EventListener}
+     */
+    function onKeyDown(e) {
+        switch (e.keyCode) {
+            case 27: // Escape
+                location.hash = '';
+                break;
+        }
+    }
+
+    /**
+     * Callback for the hashchange event.
+     * @param {!Event=} opt_e The hashchange event
+     */
+    function onHashChange(opt_e) {
+        if (!location.hash || location.hash.length < 2) {
+            hideDetail();
+        } else {
+            /** @type {?Element} */ const el = document.getElementById(location.hash.substring(1));
+            if (el) {
+                showDetail(el);
+            } else {
+                hideDetail();
+            }
+        }
+
+        if (opt_e) {
+            opt_e.preventDefault();
+            return false;
+        }
     }
 
     /**
@@ -110,30 +191,14 @@
                 }
 
                 showDetail(target);
+                //e.preventDefault();
             });
         }
 
-        window.addEventListener('hashchange', e => {
-            /** @type {?Element} */ const el = document.getElementById(location.hash.substring(1));
-            if (el) {
-                showDetail(el);
-            }
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }, false);
-
+        onHashChange();
     }
 
-    window.addEventListener('scroll', function(e) {
-        adjustNav();
-    });
-
-    window.addEventListener('resize', function(e) {
-        adjustNav();
-    });
-
-    window.addEventListener('load', adjustNav);
     window.addEventListener('load', init);
-    adjustNav();
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('hashchange', onHashChange, false);
 })();
