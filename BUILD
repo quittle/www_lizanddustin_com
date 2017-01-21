@@ -105,12 +105,8 @@ html_page(
         ":main_js", # BUG: Should be async (but not supported yet)
     ],
     deps = [
-        "media/images/flowers.jpg",
-        "media/images/flowers-white-60.png",
-        "media/images/splash.png",
         "cssPIE/PIE.htc",
-        "media/videos/Engagement.mp4",
-    ],
+    ] + glob(["media/**/*"]),
 )
 
 minify_html(

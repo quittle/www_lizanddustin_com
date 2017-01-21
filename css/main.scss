@@ -55,15 +55,23 @@ body {
     font-family: sans-serif;
     line-height: 1;
     perspective: 1px;
+
+    &.bubbles {
+        background: initial;
+        perspective: initial;
+    }
 }
 
 a {
     color: $foreground-color;
     cursor: pointer;
+    transition: all .15s ease-in-out;
+    border-radius: .15em;
 }
 
 a:hover, a:focus {
-    color: $forground-hover-color;
+    opacity: .9;
+    box-shadow: 0 0 .5em #111;
 }
 
 a:active {
@@ -84,15 +92,52 @@ main {
     min-height: 100vh;
     @include prefix(perspective, 1000);
     text-align: center;
+    line-height: 0;
+    padding-left: 50%;
+    transform: translateX(-25%);
+    width: 100%;
 
-    & > a {
+    .bubbles & {
+        $border-height: 192px;
+
+        background: white;
+        //border-image: url(/media/images/bubble-border-inverse.png) 100% 0 0 0 repeat;
+        border-top: $border-height solid;
+        background-clip: padding-box;
+        margin-top: -$border-height;
+    }
+
+    .chevron & {
+        border-image: url(/media/images/chevron-border.png) 100% 0 0 0 repeat;
+    }
+
+    .leaves-1 & {
+        border-image: url(/media/images/leaves-1-border.png) 100% 0 0 0 repeat;
+    }
+
+    .leaves-2 & {
+        border-image: url(/media/images/leaves-2-border.png) 100% 0 0 0 repeat;
+    }
+
+    // Float the container divs
+    & > div {
+        float: left;
+        margin: $block-padding / 2;
+    }
+
+    & > a,
+    & > div > a,
+    & > div > div > a {
         $background-color: #d0d0f0;
         background: $background-color;
         display: inline-block;
-        margin: 1em;
-        max-width: 350px; // convert to ems
+        /*margin: 1em;*/
+        //max-width: 350px; // convert to ems
         padding: 3em;
         position: relative;
+        float: left;
+        line-height: normal;
+        text-shadow: 0 0 1em black;
 
         & > h1 {
             text-align: end;
@@ -247,6 +292,11 @@ section {
     transform: translateZ(-3px) scale(2.5);
     @include prefix(user-select, none);
     z-index: -4;
+
+    .bubbles & {
+        background: #ab945a url(media/images/splash.png) no-repeat 50% fixed;
+        transform: initial;
+    }
 }
 
 #title-text {
@@ -349,6 +399,11 @@ nav {
     overflow-x: hidden;
     overflow-y: auto;
     height: 100vh;
+
+    .bubbles & {
+        overflow: initial;
+        perspective: initial;
+    }
 }
 
 .parallax-layer {
@@ -359,15 +414,41 @@ nav {
     left: 0;
 }
 
-main > a {
+main > a,
+main > div > a,
+main > div > div > a {
     background-size: cover;
     background-position: center;
 
     &#our-story {
-        background-image: url(/media/images/flowers.jpg);
+        background-image: url(/media/images/story.jpg);
     }
 
     &#the-big-day {
         background-image: url(/media/images/flowers.jpg);
+    }
+
+    &#registries {
+        background-image: url(/media/images/presents.jpg);
+    }
+
+    &#rsvp {
+        background-image: url(/media/images/letters.jpg);
+    }
+
+    &#playlist {
+        background-image: url(/media/images/record-player.jpg);
+    }
+
+    &#gallery {
+        background-image: url(/media/images/gallery.jpg);
+    }
+
+    &#directions {
+        background-image: url(/media/images/map.jpg);
+    }
+
+    &#leave-a-note {
+        background-image: url(/media/images/love-note.jpg);
     }
 }

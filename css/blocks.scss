@@ -2,15 +2,37 @@
 // Licensed under Apache License v2.0
 
 $block-size: 100px;
+$block-padding: 16px;
 
 $max-depth: 10;
+
+.block-v > * {
+    clear: both;
+    margin-bottom: $block-padding;
+
+    &:last-child {
+        margin: 0;
+    }
+}
+
+.block-h > * {
+    margin-right: $block-padding;
+
+    &:last-child {
+        margin: 0;
+    }
+}
+
 
 @for $width from 1 through $max-depth {
     @for $height from 1 through $max-depth {
         .block-w#{$width}-h#{$height} {
             display: inline-block;
-            width: $block-size * $width;
-            height: $block-size * $height;
+            width: $block-size * $width + ($width - 1) * $block-padding;
+            height: $block-size * $height + ($height - 1) * $block-padding;
+            box-sizing: border-box;
+            //margin: $block-padding;
+            float: left;
         }
     }
 }
