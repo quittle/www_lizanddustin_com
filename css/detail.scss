@@ -1,10 +1,19 @@
 // Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
+@import 'constants';
+@import 'nav-block';
+
 $container-height-pct: 80%;
 $container-width-pct: 80%;
 
+$transition-all: all 3000ms linear;
+
 .bubbles {
+    &.details-visible {
+        overflow: hidden;
+    }
+
     #details-container {
         position: fixed;
     }
@@ -15,23 +24,25 @@ $container-width-pct: 80%;
 }
 
 #details-container {
-    height: $container-height-pct;
-    left: (100 - $container-width-pct) / 2;
-    opacity: 0.6;
-    overflow: auto;
-    position: absolute;
-    top: (100 - $container-height-pct) / 2;
-    transform-origin: left top;
-    transform-style: preserve-3d;
-    transition: all linear 150ms;
-    width: $container-width-pct;
+    // height: $container-height-pct;
+    // left: (100 - $container-width-pct) / 2;
+    // opacity: 0.6;
+    // overflow: auto;
+    // position: absolute;
+    // top: (100 - $container-height-pct) / 2;
+    // transform-origin: left top;
+    // transform-style: preserve-3d;
+    // transition: all linear 1500ms;
+    // width: $container-width-pct;
+    background: $BACKGROUND-COLOR;
+    overflow-y: auto;
 
-    &:empty {
+    & > *:empty {
         display: none;
     }
 
     &::before {
-        //content: ''                                                        ;
+        //content: '';
         position: fixed;
         top: 0;
         left: 0;
@@ -40,12 +51,47 @@ $container-width-pct: 80%;
         background: black;
         opacity: .6;
     }
+
+    #details-container-header {
+        @include nav-block;
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .details-visible {
     #details-container {
         transform: translate(0) scale(1) !important;
+        transition: $transition-all;
         opacity: 1;
         //display: none;
+        //animation: flip 3000ms linear;
+        width: 80% !important;
+        height: 80% !important;
+        top: 10% !important;
+        left: 10% !important;
+        box-shadow: 0 0 64px black;
+
+        #details-container-header {
+            height: 3em;
+            transition: $transition-all;
+            float: initial;
+
+            & > h1 {
+                position: initial;
+                //text-align: left;
+            }
+        }
+    }
+}
+
+@keyframes flip {
+    from {
+        transform: rotateY(180deg);
+    }
+    to {
+        transform: rotateY(0);
     }
 }

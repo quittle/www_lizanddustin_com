@@ -65,32 +65,25 @@ font_generator(
 )
 
 sass_library(
-    name = "detail_sass",
-    srcs = [
-        "css/detail.scss",
-    ],
-)
-
-sass_library(
-    name = "blocks_sass",
-    srcs = [
-        "css/blocks.scss",
-    ],
+    name = "sass_libs",
+    srcs = glob(["css/*.scss"]),
 )
 
 sass_binary(
     name = "main_css",
     src = "css/main.scss",
     deps = [
-        ":blocks_sass",
-        ":detail_sass",
+        ":sass_libs",
     ],
     visibility = [ "//visibility:public" ],
 )
 
 closure_compile(
     name = "main_js",
-    srcs = [ "js/main.js" ],
+    srcs = [
+        "js/flex_grid.js",
+        "js/main.js",
+    ],
 )
 
 html_page(

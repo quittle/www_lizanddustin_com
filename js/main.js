@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Dustin Doloff
+// Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
 (function() {
@@ -31,7 +31,7 @@
 
     /**
      * Adds a class to an element.
-     * @param {!HTMLElement} element The element to add the class to
+     * @param {!Element} element The element to add the class to
      * @param {!string} className The class to add.
      */
     function addClass(element, className) {
@@ -48,7 +48,7 @@
 
     /**
      * Removes a class from an element.
-     * @param {!HTMLElement} element The element to remove the class from
+     * @param {!Element} element The element to remove the class from
      * @param {!string} className The class to remove.
      */
     function removeClass(element, className) {
@@ -92,35 +92,74 @@
     }
 
     /**
+     * Empties the contents of the details container.
+     */
+    function clearDetailsContainer() {
+        /** @type {?Element} */ const detailsContainerHeader =
+                getRequiredElement('details-container-header');
+        if (detailsContainerHeader) {
+            emptyContents(detailsContainerHeader);
+        }
+
+        /** @type {?Element} */ const detailsContainerBody =
+                getRequiredElement('details-container-body');
+        if (detailsContainerBody) {
+            emptyContents(detailsContainerBody);
+        }
+    }
+
+    /**
      * Shows the details animation for a link.
      * @param {!Element} link The link for the section to inflate
      */
     function showDetail(link) {
+        addClass(link, 'opened');
         addClass(getBody(), 'disable-scrolling');
 
-        /** @type {string} */ const color = getComputedStyle(link).getPropertyValue('background-color');
+        /** @type {?CSSStyleDeclaration} */ const linkStyle = getComputedStyle(link);
+        /** @type {string} */ const color = linkStyle.getPropertyValue('background-color');
         /** @type {!ClientRect} */ const boundingRect = link.getBoundingClientRect();
         setTimeout(() => {
-            /** @type {?Element} */ const detailsContainer = getRequiredElement('details-container');
-            if (!detailsContainer) {
+            /** @type {?Element} */ const detailsContainer =
+                    getRequiredElement('details-container');
+            /** @type {?Element} */ const detailsContainerHeader =
+                    getRequiredElement('details-container-header');
+            /** @type {?Element} */ const detailsContainerBody =
+                    getRequiredElement('details-container-body');
+            if (!(detailsContainer && detailsContainerHeader && detailsContainerBody)) {
                 return;
             }
-            detailsContainer.style.backgroundColor = color;
-            emptyContents(detailsContainer);
-            detailsContainer.appendChild(document.importNode(link.querySelector('section'), true));
 
-            let scaleX = boundingRect.width / window.innerWidth * .8;
-            let scaleY = boundingRect.height / window.innerHeight * .8;
-            let translateX = -window.innerWidth * .1 + boundingRect.left;
-            let translateY = -window.innerHeight * .1 + boundingRect.top;
+            clearDetailsContainer();
 
-            detailsContainer.style.transform =
-                    `translateX(${translateX}px)
-                     translateY(${translateY}px)
-                     scaleX(${scaleX})
-                     scaleY(${scaleY})`;
+            detailsContainerHeader.innerHTML = link.innerHTML;
+            detailsContainerHeader.removeChild(detailsContainer.querySelector('section'));
 
-            setTimeout(addClass.bind(null, getBody(), 'details-visible'), 150);
+            detailsContainerBody.style.backgroundColor = color;
+            detailsContainerBody.appendChild(document.importNode(link.querySelector('section'), true));
+            // Temp
+            //detailsContainerBody.style.display = 'none';
+
+            detailsContainer.style.position = 'fixed';
+            detailsContainer.style.top = boundingRect.top + 'px';
+            detailsContainer.style.left = boundingRect.left + 'px';
+            detailsContainer.style.width = boundingRect.width + 'px';
+            detailsContainer.style.height = boundingRect.height + 'px';
+            detailsContainerHeader.style.backgroundImage =
+                    linkStyle.getPropertyValue('background-image');
+
+            // let scaleX = boundingRect.width / (window.innerWidth * .8);
+            // let scaleY = boundingRect.height / (window.innerHeight * .8);
+            // let translateX = -window.innerWidth * .1 + boundingRect.left;
+            // let translateY = -window.innerHeight * .1 + boundingRect.top;
+
+            // detailsContainer.style.transform =
+            //         `translateX(${translateX}px)
+            //          translateY(${translateY}px)
+            //          scaleX(${scaleX})
+            //          scaleY(${scaleY})`;
+
+            setTimeout(addClass.bind(null, getBody(), 'details-visible'), 1500);
         }, 1);
     }
 
@@ -128,27 +167,33 @@
      * Hides the detail section.
      */
     function hideDetail() {
+        let openedLinks = document.querySelectorAll('.opened');
+        for (let i = 0; i < openedLinks.length; i++) {
+            removeClass(openedLinks[i], 'opened');
+        }
         removeClass(getBody(), 'details-visible');
         removeClass(getBody(), 'disable-scrolling');
 
-        setTimeout(() => {
-            /** @type {?Element} */ const detailsContainer = getRequiredElement('details-container');
-            if (!detailsContainer) {
-                return;
-            }
-            emptyContents(detailsContainer);
-        }, 150);
+        setTimeout(clearDetailsContainer, 1500);
+    }
 
+    /**
+     * Gets an id from a location hash string.
+     * @param {!string} hash The hash string
+     * @return {!string} The id of an element extracted from the hash
+     */
+    function getIdFromHash(hash) {
+        return hash.replace(/^#?!?/, '')
     }
 
     /**
      * Callback for the onkeydown event.
-     * @type {!EventListener}
+     * @type {!EventListener} The keydown event.
      */
     function onKeyDown(e) {
         switch (e.keyCode) {
             case 27: // Escape
-                location.hash = '';
+                location.hash = '#!';
                 break;
         }
     }
@@ -161,7 +206,8 @@
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
         } else {
-            /** @type {?Element} */ const el = document.getElementById(location.hash.substring(1));
+            /** @type {!string} */ const id = getIdFromHash(location.hash)
+            /** @type {?Element} */ const el = document.getElementById(id);
             if (el) {
                 showDetail(el);
             } else {
@@ -173,6 +219,14 @@
             opt_e.preventDefault();
             return false;
         }
+    }
+
+    /**
+     * Callback for the onresize event.
+     * @param {!Event} e The resize event
+     */
+    function onResize(e) {
+        console.log('resize');
     }
 
     /**
@@ -195,10 +249,13 @@
             });
         }
 
+        //new FlexGrid(document.body, 100, 12);
+
         onHashChange();
     }
 
     window.addEventListener('load', init);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('hashchange', onHashChange, false);
+    window.addEventListener('resize', onResize);
 })();

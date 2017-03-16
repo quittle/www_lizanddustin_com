@@ -1,0 +1,26 @@
+// Copyright (c) 2017 Dustin Doloff
+// Licensed under Apache License v2.0
+
+@import 'constants';
+
+@mixin nav-block {
+    background-color: $BACKGROUND-COLOR;
+    background-size: cover;
+    background-position: center;
+    display: inline-block;
+    /*margin: 1em;*/
+    //max-width: 350px; // convert to ems
+    padding: 3em;
+    position: relative;
+    float: left;
+    line-height: normal;
+    text-shadow: 0 0 1em black;
+
+    & > h1 {
+        text-align: end;
+        text-align: right;
+        position: absolute;
+        bottom: $BOX-PADDING;
+        right: $BOX-PADDING;
+    }
+}

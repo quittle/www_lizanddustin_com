@@ -1,11 +1,11 @@
-# Copyright (c) 2016 Dustin Doloff
+# Copyright (c) 2016-2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
 workspace(name = "toadstyle_lizanddustin_com")
 
 git_repository(
     name = "rules_web",
-    commit = "550a267cf06d2b603ee46dab30957c9324253d47",
+    commit = "e6dc2a70d2588335bc3821c4dc89119520591cc2",
     remote = "https://github.com/quittle/rules_web.git",
 )
 

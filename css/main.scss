@@ -1,7 +1,9 @@
-// Copyright (c) 2016 Dustin Doloff
+// Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
 @import 'blocks';
+@import 'constants';
+@import 'nav-block';
 @import 'detail';
 
 @function floor-decimal($decimal) {
@@ -28,19 +30,10 @@ $PREFIXES: 'webkit', 'moz', 'o', 'ms';
 
 $NUMBER_OF_PAGES: 4;
 
-$foreground-color: white;
-$forground-hover-color: #848181;
-$forground-selected-color: #4a4949;
-
-$background-color: #f5ecdc;
-$background-secondary-color: #909a44;
-
 $nav-font-size: 20px;
 
 $title-names-height: 140px;
 $title-date-height: 120px;
-$page-max-width: 1000px;
-$box-padding: 1em;
 
 html, body {
     height: 100%;
@@ -51,7 +44,7 @@ html, body {
 
 body {
     background: #ab945a url(media/images/splash.png) no-repeat 50% fixed;
-    color: $foreground-color;
+    color: $FOREGROUND-COLOR;
     font-family: sans-serif;
     line-height: 1;
     perspective: 1px;
@@ -63,7 +56,7 @@ body {
 }
 
 a {
-    color: $foreground-color;
+    color: $FOREGROUND-COLOR;
     cursor: pointer;
     transition: all .15s ease-in-out;
     border-radius: .15em;
@@ -75,7 +68,7 @@ a:hover, a:focus {
 }
 
 a:active {
-    color: $forground-selected-color;
+    color: $FOREGROUND-SELECTED-COLOR;
 }
 
 .clearfix::after {
@@ -88,7 +81,7 @@ h1 {
 }
 
 main {
-    background: $background-color;
+    background: $BACKGROUND-COLOR;
     min-height: 100vh;
     @include prefix(perspective, 1000);
     text-align: center;
@@ -128,35 +121,42 @@ main {
     & > a,
     & > div > a,
     & > div > div > a {
-        $background-color: #d0d0f0;
-        background: $background-color;
-        display: inline-block;
-        /*margin: 1em;*/
-        //max-width: 350px; // convert to ems
-        padding: 3em;
-        position: relative;
-        float: left;
-        line-height: normal;
-        text-shadow: 0 0 1em black;
+        @include nav-block;
 
-        & > h1 {
-            text-align: end;
-            text-align: right;
-            position: absolute;
-            bottom: $box-padding;
-            right: $box-padding;
-        }
+        // $background-color: #d0d0f0;
+        // background: $background-color;
+        // display: inline-block;
+        // //margin: 1em;
+        // //max-width: 350px; // convert to ems
+        // padding: 3em;
+        // position: relative;
+        // float: left;
+        // line-height: normal;
+        // text-shadow: 0 0 1em black;
+
+        // & > h1 {
+        //     text-align: end;
+        //     text-align: right;
+        //     position: absolute;
+        //     bottom: $box-padding;
+        //     right: $box-padding;
+        // }
 
         & > section {
             display: none;
         }
 
-        &:target {
+        &.opened {
             position: initial;
-            transition: transform 150ms linear, outline 150ms linear 150ms;
+            transition: transform 1500ms linear, outline 1500ms linear 1500ms, opacity 1500ms linear 0ms;
             transform: rotateY(180deg);
+            opacity: 0;
             //outline: 100vmax solid $background-color;
             transform-style: preserve-3d;
+
+            &:hover {
+                //opacity: 1;
+            }
 
             &:after {
                 content: '';
@@ -165,7 +165,7 @@ main {
                 position: absolute;
                 top: 0;
                 left: 0;
-                background: $background-color;
+                //background: $background-color;
                 transform: rotateY(180deg);
                 backface-visibility: hidden;
             }
@@ -209,7 +209,7 @@ section {
     }
 
     &:hover::before {
-        box-shadow: 0 0 70px #fff inset;
+        //box-shadow: 0 0 70px #fff inset;
     }
 
 
@@ -294,7 +294,7 @@ section {
     z-index: -4;
 
     .bubbles & {
-        background: #ab945a url(media/images/splash.png) no-repeat 50% fixed;
+        background: #ab945a url(/media/images/splash.png) no-repeat 50% fixed;
         transform: initial;
     }
 }
@@ -344,31 +344,31 @@ section {
 
 #title-scroll-tip:hover {
     animation: none;
-    color: $forground-hover-color;
+    color: $FOREGROUND-HOVER-COLOR;
 }
 
 #title-scroll-tip:active {
-    color: $forground-selected-color;
+    color: $FOREGROUND-SELECTED-COLOR;
 }
 
 @keyframes title-scroll-tip-animation {
     from {
-        color: $foreground-color;
+        color: $FOREGROUND-COLOR;
     }
     to {
-        color: $forground-hover-color;
+        color: $FOREGROUND-HOVER-COLOR;
     }
 }
 
 nav {
-    background: $background-secondary-color;
+    background: $BACKGROUND-SECONDARY-COLOR;
     border-radius: 35px;
     box-shadow: 0 0 20px #333;
     box-sizing: border-box;
     display: block;
     font-size: $nav-font-size;
     line-height: 2em;
-    max-width: $page-max-width;
+    max-width: $PAGE-MAX-WIDTH;
     padding-left: 150px;
     padding-top: $nav-font-size;
     position: fixed;
@@ -417,9 +417,6 @@ nav {
 main > a,
 main > div > a,
 main > div > div > a {
-    background-size: cover;
-    background-position: center;
-
     &#our-story {
         background-image: url(/media/images/story.jpg);
     }
