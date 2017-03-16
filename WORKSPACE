@@ -1,7 +1,7 @@
 # Copyright (c) 2016-2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
-workspace(name = "toadstyle_lizanddustin_com")
+workspace(name = "www_lizanddustin_com")
 
 git_repository(
     name = "rules_web",

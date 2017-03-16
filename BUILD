@@ -108,36 +108,36 @@ minify_html(
 )
 
 zip_site(
-    name = "toadstyle_lizanddustin_com",
+    name = "www_lizanddustin_com",
     root_files = [
         ":index_min",
     ],
-    out_zip = "toadstyle_lizanddustin_com.zip",
+    out_zip = "www_lizanddustin_com.zip",
 )
 
 minify_site_zip(
-    name = "toadstyle_lizanddustin_com_zip",
-    site_zip = ":toadstyle_lizanddustin_com",
+    name = "www_lizanddustin_com_zip",
+    site_zip = ":www_lizanddustin_com",
     root_files = [
         ":index_min",
     ],
-    minified_zip = "toadstyle_lizanddustin_com.min.zip",
+    minified_zip = "www_lizanddustin_com.min.zip",
 )
 
 rename_zip_paths(
-    name = "rename_index_toadstyle_lizanddustin_com_zip",
-    source_zip = ":toadstyle_lizanddustin_com_zip",
+    name = "rename_index_www_lizanddustin_com_zip",
+    source_zip = ":www_lizanddustin_com_zip",
     path_map_labels_in = [
         ":index_min",
     ],
     path_map_labels_out = [
         "index.html",
     ],
-    out_zip = "toadstyle_lizanddustin_com_final.zip",
+    out_zip = "www_lizanddustin_com_final.zip",
 )
 
 zip_server(
-    name = "toadstyle_lizanddustin_com_zip_server",
-    zip = ":rename_index_toadstyle_lizanddustin_com_zip",
+    name = "www_lizanddustin_com_zip_server",
+    zip = ":rename_index_www_lizanddustin_com_zip",
     port = 8080,
 )

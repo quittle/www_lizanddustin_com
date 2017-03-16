@@ -1,8 +1,8 @@
-# Copyright (c) 2016 Dustin Doloff
+# Copyright (c) 2016-2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
 /bazel-bin
 /bazel-genfiles
 /bazel-out
 /bazel-testlogs
-/bazel-toadstyle.lizanddustin.com
+/bazel-www.lizanddustin.com
