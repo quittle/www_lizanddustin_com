@@ -29,12 +29,15 @@
                         <a id="our-story" href="#!our-story" class="block-w4-h2">
                             <h1>Our Story</h1>
                             <section>
-                                <div>
-                                    Here is some text
-                                    <div> SOme mroe text</div>
-                                    <p> Another title</p>
-                                    <div> Blah blah blah<br><br><br>What?</div>
-                                </div>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. <b>Lorem ipsum dolor sit amet, consectetur adipiscing elit</b>. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. <i>Lorem ipsum dolor sit amet, consectetur adipiscing elit</i>. Sed dignissim lacinia nunc. </p>
+
+                                <p>Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. <b>Curabitur tortor</b>. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. <b>Sed dignissim lacinia nunc</b>. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+
+                                <p>Nam nec ante. <b>Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa</b>. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin quam. <b>Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis</b>. Etiam ultrices. Suspendisse in justo eu magna luctus suscipit. Sed lectus. Integer euismod lacus luctus magna. </p>
+
+                                <p>Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. <b>Nunc feugiat mi a tellus consequat imperdiet</b>. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui. Praesent blandit dolor. <b>Etiam ultrices</b>. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet. Donec lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim. Curabitur sit amet mauris. <b>Sed non quam</b>. Morbi in dui quis est pulvinar ullamcorper. <i>Quisque volutpat condimentum velit</i>. Nulla facilisi. Integer lacinia sollicitudin massa. </p>
+
+                                <p><b>Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam</b>. Cras metus. Sed aliquet risus a tortor. Integer id quam. Morbi mi. Quisque nisl felis, venenatis tristique, dignissim in, ultrices sit amet, augue. <i>Integer euismod lacus luctus magna</i>. Proin sodales libero eget ante. Nulla quam. Aenean laoreet. Vestibulum nisi lectus, commodo ac, facilisis ac, ultricies eu, pede. Ut orci risus, accumsan porttitor, cursus quis, aliquet eget, justo. Sed pretium blandit orci. </p>
                             </section>
                         </a>
                         <a id="the-big-day" href="#!the-big-day" class="block-w2-h2">
@@ -51,16 +54,24 @@
                     <a id="registries" href="#!registries" class="block-w6-h4">
                         <h1>Registries</h1>
                         <section>
-                            Here is some text
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <div> SOme mroe text</div>
-                            <p> Another title</p>
-                            <div> Blah blah blah<br><br><br>What?</div>
+                            If you want to buys us some stuff, I guess I can't stop you!
+                            <ul id="registries-list">
+                                <li>
+                                    <xa href="https://www.amazon.com/wedding/share/lizanddustin">
+                                        <img src="/media/images/logo/amazon.jpg" /> Amazon
+                                    </xa>
+                                </li>
+                                <li>
+                                    <xa href="https://www.zola.com/registry/lizanddustin">
+                                        <img src="/media/images/logo/zola.png" /> Zola
+                                    </xa>
+                                </li>
+                                <li>
+                                    <xa href="https://www.crateandbarrel.com/gift-registry/_/r5656354">
+                                        <img src="/media/images/logo/crate-and-barrel.png" /> Crate &amp; Barrel
+                                    </xa>
+                                </li>
+                            </ul>
                         </section>
                     </a>
                 </div>
@@ -69,17 +80,37 @@
                         <a id="rsvp" href="#!rsvp" class="block-w2-h4">
                             <h1>RSVP</h1>
                             <section>
-                                Will you be joining us?
-                                <button>Yes!</button><button>No</button>
+                                <form id="rsvp-form" class="clearfix">
+                                    I,
+                                    <input name="name" placeholder="Name" size="16" required />,
+                                    do solemly swear that I
+                                    <select name="attendance" required>
+                                        <option hidden selected>will/will not</option>
+                                        <option value="will">will definitely</option>
+                                        <option value="will-not">will unfortunately not</option>
+                                    </select>
+                                    attend the wedding on <time datetime="2017-09-30">September 30th, 2017</time>. If you need to contact me regarding the event, please use this
+                                    <select name="contact-type" required>
+                                        <option hidden selected>email/phone</option>
+                                        <option value="email">email address</option>
+                                        <option value="phone">phone number</option>
+                                    </select>:
+                                    <input name="contact-value" size="18" required />.
+                                    Additionally, you ought to know
+                                    <br />
+                                    <textarea rows="8" cols="80"></textarea>
+                                    <br />
+                                    <button type="submit">SEND!</button>
+                                </form>
                             </section>
                         </a>
                         <a id="playlist" href="#!playlist" class="block-w4-h4">
                             <h1>Music Playlist</h1>
                             <section>
                                 Want to pick a song for the reception?
-                                <form>
-                                    <input />
-                                    <button type="submit" />
+                                <form id="music-form">
+                                    <input placeholder="Friday" required />
+                                    <button type="submit">Request!</button>
                                 </form>
                             </section>
                         </a>
@@ -87,6 +118,7 @@
                     <a id="gallery" href="#!gallery" class="block-w6-h2">
                         <h1>Photo Gallery</h1>
                         <section>
+                            <h3>Engagement Shoot</h3>
                             There are no images so far
                         </section>
                     </a>
@@ -107,8 +139,24 @@
                     </div>
                     <a id="directions" href="#!directions" class="block-w4-h4">
                         <h1>Directions</h1>
-                        <section>
-                            Good luck.
+                        <section class="directions-table-vertical">
+                            <div class="directions-table-horizontal">
+                                <p>
+                                    The ceremony and reception will both take place at <ax href="https://www.cloisterscastle.com" target="_blank">Cloisters Castle</ax> in Lutherville, MD.
+                                </p>
+                                <p>
+                                    Cloisters Castle is located at:
+                                    <br />
+                                    <ax href="http://goo.gl/TYW68h" target="_blank">
+                                        10440 Falls Rd
+                                        <br />
+                                        Lutherville, MD 21093
+                                    </ax>
+                                </p>
+                            </div>
+                            <div>
+                                <xiframe width="100%" height="500PX" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ_TN3tk4QyIkRh2697Kp4Ok4&key=AIzaSyCb7rJEDrMV80bBkhp9SVNs2GrkJO1y2KM" allowfullscreen></iframe>
+                            </div>
                         </section>
                     </a>
                 </div>

@@ -1,0 +1,31 @@
+// Copyright (c) 2017 Dustin Doloff
+// Licensed under Apache License v2.0
+
+ul#registries-list {
+    padding: 0;
+
+    li {
+        $border-radius: 0.2em;
+        list-style: none;
+        background: white;
+        margin-bottom: 1em;
+        border-radius: $border-radius;
+
+        img {
+            height: 4em;
+            vertical-align: middle;
+            margin-right: 2em;
+            border-radius: $border-radius 0 0 $border-radius;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        a {
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

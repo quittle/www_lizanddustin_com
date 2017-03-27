@@ -3,8 +3,13 @@
 
 @import 'blocks';
 @import 'constants';
+@import 'detail_2';
+@import 'directions';
+@import 'math';
+@import 'music';
 @import 'nav-block';
-@import 'detail';
+@import 'registries';
+@import 'rsvp';
 
 @function floor-decimal($decimal) {
     @return floor($decimal * 100000) / 100000;
@@ -46,7 +51,7 @@ body {
     background: #ab945a url(media/images/splash.png) no-repeat 50% fixed;
     color: $FOREGROUND-COLOR;
     font-family: sans-serif;
-    line-height: 1;
+    line-height: 1.5;
     perspective: 1px;
 
     &.bubbles {
@@ -74,10 +79,62 @@ a:active {
 .clearfix::after {
     content: '';
     clear: both;
+    display: block;
 }
 
 h1 {
     margin: 0;
+}
+
+input, textarea, select {
+    background: #d0e0d0;
+    background: #dbdbdb;
+    background: #eee;
+    border: #{$INPUT-BORDER-WIDTH-EM}em dashed #cce3f6;
+    padding: #{$INPUT-PADDING-EM}em;
+
+    // Resolved from:
+    // 1 = x + (b*x + p*x) * 2
+    // where:
+    //     1 = height of line in ems
+    //     x = correct font size
+    //     b = border width in em
+    //     p = padding in em
+    font-size: adjusted-font-size($INPUT-BORDER-WIDTH-EM, $INPUT-PADDING-EM); //#{0.5 / (0.5 + $border-width-em + $padding-em)}em;
+    vertical-align: middle;
+
+    &:invalid, &:-moz-ui-invalid, &:-moz-submit-invalid {
+        box-shadow: none;
+        border-color: #f06537;
+    }
+}
+
+select {
+    $right-offset-em: .25;
+    $arrow-height-em: .5;
+    $side-length-em: $arrow-height-em * 1.1547;
+    background-image:
+        linear-gradient(60deg, transparent 50%, gray 50%),
+        linear-gradient(120deg, gray 50%, transparent 50%);//,
+        //radial-gradient(red 70%, transparent 72%);
+    background-position:
+        calc(100% - #{$right-offset-em + $side-length-em}em) center,
+        calc(100% - #{$right-offset-em + $side-length-em / 2}em) center;//,
+        //calc(100% - #{$right-offset-em + $side-length-em + $arrow-height-em / 2}em) center;
+    background-size:
+        #{$side-length-em / 2}em #{$arrow-height-em}em,
+        #{$side-length-em / 2}em #{$arrow-height-em}em;//,
+        //#{$arrow-height-em * 2 * $arrow-height-em}em #{$arrow-height-em * 2 * $arrow-height-em}em;
+    background-repeat: no-repeat;
+    -moz-appearance: none;
+    padding-right: #{$right-offset-em + $arrow-height-em}em;
+}
+
+button, input[type=submit], input[type=button] {
+    background: #90d290;
+    border: #{$BUTTON-BORDER-WIDTH-EM}em solid white;
+    border-radius: .2em;
+    padding: #{$BUTTON-PADDING-EM}em;
 }
 
 main {
@@ -188,7 +245,7 @@ section {
     $background-size-default: 2000px;
     $hover-transition: 200ms ease-in-out;
 
-    padding: 3em;
+    padding: 2em;
 
     &.focused {
          transform: rotateY(0);
@@ -418,31 +475,31 @@ main > a,
 main > div > a,
 main > div > div > a {
     &#our-story {
-        background-image: url(/media/images/story.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-2888.jpg);
     }
 
     &#the-big-day {
-        background-image: url(/media/images/flowers.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-2795.jpg);
     }
 
     &#registries {
-        background-image: url(/media/images/presents.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-0843.jpg);
     }
 
     &#rsvp {
-        background-image: url(/media/images/letters.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-3027.jpg);
     }
 
     &#playlist {
-        background-image: url(/media/images/record-player.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-0728.jpg);
     }
 
     &#gallery {
-        background-image: url(/media/images/gallery.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-3143.jpg);
     }
 
     &#directions {
-        background-image: url(/media/images/map.jpg);
+        background-image: url(/media/images/engagement/deception-pass-engagement-session-luma-weddings-3027.jpg);
     }
 
     &#leave-a-note {

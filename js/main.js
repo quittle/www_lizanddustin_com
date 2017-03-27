@@ -5,98 +5,70 @@
     'use strict';
 
     /**
-     * Gets |document.body|, which should always be non-null.
-     * @return {!HTMLBodyElement} The document body element.
+     * Called when the RSVP details are shown
      */
-    function getBody() {
-        /** @type {?HTMLBodyElement} */ const body = document.body;
-        if (!body) {
-            console.error('document.body was null');
+    function onRSVPDetailShown() {
+        /** @type {?Element} */ const detailsContactType =
+                document.querySelector('#details-container select[name=contact-type]');
+        /** @type {?Element} */ const detailsContactValue =
+                document.querySelector('#details-container input[name=contact-value]');
+        if (!(detailsContactType && detailsContactValue)) {
+            console.error('Unable to all necesary rsvp elements');
+            return;
         }
-        return  /** @type {!HTMLBodyElement} */ (body);
-    }
 
-    /**
-     * Calculates the node offset from the top of the page.
-     * @param {!Node} node The node to analyze
-     * @return {!number} The offset from the top of the page in pixels.
-     */
-    function offsetTop(node) {
-        if (node) {
-            return parseInt(node.offsetTop, 10) + offsetTop(node.offsetParent);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Adds a class to an element.
-     * @param {!Element} element The element to add the class to
-     * @param {!string} className The class to add.
-     */
-    function addClass(element, className) {
-        if (element.classList) {
-            element.classList.add(className);
-        } else {
-            var classString = element.getAttribute('class');
-            var currentClasses = classString.split(' ');
-            if (currentClasses.indexOf(className) == -1) {
-                element.setAttribute('class', classString + ' ' + className);
+        detailsContactType.addEventListener('change', e => {
+            console.log('change!');
+            /** @type {!string} */ const value = detailsContactType.value;
+            /** @type {!string} */ let contactValuePattern;
+            switch (value) {
+                case 'email':
+                    contactValuePattern = '^.+@.+$';
+                    break;
+                case 'phone':
+                    contactValuePattern = '^[\\(\\)+\\- \\d]+$';
+                    break;
+                default:
+                    console.error('Unknown contact type value: ' + value);
+                    return;
             }
+
+            detailsContactValue.setAttribute('pattern', contactValuePattern);
+        }, false);
+    }
+
+    /**
+     * Called when a detail section is shown.
+     */
+    function onDetailShown() {
+        switch (getIdFromHash(location.hash)) {
+            case 'rsvp':
+                onRSVPDetailShown();
+                break;
         }
     }
 
     /**
-     * Removes a class from an element.
-     * @param {!Element} element The element to remove the class from
-     * @param {!string} className The class to remove.
+     * Navigates to the home state and out of any views.
      */
-    function removeClass(element, className) {
-        if (element.classList) {
-            element.classList.remove(className);
-        } else {
-            var currentClasses = element.getAttribute('class').split(' ');
-
-            do {
-                var index = currentClasses.indexOf(className);
-                if (index != -1) {
-                    currentClasses.splice(index, 1);
-                }
-            } while (index != -1);
-
-            element.setAttribute('class', currentClasses.join(' '));
-        }
-    }
-
-    /**
-     * Removes all the children of |el|
-     * @param {!Element} el The element to remove
-     */
-    function emptyContents(el) {
-        while (el.firstChild) {
-            el.removeChild(el.firstChild);
-        }
-    }
-
-    /**
-     * Gets a required element.
-     * @param {!string} id The id of the element to get
-     * @return {?Element} The element if found or null if not found.
-     */
-    function getRequiredElement(id) {
-        /** @type {?Element} */ const element = document.getElementById(id);
-        if (!element) {
-            console.error('Unable to find required element: ' + id);
-        }
-        return element;
+    function navigateHome() {
+        location.hash = '#!';
     }
 
     /**
      * Empties the contents of the details container.
      */
     function clearDetailsContainer() {
+        /** @type {?Element} */ const detailsContainerContent =
+                getRequiredElement('details-container-content');
+
+        if (detailsContainerContent) {
+            detailsContainerContent.scrollTop = 0;
+        }
+
         /** @type {?Element} */ const detailsContainerHeader =
                 getRequiredElement('details-container-header');
+
         if (detailsContainerHeader) {
             emptyContents(detailsContainerHeader);
         }
@@ -113,8 +85,10 @@
      * @param {!Element} link The link for the section to inflate
      */
     function showDetail(link) {
-        addClass(link, 'opened');
+        //addClass(link, 'opened');
         addClass(getBody(), 'disable-scrolling');
+
+        let flipSpin = false;
 
         /** @type {?CSSStyleDeclaration} */ const linkStyle = getComputedStyle(link);
         /** @type {string} */ const color = linkStyle.getPropertyValue('background-color');
@@ -135,31 +109,41 @@
             detailsContainerHeader.innerHTML = link.innerHTML;
             detailsContainerHeader.removeChild(detailsContainer.querySelector('section'));
 
-            detailsContainerBody.style.backgroundColor = color;
+            if (flipSpin) {
+                detailsContainerBody.style.backgroundColor = color;
+            }
             detailsContainerBody.appendChild(document.importNode(link.querySelector('section'), true));
+
+            onDetailShown();
             // Temp
             //detailsContainerBody.style.display = 'none';
 
-            detailsContainer.style.position = 'fixed';
-            detailsContainer.style.top = boundingRect.top + 'px';
-            detailsContainer.style.left = boundingRect.left + 'px';
-            detailsContainer.style.width = boundingRect.width + 'px';
-            detailsContainer.style.height = boundingRect.height + 'px';
-            detailsContainerHeader.style.backgroundImage =
-                    linkStyle.getPropertyValue('background-image');
+            if (flipSpin) {
+                detailsContainer.style.position = 'fixed';
+                detailsContainer.style.top = boundingRect.top + 'px';
+                detailsContainer.style.left = boundingRect.left + 'px';
+                detailsContainer.style.width = boundingRect.width + 'px';
+                detailsContainer.style.height = boundingRect.height + 'px';
+            }
 
-            // let scaleX = boundingRect.width / (window.innerWidth * .8);
-            // let scaleY = boundingRect.height / (window.innerHeight * .8);
-            // let translateX = -window.innerWidth * .1 + boundingRect.left;
-            // let translateY = -window.innerHeight * .1 + boundingRect.top;
+            //detailsContainerHeader.style.backgroundImage =
+            //        linkStyle.getPropertyValue('background-image');
 
-            // detailsContainer.style.transform =
-            //         `translateX(${translateX}px)
-            //          translateY(${translateY}px)
-            //          scaleX(${scaleX})
-            //          scaleY(${scaleY})`;
+            if (flipSpin) {
+                let scaleX = boundingRect.width / (window.innerWidth * .8);
+                let scaleY = boundingRect.height / (window.innerHeight * .8);
+                let translateX = -window.innerWidth * .1 + boundingRect.left;
+                translateX = boundingRect.left;
+                let translateY = -window.innerHeight * .1 + boundingRect.top;
 
-            setTimeout(addClass.bind(null, getBody(), 'details-visible'), 1500);
+                detailsContainer.style.transform =
+                        `translateX(${translateX}px)
+                         translateY(${translateY}px)
+                         scaleX(${scaleX})
+                         scaleY(${scaleY})`;
+            }
+
+            setTimeout(addClass.bind(null, getBody(), 'details-visible'), flipSpin ? 1500 : 0);
         }, 1);
     }
 
@@ -171,10 +155,13 @@
         for (let i = 0; i < openedLinks.length; i++) {
             removeClass(openedLinks[i], 'opened');
         }
+
+        clearDetailsContainer();
+
         removeClass(getBody(), 'details-visible');
         removeClass(getBody(), 'disable-scrolling');
 
-        setTimeout(clearDetailsContainer, 1500);
+        // setTimeout(clearDetailsContainer, 1500);
     }
 
     /**
@@ -193,7 +180,7 @@
     function onKeyDown(e) {
         switch (e.keyCode) {
             case 27: // Escape
-                location.hash = '#!';
+                navigateHome();
                 break;
         }
     }
@@ -206,7 +193,7 @@
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
         } else {
-            /** @type {!string} */ const id = getIdFromHash(location.hash)
+            /** @type {!string} */ const id = getIdFromHash(location.hash);
             /** @type {?Element} */ const el = document.getElementById(id);
             if (el) {
                 showDetail(el);
@@ -254,8 +241,30 @@
         onHashChange();
     }
 
+    /**
+     * Callback for when the details container is clicked
+     * @param {!Event} e The click event
+     */
+    function onDetailsContainerClick(e) {
+        if (e.target.getAttribute('id') === 'details-container') {
+            navigateHome();
+        }
+    }
+
+    /**
+     * Initializer event
+     */
+    function onDOMContentLoaded() {
+        /** @type {?Element} */ const detailsContainer =
+                getRequiredElement('details-container');
+        if (detailsContainer) {
+            detailsContainer.addEventListener('click', onDetailsContainerClick);
+        }
+    }
+
     window.addEventListener('load', init);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('hashchange', onHashChange, false);
     window.addEventListener('resize', onResize);
+    registerOnDOMContentLoaded(onDOMContentLoaded);
 })();

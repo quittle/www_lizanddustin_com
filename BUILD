@@ -66,7 +66,7 @@ font_generator(
 
 sass_library(
     name = "sass_libs",
-    srcs = glob(["css/*.scss"]),
+    srcs = glob(["css/*.scss"], exclude=["css/detail.scss"]),
 )
 
 sass_binary(
@@ -83,6 +83,8 @@ closure_compile(
     srcs = [
         "js/flex_grid.js",
         "js/main.js",
+        "js/detail.js",
+        "js/utils.js",
     ],
 )
 
