@@ -2,6 +2,26 @@
 // Licensed under Apache License v2.0
 
 /**
+ * @param {...*} args_ The args to check
+ * The last parameter should be a function that takes all the previous arguments when all are
+ * non-null, non-undefined.
+ * @return {boolean} True if func was called, otherwise false.
+ */
+function withAll(args_) {
+    const args = [];
+    for (let i = 0; i < arguments.length - 1; i++) {
+        let value = arguments[i];
+        if (typeof value === 'undefined' || value === null) {
+            return false;
+        }
+        args.push(value);
+    }
+    /** @type {function(...)} */ const func = arguments[arguments.length - 1];
+    func.apply(null, args);
+    return true;
+}
+
+/**
  * Gets |document.body|, which should always be non-null.
  * @return {!HTMLBodyElement} The document body element.
  */
@@ -101,9 +121,68 @@ function registerOnDOMContentLoaded(callback) {
 }
 
 /**
- * Resets an elements scroll position.
- * @param {!Element} element The element the scroll state should be reset on
+ * Initiates an AJAX request.
+ * @param {!string} url The url to submit
+ * @param {!string=} method The HTTP verb to send as
+ * @param {!string=} data The data to put in the request
+ * @return {!Promise<!string>} A Promise that will resolve/reject if the request succeeds/fails,
+ *                            passing in the response data.
  */
-function resetScroll(element) {
-    //if ()
+function ajax(url, method = ajax.HTTP_METHOD.GET, data = '') {
+    const xhr = new XMLHttpRequest();
+
+    const ret = new Promise((resolve, reject) => {
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState < 4) {
+                return;
+            }
+
+            if (200 <= xhr.status || xhr.status < 300) {
+                resolve(xhr.responseText);
+            } else {
+                reject(xhr.responseText);
+            }
+        };
+    });
+
+    xhr.open(method, url, true);
+    xhr.send(data);
+    return ret;
+}
+ajax.HTTP_METHOD = {
+    'GET': 'GET',
+    'POST': 'POST',
+};
+
+/**
+ * Converts a NodeList to an Array.
+ * @param {!NodeList} nodeList The NodeList to convert
+ * @return {!Array<!Element>} An array of the elements in nodeList.
+ */
+function nodeListToArray(nodeList) {
+    return Array.prototype.slice.call(nodeList);
+}
+
+/**
+ * Gets the data from a form as an object.
+ * @param {!HTMLFormElement} form The form to extract from
+ * @return {!Object<!string, !string>} An object representing the name/value pairs in the form.
+ */
+function getFormData(form) {
+    /** @type {!Array<!HTMLElement>} */ const inputs = /** @type {!Array<!HTMLElement>} */ (
+            nodeListToArray(form.querySelectorAll('input')).concat(
+            nodeListToArray(form.querySelectorAll('select'))).concat(
+            nodeListToArray(form.querySelectorAll('textarea'))));
+
+    const ret = {};
+    inputs.forEach(element => {
+        /** @type {string?} */ const name = element.getAttribute('name');
+        /** @type {string?} */ const value = element.value;
+        if (!(name && value)) {
+            return;
+        }
+
+        ret[name] = value;
+    });
+    return ret;
 }

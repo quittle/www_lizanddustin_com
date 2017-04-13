@@ -1,0 +1,70 @@
+// Copyright (c) 2017 Dustin Doloff
+// Licensed under Apache License v2.0
+
+// @import '';
+ @import 'engagement_map';
+ // @import '/home/quittle/Dropbox/ubuntu/websites/www.lizanddustin.com/bazel-genfiles/media/images/engagement/engagement_map.scss';
+// @import "engagement_map"
+//@import 'bazel-genfiles/media/images/engagement/engagement_map';
+
+$engagement-photos: (
+    "0728",
+    "0753",
+    "0767",
+    "0788",
+    "0795",
+    "0803",
+    "0815",
+    "0820",
+    "0838",
+    "0843",
+    "0855",
+    "0879",
+    "0885",
+    "0893",
+    "0898",
+    "2795",
+    "2808",
+    "2812",
+    "2818",
+    "2835",
+    "2839",
+    "2845",
+    "2855",
+    "2888",
+    "2894",
+    "2903",
+    "2910",
+    "2930",
+    "2935",
+    "2942",
+    "2961",
+    "2966",
+    "2975",
+    "2981",
+    "3001",
+    "3010",
+    "3016",
+    "3019",
+    "3027",
+    "3036",
+    "3048",
+    "3060",
+    "3068",
+    "3073",
+    "3087",
+    "3095",
+    "3100-2",
+    "3100",
+    "3143",
+);
+
+@each $id in $engagement-photos {
+    $path: map-get($engagement-photos-map, "media/images/engagement/#{$id}.jpg");
+    [data-eng-img="#{$id}"] {
+        background-image: url(/#{$path});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}

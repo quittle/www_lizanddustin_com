@@ -7,10 +7,11 @@
     width: 100%;
 
     & > * {
-        border-right: 1px solid;
+        $border-width: .15em;
+
         display: table-cell;
         padding: 0 1em;
-        border: 3px solid #aaa;
+        border: $border-width solid #aaa;
         border-top-color: transparent;
         border-bottom-color: transparent;
         border-radius: 1em;
@@ -27,11 +28,11 @@
 
         &:nth-child(2n) {
             border-bottom-width: 0;
-            border-top-width: 3px;
+            border-top-width: $border-width;
         }
 
         &:nth-child(2n + 1) {
-            border-bottom-width: 3px;
+            border-bottom-width: $border-width;
             border-top-width: 0;
         }
     }

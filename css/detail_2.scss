@@ -40,10 +40,18 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
     overflow: auto;
     max-height: 100%;
     border-radius: 0.15em;
+
+    @media (max-width: 1600px) {
+        width: 75%;
+    }
+
+    @media (max-width: 900px) {
+        width: 100%;
+    }
 }
 
 #details-container-header {
-    font-weight: bold;
+    //font-weight: bold;
     font-size: 6em;
     background-repeat: no-repeat;
     background-size: 100%;
@@ -55,7 +63,15 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
     text-align: center;
     padding: 1em 0.5em 0;
     line-height: 1em;
-    font-family: 'miama', sans-serif;
+    font-family: 'Cookie', 'miama', cursive, serif;
+
+    h1 {
+        color: #957458;
+        color: #635f5a;
+        color: #777998;
+        //word-spacing: -0.25em;
+        font-weight: normal;
+    }
 
     &:after {
         content: '';

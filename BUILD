@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Dustin Doloff
+# Copyright (c) 2016-2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
 load("@io_bazel_rules_sass//sass:sass.bzl",
@@ -16,6 +16,7 @@ load("@rules_web//fonts:fonts.bzl",
 
 load("@rules_web//html:html.bzl",
     "html_page",
+    "inject_html",
     "minify_html",
 )
 
@@ -33,6 +34,16 @@ load("@rules_web//site_zip:site_zip.bzl",
     "rename_zip_paths",
     "zip_server",
     "zip_site",
+)
+
+load("//rules:gallery.bzl",
+    "file_list",
+)
+
+file_list(
+    name = "engagement_gallery",
+    files = glob([ "!!media/images/engagement/*.jpg" ]),
+    content = "<a href=\"#!gallery&image={file}\" style=\"background-image:url({file})\"></a>"
 )
 
 minify_ttf(
@@ -66,7 +77,13 @@ font_generator(
 
 sass_library(
     name = "sass_libs",
-    srcs = glob(["css/*.scss"], exclude=["css/detail.scss"]),
+    srcs =
+        glob([ "css/*.scss" ], exclude=[ "css/detail.scss" ]) +
+        [
+            "//media/images/engagement:engagement_map",
+            "//media/images/engagement:large_images",
+            "//media/images/luma:luma_logo_map",
+        ],
 )
 
 sass_binary(
@@ -81,27 +98,49 @@ sass_binary(
 closure_compile(
     name = "main_js",
     srcs = [
+        "js/detail.js",
         "js/flex_grid.js",
         "js/main.js",
-        "js/detail.js",
+        "js/utils.js",
+    ],
+)
+
+closure_compile(
+    name = "rsvp_js",
+    srcs = [
+        "js/rsvp.js",
         "js/utils.js",
     ],
 )
 
 html_page(
-    name = "index",
+    name = "index_without_gallery",
     config = "//:index.json",
     body = "//:index_body.html",
     css_files = [
         ":main_css",
         ":miama_css",
     ],
+    js_files = [
+        ":rsvp_js",
+    ],
     deferred_js_files = [
         ":main_js", # BUG: Should be async (but not supported yet)
     ],
     deps = [
         "cssPIE/PIE.htc",
-    ] + glob(["media/**/*"]),
+        "//media/images/engagement:original_images",
+        "//media/images/engagement:shrunk_images",
+        "//media/images/luma:luma_logo",
+        #"//media/images/engagement:shrunk_images",
+    ] + glob([ "media/images/*", "media/images/**/*" ]),#+ glob([ "media/images/engagement/*.jpg" ]),
+)
+
+inject_html(
+    name = "index",
+    outer_html = ":index_without_gallery",
+    inner_html = ":engagement_gallery",
+    query_selector = "#engagement-shoot"
 )
 
 minify_html(
@@ -113,6 +152,7 @@ zip_site(
     name = "www_lizanddustin_com",
     root_files = [
         ":index_min",
+        "//media/images/engagement:shrunk_images",
     ],
     out_zip = "www_lizanddustin_com.zip",
 )
@@ -123,6 +163,7 @@ minify_site_zip(
     root_files = [
         ":index_min",
     ],
+    keep_extensions = True,
     minified_zip = "www_lizanddustin_com.min.zip",
 )
 

@@ -4,37 +4,61 @@
 (function() {
     'use strict';
 
+    const API_ENDPOINT = 'https://api.lizanddustin.com';
+    const RSVP_PATH = '/rsvp'
+
+    function onRSVPSubmit() {
+        /** @type {HTMLFormElement?} */ const form =
+                /** @type {HTMLFormElement?} */
+                        (document.querySelector('#details-container form#rsvp-form'));
+        if (!form) {
+            console.error('RSVP form not found');
+            return
+        }
+
+        ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
+            console.log('Submitted: ' + response);
+        }).catch(response => {
+            console.error('Unable to submit request: ' + response);
+        });
+    }
+
     /**
      * Called when the RSVP details are shown
      */
     function onRSVPDetailShown() {
-        /** @type {?Element} */ const detailsContactType =
-                document.querySelector('#details-container select[name=contact-type]');
-        /** @type {?Element} */ const detailsContactValue =
-                document.querySelector('#details-container input[name=contact-value]');
-        if (!(detailsContactType && detailsContactValue)) {
+        if (!withAll(document.querySelector('#details-container select[name=contact-type]'),
+                document.querySelector('#details-container input[name=contact-value]'),
+                document.querySelector('#details-container form#rsvp-form'),
+                document.querySelector('#details-container button[type=submit]'),
+                (detailsContactType, detailsContactValue, form, submitButton) => {
+                    detailsContactType.addEventListener('change', e => {
+                        /** @type {!string} */ const value = detailsContactType.value;
+                        /** @type {!string} */ let contactValuePattern;
+                        switch (value) {
+                            case 'email':
+                                contactValuePattern = '^.+@.+$';
+                                break;
+                            case 'phone':
+                                contactValuePattern = '^[\\(\\)+\\- \\d]+$';
+                                break;
+                            default:
+                                console.error('Unknown contact type value: ' + value);
+                                return;
+                        }
+
+                        detailsContactValue.setAttribute('pattern', contactValuePattern);
+                    }, false);
+
+                    form.addEventListener('submit', e => {
+                        addClass(submitButton, 'sent');
+                        onRSVPSubmit();
+                        e.preventDefault();
+                    });
+                })
+        ) {
             console.error('Unable to all necesary rsvp elements');
-            return;
         }
-
-        detailsContactType.addEventListener('change', e => {
-            console.log('change!');
-            /** @type {!string} */ const value = detailsContactType.value;
-            /** @type {!string} */ let contactValuePattern;
-            switch (value) {
-                case 'email':
-                    contactValuePattern = '^.+@.+$';
-                    break;
-                case 'phone':
-                    contactValuePattern = '^[\\(\\)+\\- \\d]+$';
-                    break;
-                default:
-                    console.error('Unknown contact type value: ' + value);
-                    return;
-            }
-
-            detailsContactValue.setAttribute('pattern', contactValuePattern);
-        }, false);
     }
 
     /**
@@ -81,6 +105,33 @@
     }
 
     /**
+     * Gets the source element for a detail section
+     * @param {!string} detailId The id of the detail section to show
+     * @return {?Element} A copy of the detail source to use or null if not found.
+     */
+    function getDetailsSource(detailId) {
+        /** @type {?Element} */ const link = document.getElementById(detailId);
+        if (!link) {
+            console.error('Unable to find element for detail section: ' + detailId);
+            return null;
+        }
+
+        /** @type {?string} */ const sourceId = link.getAttribute('data-source');
+        if (!sourceId) {
+            console.error('data-source not found on: ' + detailId);
+            return null;
+        }
+
+        /** @type {?Element} */ const source = document.getElementById(sourceId);
+        if (!source) {
+            console.error('Unable to get detail source element: ' + sourceId);
+            return null;
+        }
+
+        return /** @type {?Element} */ (document.importNode(source, true));
+    }
+
+    /**
      * Shows the details animation for a link.
      * @param {!Element} link The link for the section to inflate
      */
@@ -100,19 +151,20 @@
                     getRequiredElement('details-container-header');
             /** @type {?Element} */ const detailsContainerBody =
                     getRequiredElement('details-container-body');
-            if (!(detailsContainer && detailsContainerHeader && detailsContainerBody)) {
+            /** @type {?Element} */ const copiedSource = getDetailsSource(link.getAttribute('id'));
+            if (!(detailsContainer && detailsContainerHeader && detailsContainerBody && copiedSource)) {
                 return;
             }
 
             clearDetailsContainer();
 
             detailsContainerHeader.innerHTML = link.innerHTML;
-            detailsContainerHeader.removeChild(detailsContainer.querySelector('section'));
+            //detailsContainerHeader.removeChild(detailsContainer.querySelector('section'));
 
             if (flipSpin) {
                 detailsContainerBody.style.backgroundColor = color;
             }
-            detailsContainerBody.appendChild(document.importNode(link.querySelector('section'), true));
+            detailsContainerBody.appendChild(copiedSource);
 
             onDetailShown();
             // Temp
@@ -170,7 +222,7 @@
      * @return {!string} The id of an element extracted from the hash
      */
     function getIdFromHash(hash) {
-        return hash.replace(/^#?!?/, '')
+        return hash.replace(/^#?!?/, '').split('&')[0]
     }
 
     /**
@@ -213,7 +265,6 @@
      * @param {!Event} e The resize event
      */
     function onResize(e) {
-        console.log('resize');
     }
 
     /**

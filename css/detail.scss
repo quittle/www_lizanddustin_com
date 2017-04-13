@@ -11,11 +11,11 @@ $transition-all: all 3000ms linear;
 
 .bubbles {
     &.details-visible {
-        overflow: hidden;
+        //overflow: hidden;
     }
 
     #details-container {
-        position: fixed;
+        //position: fixed;
     }
 
     .details-visible {

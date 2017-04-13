@@ -5,6 +5,8 @@
 @import 'math';
 
 #music-form {
+    font-size: 2em;
+
     // Set up to match the input next to it
     [type=submit] {
         border-width: #{$INPUT-BORDER-WIDTH-EM}em;

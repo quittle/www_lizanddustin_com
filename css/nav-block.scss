@@ -4,6 +4,14 @@
 @import 'constants';
 
 @mixin nav-block {
+    $text-near-padding: 1em;
+    $text-far-padding: 0.5em;
+    $ribbon-cutback: -1.1em;
+    $ribbon-color: rgba(255, 255, 255, .6);
+    $ribbon-cutback-skew: -25.2deg;
+
+    color: $FOREGROUND-COLOR-LIGHT;
+
     background-color: $BACKGROUND-COLOR;
     background-size: cover;
     background-position: center;
@@ -14,13 +22,78 @@
     position: relative;
     float: left;
     line-height: normal;
-    text-shadow: 0 0 1em black;
+
+    &.left-text > h1 {
+        padding-left: $text-near-padding;
+        padding-right: $text-far-padding;
+        right: initial;
+        left: 0;
+
+        &::before {
+            left: initial;
+            right: $ribbon-cutback;
+            border-left-color: $ribbon-color;
+            border-right-color: transparent;
+        }
+
+        &::after {
+            left: initial;
+            right: 0;
+            transform: skewY(-$ribbon-cutback-skew);
+        }
+    }
+
+    &:hover {
+        color: $FOREGROUND-HOVER-COLOR-LIGHT;
+    }
+
+    &:active {
+        color: $FOREGROUND-SELECTED-COLOR-LIGHT;
+    }
 
     & > h1 {
-        text-align: end;
         text-align: right;
+        text-align: end;
         position: absolute;
         bottom: $BOX-PADDING;
-        right: $BOX-PADDING;
+        right: 0;
+
+        font-family: 'Cookie', 'miama', cursive, serif;
+        font-weight: normal;
+        font-size: 3em;
+
+        padding: .2em $text-near-padding .2em $text-far-padding;
+        background: $ribbon-color;
+        color: black;
+
+        @media (max-width: 500px) {
+            & {
+                font-size: 10vw;
+            }
+        }
+
+        &::before {
+            content: '';
+            width: 0;
+            height: 0;
+            position: absolute;
+            top: -0.2em;
+            left: $ribbon-cutback;
+
+            border: 0 solid $ribbon-color;
+            border-width: 0.7em 0.8em;
+            border-left-color: transparent;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -0.15em;
+            width: 0.5em;
+            height: 100%;
+            background: $ribbon-color;
+            transform: skewY(-25.2deg);
+        }
     }
 }

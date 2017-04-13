@@ -1,31 +1,39 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
+@import 'constants'
+
 ul#registries-list {
     padding: 0;
 
     li {
         $border-radius: 0.2em;
-        list-style: none;
-        background: white;
-        margin-bottom: 1em;
-        border-radius: $border-radius;
 
-        img {
-            height: 4em;
-            vertical-align: middle;
-            margin-right: 2em;
-            border-radius: $border-radius 0 0 $border-radius;
-        }
+        display: inline-block;
+        list-style: none;
+        background: #f9f9f94d;
+        margin: 1em;
+        border-radius: $border-radius;
 
         &:last-child {
             margin-bottom: 0;
         }
 
         a {
+            $text-padding: 0.5em;
+
             display: inline-block;
-            height: 100%;
-            width: 100%;
+            color: $FOREGROUND-COLOR-DARK;
+            text-decoration: none;
+            text-align: center;
+            padding-bottom: $text-padding;
+
+            img {
+                display: block;
+                height: 8em;
+                margin-bottom: $text-padding;
+                border-radius: $border-radius $border-radius 0 0;
+            }
         }
     }
 }

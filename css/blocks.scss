@@ -1,14 +1,27 @@
-// Copyright (c) 2016 Dustin Doloff
+// Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
 $block-size: 100px;
 $block-padding: 16px;
 
-$max-depth: 10;
+$block-size: 5vw;
+$block-padding: 1vw;
+$full-width: 100vw - 2 * $block-padding;
+
+$max-depth: 100;
+$max-depth: 12; // Only need up to 12 actually
+
+:root {
+    --mobile-scale: 1;
+
+    @media (max-width: 1000px) {
+        --mobile-scale: 2;
+    }
+}
 
 .block-v > * {
     clear: both;
-    margin-bottom: $block-padding;
+    margin-bottom: calc(#{$block-padding} * var(--mobile-scale));
 
     &:last-child {
         margin: 0;
@@ -16,20 +29,66 @@ $max-depth: 10;
 }
 
 .block-h > * {
-    margin-right: $block-padding;
+    margin-right: calc(#{$block-padding} * var(--mobile-scale));
 
     &:last-child {
         margin: 0;
     }
 }
 
+.block-h, .block-v {
+    & > *::after {
+        content: '';
+        clear: both;
+        display: block;
+    }
+}
 
+
+// Disabled to save space
+
+// // Sizes
+// // let size = .5
+// // actual width = 100vw * size - mw / 2
+
+// @for $width from 1 through $max-depth {
+//     $block-width: 1vw * $width - $block-padding * (100 / $width) / ((100 / $width) - 1);
+//     @for $height from 1 through $max-depth {
+//         $block-height: 1vw * $height - $block-padding * (100 / $height) / ((100 / $height) - 1);
+//         .sblock-w#{$width}-h#{$height} {
+//             display: inline-block;
+
+//             width: calc(#{$block-width} * var(--mobile-scale));
+//             height: calc(#{$block-height} * var(--mobile-scale));
+
+//             box-sizing: content-box;
+//             //margin: $block-padding;
+//             float: left;
+//         }
+//     }
+// }
+
+
+
+// Sizes are n where n is the number of blocks across
+// 100vw = 2 * pw + n * bw + (n - 1) * mw
+// let pw = mw
+// 100vw = 2 * mw + (n - 1) * mw + n * bw
+// 100vw = (n + 1) * mw + n * bw
+// 100vw - (n + 1) * mw = n * bw
+// (100vw - (n + 1) * mw) / n = bw
 @for $width from 1 through $max-depth {
+    $block-width: ($full-width - ($width + 1) * $block-padding) / $width;
     @for $height from 1 through $max-depth {
+        $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
         .block-w#{$width}-h#{$height} {
             display: inline-block;
             width: $block-size * $width + ($width - 1) * $block-padding;
             height: $block-size * $height + ($height - 1) * $block-padding;
+
+            width: calc(#{$block-width} * var(--mobile-scale));
+            height: calc(#{$block-height} * var(--mobile-scale));
+
             box-sizing: border-box;
             //margin: $block-padding;
             float: left;

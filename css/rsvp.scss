@@ -2,8 +2,39 @@
 // Licensed under Apache License v2.0
 
 #rsvp-form {
+    textarea {
+        max-width: 100%;
+    }
+
     [type=submit] {
         float: right;
         font-weight: bold;
+        transition: all 100ms ease-in;
+
+        &:hover,
+        &:focus {
+            color: white;
+            background-color: #9cf;
+
+        }
+
+        &:active,
+        &.sent {
+            background-image: url(/media/images/paper-airplane-loop.gif);
+            background-size: 100%;
+            background-position: center;
+            color: transparent;
+        }
+
+        @each $selector in $INVALID-SELECTORS {
+            &#{$selector} {
+                opacity: 0.8;
+            }
+        }
+
+        &::-moz-focus-inner {
+            padding: 0;
+            border: 0;
+        }
     }
 }
