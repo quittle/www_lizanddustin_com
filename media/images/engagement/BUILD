@@ -4,18 +4,23 @@
 load("@rules_web//generate:generate.bzl",
     "generate_variables",
 )
+load("//media/images:internal.bzl",
+    "all_images_filegroup",
+)
 
 load(":internal.bzl",
     "resize_all_images"
 )
 
+all_images_filegroup(filegroup, glob)
+
 all_images = glob([ "*.jpg" ])
 
-filegroup(
-    name = "original_images",
-    srcs = all_images,
-    visibility = [ "//visibility:public" ],
-)
+# filegroup(
+#     name = "original_images",
+#     srcs = all_images,
+#     visibility = [ "//visibility:public" ],
+# )
 
 filegroup(
     name = "shrunk_images",

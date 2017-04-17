@@ -1,16 +1,20 @@
 Clean up code
-Validate cross-browser support
-Stub sections not complete
-Add real text
-Feedback on rsvp sent successfully
-make mobile friendly
+Improve RSVP sent messaging
+Make mobile friendly
+Desktop sometimes thinks it's half width with 1300+ px width
+Clean up text
 
-Fix padding
 Improve watercolor background
-Shrink scroll-down arrows
 Move fonts locally
-Clean up directions middle lines
 Make registries spaced evenly
+Validate cross-browser support
+Care about IE9
 
 Migrate box sizing to be in vms instead of 1/vms
 Add title-text parallax
+Clean up HTML/CSS warnings (contants import?)
+
+=== Features
+Add sections back
+Music backed by spotify or radiofm?
+a

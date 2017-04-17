@@ -10,6 +10,7 @@
         float: right;
         font-weight: bold;
         transition: all 100ms ease-in;
+        position: relative;
 
         &:hover,
         &:focus {
@@ -19,11 +20,28 @@
         }
 
         &:active,
-        &.sent {
+        &.sending, {
             background-image: url(/media/images/paper-airplane-loop.gif);
             background-size: 100%;
             background-position: center;
             color: transparent;
+        }
+
+        &.sent {
+            background: $BUTTON-BACKGROUND-COLOR;
+
+            &::after {
+                content: '';
+                border: 0 solid white;
+                border-width: 0 0 2px 2px;
+                display: inline-block;
+                width: 50%;
+                height: 30%;
+                position: absolute;
+                left: 23%;
+                transform: rotateZ(-46deg);
+                top: 23%;
+            }
         }
 
         @each $selector in $INVALID-SELECTORS {

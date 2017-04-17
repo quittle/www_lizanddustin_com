@@ -26,10 +26,12 @@
     &.left-text > h1 {
         padding-left: $text-near-padding;
         padding-right: $text-far-padding;
+        right: auto; // IE
         right: initial;
         left: 0;
 
         &::before {
+            left: auto; // IE
             left: initial;
             right: $ribbon-cutback;
             border-left-color: $ribbon-color;
@@ -37,6 +39,7 @@
         }
 
         &::after {
+            left: auto; // IE
             left: initial;
             right: 0;
             transform: skewY(-$ribbon-cutback-skew);

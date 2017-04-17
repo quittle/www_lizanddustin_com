@@ -11,17 +11,22 @@ $full-width: 100vw - 2 * $block-padding;
 $max-depth: 100;
 $max-depth: 12; // Only need up to 12 actually
 
-:root {
-    --mobile-scale: 1;
-
+@mixin mobile-support($property, $regular, $mobile) {
+    #{$property}: $regular;
     @media (max-width: 1000px) {
-        --mobile-scale: 2;
+        #{$property}: $mobile;
     }
 }
 
 .block-v > * {
     clear: both;
-    margin-bottom: calc(#{$block-padding} * var(--mobile-scale));
+
+    @include mobile-support(margin-bottom, $block-padding, $block-padding * 2);
+    // margin-bottom: $block-padding;
+
+    // @media (max-width: 1000px) {
+    //     margin-bottom: $block-padding * 2;
+    // }
 
     &:last-child {
         margin: 0;
@@ -29,7 +34,8 @@ $max-depth: 12; // Only need up to 12 actually
 }
 
 .block-h > * {
-    margin-right: calc(#{$block-padding} * var(--mobile-scale));
+    @include mobile-support(margin-right, $block-padding, $block-padding * 2);
+    //margin-right: calc(#{$block-padding} * var(--mobile-scale));
 
     &:last-child {
         margin: 0;
@@ -37,6 +43,8 @@ $max-depth: 12; // Only need up to 12 actually
 }
 
 .block-h, .block-v {
+    background: white;
+
     & > *::after {
         content: '';
         clear: both;
@@ -83,11 +91,13 @@ $max-depth: 12; // Only need up to 12 actually
         $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
         .block-w#{$width}-h#{$height} {
             display: inline-block;
-            width: $block-size * $width + ($width - 1) * $block-padding;
-            height: $block-size * $height + ($height - 1) * $block-padding;
+            // width: $block-size * $width + ($width - 1) * $block-padding;
+            // height: $block-size * $height + ($height - 1) * $block-padding;
 
-            width: calc(#{$block-width} * var(--mobile-scale));
-            height: calc(#{$block-height} * var(--mobile-scale));
+            @include mobile-support(width, $block-width, $block-width * 2);
+            @include mobile-support(height, $block-height, $block-height * 2);
+            // width: calc(#{$block-width} * var(--mobile-scale));
+            // height: calc(#{$block-height} * var(--mobile-scale));
 
             box-sizing: border-box;
             //margin: $block-padding;

@@ -16,10 +16,22 @@
             return
         }
 
+        let submit = form.querySelector('button[type=submit]');
+        if (!submit) {
+            console.error('Unable to find submit button');
+        }
+
         ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
-            console.log('Submitted: ' + response);
+            console.log(response);
+            if (submit) {
+                addClass(submit, 'sent');
+            }
         }).catch(response => {
-            console.error('Unable to submit request: ' + response);
+            if (submit) {
+                removeClass(submit, 'sending');
+                removeClass(submit, 'sent');
+                submit.blur();
+            }
         });
     }
 
@@ -51,7 +63,7 @@
                     }, false);
 
                     form.addEventListener('submit', e => {
-                        addClass(submitButton, 'sent');
+                        addClass(submitButton, 'sending');
                         onRSVPSubmit();
                         e.preventDefault();
                     });

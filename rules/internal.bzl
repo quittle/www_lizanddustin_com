@@ -1,6 +1,10 @@
 # Copyright (c) 2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
+load("@rules_web//:internal.bzl",
+    "transitive_resources_",
+)
+
 def file_list_impl(ctx):
     list_contents = "<ul>"
     for index, file in enumerate(ctx.files.files):
@@ -25,6 +29,14 @@ def _file_map_json_impl(ctx):
         output = ctx.outputs.output,
         content = str({ctx.attr.variable_name: mapping}),
     )
+
+    # ret = struct()
+    # for file in ctx.files.sources + ctx.files.destinations:
+    #     ret = transitive_resources_(ret, file)
+    # return transitive_resources_(ret, struct(
+    #     resources = set([ ctx.outputs.output ]),
+    #     source_map =
+    # ))
 
 file_map_json = rule(
     attrs = {

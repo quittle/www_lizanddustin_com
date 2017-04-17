@@ -133,11 +133,12 @@ function ajax(url, method = ajax.HTTP_METHOD.GET, data = '') {
 
     const ret = new Promise((resolve, reject) => {
         xhr.onreadystatechange = () => {
+            console.log(xhr.readyState + ' ' + xhr.status);
             if (xhr.readyState < 4) {
                 return;
             }
 
-            if (200 <= xhr.status || xhr.status < 300) {
+            if (200 <= xhr.status && xhr.status < 300) {
                 resolve(xhr.responseText);
             } else {
                 reject(xhr.responseText);

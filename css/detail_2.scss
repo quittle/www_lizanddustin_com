@@ -65,6 +65,10 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
     line-height: 1em;
     font-family: 'Cookie', 'miama', cursive, serif;
 
+    @media (max-width: 600px) {
+        font-size: 4em;
+    }
+
     h1 {
         color: #957458;
         color: #635f5a;

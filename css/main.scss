@@ -2,6 +2,7 @@
 // Licensed under Apache License v2.0
 
 @import 'blocks';
+@import 'browser-specific';
 @import 'constants';
 @import 'detail_2';
 @import 'directions';
@@ -12,8 +13,10 @@
 @import 'math';
 @import 'music';
 @import 'nav-block';
+@import 'our-story';
 @import 'registries';
 @import 'rsvp';
+@import 'the-big-day';
 
 @function floor-decimal($decimal) {
     @return floor($decimal * 100000) / 100000;
@@ -38,6 +41,7 @@ $PREFIXES: 'webkit', 'moz', 'o', 'ms';
 }
 
 $NUMBER_OF_PAGES: 4;
+$MAIN-BACKGROUND: white;
 
 $nav-font-size: 20px;
 
@@ -52,7 +56,7 @@ html, body {
 }
 
 body {
-    background: #ab945a;
+    background: $MAIN-BACKGROUND;
     color: $FOREGROUND-COLOR-DARK;
     font-family: sans-serif;
     line-height: 1.5;
@@ -69,6 +73,12 @@ a {
     cursor: pointer;
     transition: all 150ms ease-in-out;
     border-radius: .15em;
+
+    // Cannot use `all` because of Edge.
+    // See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4320439
+    @include browser-edge {
+        transition: box-shadow 150ms ease-in-out, opacity 150ms ease-in-out;
+    }
 }
 
 a.block-link,
@@ -124,22 +134,40 @@ select {
         //radial-gradient(red 70%, transparent 72%);
     background-position:
         calc(100% - #{$right-offset-em + $side-length-em}em) center,
-        calc(100% - #{$right-offset-em + $side-length-em / 2}em) center;//,
+        calc(100% - #{$right-offset-em + $side-length-em / 2 + 0.02}em) center; // + 0.02 for chrome
         //calc(100% - #{$right-offset-em + $side-length-em + $arrow-height-em / 2}em) center;
     background-size:
         #{$side-length-em / 2}em #{$arrow-height-em}em,
         #{$side-length-em / 2}em #{$arrow-height-em}em;//,
         //#{$arrow-height-em * 2 * $arrow-height-em}em #{$arrow-height-em * 2 * $arrow-height-em}em;
     background-repeat: no-repeat;
-    -moz-appearance: none;
+    @include prefix(appearance, none);
     padding-right: #{2 * $right-offset-em + $side-length-em}em;
+
+    &::-ms-expand {
+        display: none;
+    }
 }
 
 button, input[type=submit], input[type=button] {
-    background: #90d290;
+    background: $BUTTON-BACKGROUND-COLOR;
     border: #{$BUTTON-BORDER-WIDTH-EM}em solid white;
     border-radius: .2em;
     padding: #{$BUTTON-PADDING-EM}em;
+    line-height: 1em;
+}
+
+.divided-sections {
+    & > * {
+        border-right: 0.1em solid $FOREGROUND-COLOR-DARK;
+        box-sizing: border-box;
+        float: left;
+        padding: 1em;
+
+        &:last-child {
+            border: none;
+        }
+    }
 }
 
 main {
@@ -157,13 +185,19 @@ main {
     .bubbles & {
         $border-height: 192px;
 
-        background: white;
+        background: $MAIN-BACKGROUND;
         //border-image: url(/media/images/bubble-border-inverse.png) 100% 0 0 0 repeat;
         border-top: $border-height solid;
         background-clip: padding-box;
         margin-top: -$border-height;
         border-image: none !important; // Remove border stuff. not used anymore
         border-color: transparent;
+
+        // In IE 10/11 it won't show this element is set to the side for some reason and won't
+        // serve as a backdrop for the page
+        @include browser-ie10plus {
+            background: none;
+        }
     }
 
     .chevron & {
@@ -200,10 +234,6 @@ main {
             opacity: 0;
             //outline: 100vmax solid $background-color;
             transform-style: preserve-3d;
-
-            &:hover {
-                //opacity: 1;
-            }
 
             &:after {
                 content: '';
@@ -293,6 +323,12 @@ section {
     z-index: -4;
     //font-size: 10em;
 
+    // There's a rendering issue where scrolling back up results in the title rendering white and/or
+    // repeated sections
+    @include browser-edge {
+        transform: none;
+    }
+
     .bubbles & {
         background: #ab945a
                 url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
@@ -322,7 +358,14 @@ section {
 }
 
 #title-text-date {
-    font-size: 7vw;//$title-date-height;
+    font-size: 7vw;
+}
+
+#title-text-names,
+#title-text-date {
+    @include browser-ie11 {
+        width: 100%;
+    }
 }
 
 #title-scroll-tip {

@@ -24,10 +24,6 @@ load("@rules_web//js:js.bzl",
     "closure_compile",
 )
 
-load("@rules_web//images:images.bzl",
-    "minify_png",
-)
-
 load("@rules_web//site_zip:site_zip.bzl",
     "generate_zip_server_python_file",
     "minify_site_zip",
@@ -80,6 +76,7 @@ sass_library(
     srcs =
         glob([ "css/*.scss" ], exclude=[ "css/detail.scss" ]) +
         [
+            #"//media/images:optimized_pngs",
             "//media/images/engagement:engagement_map",
             "//media/images/engagement:large_images",
             "//media/images/luma:luma_logo_map",
@@ -113,6 +110,14 @@ closure_compile(
     ],
 )
 
+closure_compile(
+    name = "google_analytics_js",
+    srcs = [
+        "js/google-analytics.js",
+    ],
+    extra_args = ["--third_party", "--jscomp_off", "*"],
+)
+
 html_page(
     name = "index_without_gallery",
     config = "//:index.json",
@@ -124,17 +129,21 @@ html_page(
     js_files = [
         ":rsvp_js",
     ],
+    inline_js_files = [
+        ":google_analytics_js",
+    ],
     deferred_js_files = [
         ":main_js", # BUG: Should be async (but not supported yet)
     ],
     deps = [
         "cssPIE/PIE.htc",
-        "//media/images/engagement:original_images",
+        "//media/images:all_images",
+        "//media/images:optimized_pngs",
         "//media/images/engagement:shrunk_images",
         "//media/images/luma:luma_logo",
-        #"//media/images/engagement:shrunk_images",
-    ] + glob([ "media/images/*", "media/images/**/*" ]),#+ glob([ "media/images/engagement/*.jpg" ]),
+    ],
 )
+
 
 inject_html(
     name = "index",

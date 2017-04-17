@@ -8,15 +8,25 @@ ul#registries-list {
 
     li {
         $border-radius: 0.2em;
+        $width-pct: 30%;
 
         display: inline-block;
         list-style: none;
         background: #f9f9f94d;
-        margin: 1em;
         border-radius: $border-radius;
+        width: $width-pct;
+        margin-right: ((100% - $width-pct * 3) / 2);
+        vertical-align: top;
 
         &:last-child {
-            margin-bottom: 0;
+            margin-right: 0;
+        }
+
+        @media (max-width: 1010px) {
+            & {
+                margin: 0 0 2em 25%;
+                width: 50%;
+            }
         }
 
         a {
@@ -27,10 +37,11 @@ ul#registries-list {
             text-decoration: none;
             text-align: center;
             padding-bottom: $text-padding;
+            width: 100%;
 
             img {
                 display: block;
-                height: 8em;
+                width: 100%;
                 margin-bottom: $text-padding;
                 border-radius: $border-radius $border-radius 0 0;
             }
