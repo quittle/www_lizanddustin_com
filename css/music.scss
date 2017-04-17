@@ -4,13 +4,15 @@
 @import 'constants';
 @import 'math';
 
-#music-form {
-    font-size: 2em;
+#details-source-music {
+    #music-form {
+        font-size: 2em;
 
-    // Set up to match the input next to it
-    [type=submit] {
-        border-width: #{$INPUT-BORDER-WIDTH-EM}em;
-        padding: #{$INPUT-PADDING-EM}em 2em;
-        font-size: adjusted-font-size($INPUT-BORDER-WIDTH-EM, $INPUT-PADDING-EM);
+        // Set up to match the input height next to it
+        [type=submit] {
+            border-width: #{$INPUT-BORDER-WIDTH-EM}em;
+            padding: #{$INPUT-PADDING-EM}em 2em;
+            font-size: adjusted-font-size($INPUT-BORDER-WIDTH-EM, $INPUT-PADDING-EM);
+        }
     }
 }

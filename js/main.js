@@ -148,84 +148,34 @@
      * @param {!Element} link The link for the section to inflate
      */
     function showDetail(link) {
-        //addClass(link, 'opened');
         addClass(getBody(), 'disable-scrolling');
 
-        let flipSpin = false;
+        withAll(getRequiredElement('details-container'),
+                getRequiredElement('details-container-header'),
+                getRequiredElement('details-container-body'),
+                getDetailsSource(link.getAttribute('id')),
+                (detailsContainer, detailsContainerHeader, detailsContainerBody, copiedSource) => {
+                    clearDetailsContainer();
 
-        /** @type {?CSSStyleDeclaration} */ const linkStyle = getComputedStyle(link);
-        /** @type {string} */ const color = linkStyle.getPropertyValue('background-color');
-        /** @type {!ClientRect} */ const boundingRect = link.getBoundingClientRect();
-        setTimeout(() => {
-            /** @type {?Element} */ const detailsContainer =
-                    getRequiredElement('details-container');
-            /** @type {?Element} */ const detailsContainerHeader =
-                    getRequiredElement('details-container-header');
-            /** @type {?Element} */ const detailsContainerBody =
-                    getRequiredElement('details-container-body');
-            /** @type {?Element} */ const copiedSource = getDetailsSource(link.getAttribute('id'));
-            if (!(detailsContainer && detailsContainerHeader && detailsContainerBody && copiedSource)) {
-                return;
-            }
+                    detailsContainerHeader.innerHTML = link.innerHTML;
 
-            clearDetailsContainer();
+                    detailsContainerBody.appendChild(copiedSource);
 
-            detailsContainerHeader.innerHTML = link.innerHTML;
-            //detailsContainerHeader.removeChild(detailsContainer.querySelector('section'));
+                    onDetailShown();
 
-            if (flipSpin) {
-                detailsContainerBody.style.backgroundColor = color;
-            }
-            detailsContainerBody.appendChild(copiedSource);
-
-            onDetailShown();
-            // Temp
-            //detailsContainerBody.style.display = 'none';
-
-            if (flipSpin) {
-                detailsContainer.style.position = 'fixed';
-                detailsContainer.style.top = boundingRect.top + 'px';
-                detailsContainer.style.left = boundingRect.left + 'px';
-                detailsContainer.style.width = boundingRect.width + 'px';
-                detailsContainer.style.height = boundingRect.height + 'px';
-            }
-
-            //detailsContainerHeader.style.backgroundImage =
-            //        linkStyle.getPropertyValue('background-image');
-
-            if (flipSpin) {
-                let scaleX = boundingRect.width / (window.innerWidth * .8);
-                let scaleY = boundingRect.height / (window.innerHeight * .8);
-                let translateX = -window.innerWidth * .1 + boundingRect.left;
-                translateX = boundingRect.left;
-                let translateY = -window.innerHeight * .1 + boundingRect.top;
-
-                detailsContainer.style.transform =
-                        `translateX(${translateX}px)
-                         translateY(${translateY}px)
-                         scaleX(${scaleX})
-                         scaleY(${scaleY})`;
-            }
-
-            setTimeout(addClass.bind(null, getBody(), 'details-visible'), flipSpin ? 1500 : 0);
-        }, 1);
+                    addClass(getBody(), 'details-visible');
+                }
+        );
     }
 
     /**
      * Hides the detail section.
      */
     function hideDetail() {
-        let openedLinks = document.querySelectorAll('.opened');
-        for (let i = 0; i < openedLinks.length; i++) {
-            removeClass(openedLinks[i], 'opened');
-        }
-
         clearDetailsContainer();
 
         removeClass(getBody(), 'details-visible');
         removeClass(getBody(), 'disable-scrolling');
-
-        // setTimeout(clearDetailsContainer, 1500);
     }
 
     /**
@@ -295,11 +245,8 @@
                 }
 
                 showDetail(target);
-                //e.preventDefault();
             });
         }
-
-        //new FlexGrid(document.body, 100, 12);
 
         onHashChange();
     }

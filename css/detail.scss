@@ -1,97 +1,108 @@
-// Copyright (c) 2016-2017 Dustin Doloff
+// Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-@import 'constants';
-@import 'nav-block';
-
-$container-height-pct: 80%;
-$container-width-pct: 80%;
-
-$transition-all: all 3000ms linear;
+$DETAIL_BACKGROUND_COLOR: aliceblue;
 
 .bubbles {
+    .parallax {
+        transition: filter ease-in 150ms;
+    }
+
     &.details-visible {
-        //overflow: hidden;
+        overflow: hidden;
+
+        .parallax {
+            filter: blur(16px);
+        }
     }
 
     #details-container {
-        //position: fixed;
-    }
-
-    .details-visible {
-
+        position: fixed;
     }
 }
 
 #details-container {
-    // height: $container-height-pct;
-    // left: (100 - $container-width-pct) / 2;
-    // opacity: 0.6;
-    // overflow: auto;
-    // position: absolute;
-    // top: (100 - $container-height-pct) / 2;
-    // transform-origin: left top;
-    // transform-style: preserve-3d;
-    // transition: all linear 1500ms;
-    // width: $container-width-pct;
-    background: $BACKGROUND-COLOR;
-    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 3em;
+    display: none;
+}
 
-    & > *:empty {
-        display: none;
+#details-container-content {
+    display: inline-block;
+    width: 50%;
+    transform: translateX(-50%);
+    margin-left: 50%;
+    overflow: auto;
+    max-height: 100%;
+    border-radius: 0.15em;
+
+    @media (max-width: 1600px) {
+        width: 75%;
     }
 
-    &::before {
-        //content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
+    @media (max-width: 900px) {
         width: 100%;
-        background: black;
-        opacity: .6;
+    }
+}
+
+#details-container-header {
+    font-size: 6em;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.3);
+    background-position: center 100%;
+    background-color: $DETAIL_BACKGROUND_COLOR;
+    text-align: center;
+    padding: 1em 0.5em 0;
+    line-height: 1em;
+    font-family: 'Cookie', 'miama', cursive, serif;
+
+    @media (max-width: 600px) {
+        font-size: 4em;
     }
 
-    #details-container-header {
-        @include nav-block;
+    h1 {
+        color: #777998;
+        font-weight: normal;
+    }
 
-        box-sizing: border-box;
+    &:after {
+        content: '';
+        display: inline-block;
         width: 100%;
-        height: 100%;
+        height: 0;
+        background-image: url(/media/images/water-color/laurel.png);
+        padding-bottom: 28.125%; // This must match aspect ratio of laurel.png
+        background-size: 100%;
+        background-repeat: no-repeat;
     }
+}
+
+#details-container-body {
+    background-image: url(/media/images/water-color/blue-clouds.png),
+                      url(/media/images/water-color/pink-splashes.png),
+                      url(/media/images/water-color/grey-cloud.png),
+                      url(/media/images/water-color/color-splashes.png),
+                      url(/media/images/water-color/grey-splash.png);
+    background-position: 0 0,
+                         100% 210px,
+                         13% 452px,
+                         30% 787px,
+                         0% 900px;
+    background-color: $DETAIL_BACKGROUND_COLOR;
+    background-repeat: no-repeat;
+    color: #0c0c0c;
+    font-size: 1.5em;
 }
 
 .details-visible {
     #details-container {
-        transform: translate(0) scale(1) !important;
-        transition: $transition-all;
-        opacity: 1;
-        //display: none;
-        //animation: flip 3000ms linear;
-        width: 80% !important;
-        height: 80% !important;
-        top: 10% !important;
-        left: 10% !important;
-        box-shadow: 0 0 64px black;
-
-        #details-container-header {
-            height: 3em;
-            transition: $transition-all;
-            float: initial;
-
-            & > h1 {
-                position: initial;
-                //text-align: left;
-            }
-        }
-    }
-}
-
-@keyframes flip {
-    from {
-        transform: rotateY(180deg);
-    }
-    to {
-        transform: rotateY(0);
+        display: inline-block;
     }
 }

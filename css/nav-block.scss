@@ -3,7 +3,8 @@
 
 @import 'constants';
 
-@mixin nav-block {
+// Anchor elements may not be nested so no worry about nested anchors
+main a {
     $text-near-padding: 1em;
     $text-far-padding: 0.5em;
     $ribbon-cutback: -1.1em;
@@ -16,11 +17,9 @@
     background-size: cover;
     background-position: center;
     display: inline-block;
-    /*margin: 1em;*/
-    //max-width: 350px; // convert to ems
     padding: 3em;
     position: relative;
-    float: left;
+    float: left; // TODO: Investigate if this makes the layout worse
     line-height: normal;
 
     &.left-text > h1 {
@@ -99,4 +98,11 @@
             transform: skewY(-25.2deg);
         }
     }
+}
+
+#luma-card {
+    $image: map-get($luma-logo, 'media/images/luma/wide.png');
+
+    background: white url(#{$image}) no-repeat center/85%;
+    border: 2px solid black;
 }

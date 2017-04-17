@@ -1,58 +1,60 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-#rsvp-form {
-    textarea {
-        max-width: 100%;
-    }
-
-    [type=submit] {
-        float: right;
-        font-weight: bold;
-        transition: all 100ms ease-in;
-        position: relative;
-
-        &:hover,
-        &:focus {
-            color: white;
-            background-color: #9cf;
-
+#details-source-rsvp {
+    #rsvp-form {
+        textarea {
+            max-width: 100%;
         }
 
-        &:active,
-        &.sending, {
-            background-image: url(/media/images/paper-airplane-loop.gif);
-            background-size: 100%;
-            background-position: center;
-            color: transparent;
-        }
+        [type=submit] {
+            float: right;
+            font-weight: bold;
+            transition: all 100ms ease-in;
+            position: relative;
 
-        &.sent {
-            background: $BUTTON-BACKGROUND-COLOR;
+            &:hover,
+            &:focus {
+                color: white;
+                background-color: #9cf;
 
-            &::after {
-                content: '';
-                border: 0 solid white;
-                border-width: 0 0 2px 2px;
-                display: inline-block;
-                width: 50%;
-                height: 30%;
-                position: absolute;
-                left: 23%;
-                transform: rotateZ(-46deg);
-                top: 23%;
             }
-        }
 
-        @each $selector in $INVALID-SELECTORS {
-            &#{$selector} {
-                opacity: 0.8;
+            &:active,
+            &.sending, {
+                background-image: url(/media/images/paper-airplane-loop.gif);
+                background-size: 100%;
+                background-position: center;
+                color: transparent;
             }
-        }
 
-        &::-moz-focus-inner {
-            padding: 0;
-            border: 0;
+            &.sent {
+                background: $BUTTON-BACKGROUND-COLOR;
+
+                &::after {
+                    content: '';
+                    border: 0 solid white;
+                    border-width: 0 0 2px 2px;
+                    display: inline-block;
+                    width: 50%;
+                    height: 30%;
+                    position: absolute;
+                    left: 23%;
+                    transform: rotateZ(-46deg);
+                    top: 23%;
+                }
+            }
+
+            @each $selector in $INVALID-SELECTORS {
+                &#{$selector} {
+                    opacity: 0.8;
+                }
+            }
+
+            &::-moz-focus-inner {
+                padding: 0;
+                border: 0;
+            }
         }
     }
 }

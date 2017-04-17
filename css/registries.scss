@@ -1,49 +1,51 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-@import 'constants'
+@import 'constants';
 
-ul#registries-list {
-    padding: 0;
+#details-source-registries {
+    ul#registries-list {
+        padding: 0;
 
-    li {
-        $border-radius: 0.2em;
-        $width-pct: 30%;
-
-        display: inline-block;
-        list-style: none;
-        background: #f9f9f94d;
-        border-radius: $border-radius;
-        width: $width-pct;
-        margin-right: ((100% - $width-pct * 3) / 2);
-        vertical-align: top;
-
-        &:last-child {
-            margin-right: 0;
-        }
-
-        @media (max-width: 1010px) {
-            & {
-                margin: 0 0 2em 25%;
-                width: 50%;
-            }
-        }
-
-        a {
-            $text-padding: 0.5em;
+        li {
+            $border-radius: 0.2em;
+            $width-pct: 30%;
 
             display: inline-block;
-            color: $FOREGROUND-COLOR-DARK;
-            text-decoration: none;
-            text-align: center;
-            padding-bottom: $text-padding;
-            width: 100%;
+            list-style: none;
+            background: #f9f9f94d;
+            border-radius: $border-radius;
+            width: $width-pct;
+            margin-right: ((100% - $width-pct * 3) / 2);
+            vertical-align: top;
 
-            img {
-                display: block;
+            &:last-child {
+                margin-right: 0;
+            }
+
+            @media (max-width: 1010px) {
+                & {
+                    margin: 0 0 2em 25%;
+                    width: 50%;
+                }
+            }
+
+            a {
+                $text-padding: 0.5em;
+
+                display: inline-block;
+                color: $FOREGROUND-COLOR-DARK;
+                text-decoration: none;
+                text-align: center;
+                padding-bottom: $text-padding;
                 width: 100%;
-                margin-bottom: $text-padding;
-                border-radius: $border-radius $border-radius 0 0;
+
+                img {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: $text-padding;
+                    border-radius: $border-radius $border-radius 0 0;
+                }
             }
         }
     }

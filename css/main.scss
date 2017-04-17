@@ -4,7 +4,7 @@
 @import 'blocks';
 @import 'browser-specific';
 @import 'constants';
-@import 'detail_2';
+@import 'detail';
 @import 'directions';
 @import 'engagement-photos';
 @import 'gallery';
@@ -56,16 +56,9 @@ html, body {
 }
 
 body {
-    background: $MAIN-BACKGROUND;
     color: $FOREGROUND-COLOR-DARK;
     font-family: sans-serif;
     line-height: 1.5;
-    //perspective: 1px;
-
-    &.bubbles {
-        background: initial;
-        //perspective: initial;
-    }
 }
 
 a {
@@ -105,8 +98,6 @@ h1 {
 }
 
 input, textarea, select {
-    background: #d0e0d0;
-    background: #dbdbdb;
     background: #fafafa;
     border: 0;
     border-bottom: #{$INPUT-BORDER-WIDTH-EM}em dashed transparent;
@@ -130,20 +121,17 @@ select {
     $side-length-em: $arrow-height-em * 1.1547;
     background-image:
         linear-gradient(60deg, transparent 50%, gray 50%),
-        linear-gradient(120deg, gray 50%, transparent 50%);//,
-        //radial-gradient(red 70%, transparent 72%);
+        linear-gradient(120deg, gray 50%, transparent 50%);
     background-position:
         calc(100% - #{$right-offset-em + $side-length-em}em) center,
         calc(100% - #{$right-offset-em + $side-length-em / 2 + 0.02}em) center; // + 0.02 for chrome
-        //calc(100% - #{$right-offset-em + $side-length-em + $arrow-height-em / 2}em) center;
     background-size:
         #{$side-length-em / 2}em #{$arrow-height-em}em,
-        #{$side-length-em / 2}em #{$arrow-height-em}em;//,
-        //#{$arrow-height-em * 2 * $arrow-height-em}em #{$arrow-height-em * 2 * $arrow-height-em}em;
+        #{$side-length-em / 2}em #{$arrow-height-em}em;
     background-repeat: no-repeat;
-    @include prefix(appearance, none);
     padding-right: #{2 * $right-offset-em + $side-length-em}em;
 
+    @include prefix(appearance, none);
     &::-ms-expand {
         display: none;
     }
@@ -157,96 +145,45 @@ button, input[type=submit], input[type=button] {
     line-height: 1em;
 }
 
-.divided-sections {
-    & > * {
-        border-right: 0.1em solid $FOREGROUND-COLOR-DARK;
-        box-sizing: border-box;
-        float: left;
-        padding: 1em;
+.divided-sections > * {
+    border-right: 0.1em solid $FOREGROUND-COLOR-DARK;
+    box-sizing: border-box;
+    float: left;
+    padding: 1em;
 
-        &:last-child {
-            border: none;
-        }
+    &:last-child {
+        border: none;
     }
 }
 
 main {
-    background: $BACKGROUND-COLOR;
+    $border-height: 192px;
+
     min-height: 100vh;
     @include prefix(perspective, 1000);
     text-align: center;
     line-height: 0;
-    // padding-left: 50%;
-    // transform: translateX(-25%);
     width: 100%;
     box-sizing: border-box;
     padding: 1vw;
 
-    .bubbles & {
-        $border-height: 192px;
 
-        background: $MAIN-BACKGROUND;
-        //border-image: url(/media/images/bubble-border-inverse.png) 100% 0 0 0 repeat;
-        border-top: $border-height solid;
-        background-clip: padding-box;
-        margin-top: -$border-height;
-        border-image: none !important; // Remove border stuff. not used anymore
-        border-color: transparent;
+    background: $MAIN-BACKGROUND;
+    border-top: $border-height solid;
+    background-clip: padding-box;
+    margin-top: -$border-height;
+    border-image: none !important; // Remove border stuff. not used anymore
+    border-color: transparent;
 
-        // In IE 10/11 it won't show this element is set to the side for some reason and won't
-        // serve as a backdrop for the page
-        @include browser-ie10plus {
-            background: none;
-        }
+    // In IE 10/11 it won't show this element is set to the side for some reason and won't
+    // serve as a backdrop for the page
+    @include browser-ie10plus {
+        background: none;
     }
 
-    .chevron & {
-        border-image: url(/media/images/chevron-border.png) 100% 0 0 0 repeat;
-    }
-
-    .leaves-1 & {
-        border-image: url(/media/images/leaves-1-border.png) 100% 0 0 0 repeat;
-    }
-
-    .leaves-2 & {
-        border-image: url(/media/images/leaves-2-border.png) 100% 0 0 0 repeat;
-    }
-
-    // Float the container divs
+    // Add margins to the outer-most entries
     & > div {
-        float: left;
         margin: $block-padding / 2;
-    }
-
-    & > a,
-    & > div > a,
-    & > div > div > a {
-        @include nav-block;
-
-        & > section {
-            display: none;
-        }
-
-        &.opened {
-            position: initial;
-            transition: transform 1500ms linear, outline 1500ms linear 1500ms, opacity 1500ms linear 0ms;
-            transform: rotateY(180deg);
-            opacity: 0;
-            //outline: 100vmax solid $background-color;
-            transform-style: preserve-3d;
-
-            &:after {
-                content: '';
-                right: 0;
-                bottom: 0;
-                position: absolute;
-                top: 0;
-                left: 0;
-                //background: $background-color;
-                transform: rotateY(180deg);
-                backface-visibility: hidden;
-            }
-        }
     }
 }
 
@@ -279,13 +216,6 @@ section {
     }
 }
 
-#background-video {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: -99;
-}
-
 #wrapper::before {
     @include prefix-value(background, linear-gradient, transparent, black);
     bottom: -32vh;
@@ -300,8 +230,6 @@ section {
 }
 
 #wrapper {
-    //background: transparent;
-    //@include prefix-value(background, linear-gradient, transparent, black);
     color: black;
     height: 100%;
     margin: 0 auto;
@@ -321,7 +249,6 @@ section {
     transform: translateZ(-3px) scale(2.6);
     @include prefix(user-select, none);
     z-index: -4;
-    //font-size: 10em;
 
     // There's a rendering issue where scrolling back up results in the title rendering white and/or
     // repeated sections
@@ -329,13 +256,11 @@ section {
         transform: none;
     }
 
-    .bubbles & {
-        background: #ab945a
-                url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
-                center/cover
-                no-repeat
-                fixed;
-    }
+    background: #ab945a
+            url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
+            center/cover
+            no-repeat
+            fixed;
 }
 
 #title-text {
@@ -345,7 +270,6 @@ section {
     text-align: center;
     top: 50%;
     width: 100%;
-   // font-size: $title-names-height;
 }
 
 #title-text * {
@@ -376,8 +300,6 @@ section {
     bottom: 0;
     display: inline-block;
     left: 50%;
-    //letter-spacing: -0.25em;
-    //margin-left: -($font-size / 2);
     position: absolute;
     text-align: center;
     text-decoration: none;
@@ -410,32 +332,6 @@ section {
     }
 }
 
-nav {
-    background: $BACKGROUND-SECONDARY-COLOR;
-    border-radius: 35px;
-    box-shadow: 0 0 20px #333;
-    box-sizing: border-box;
-    display: block;
-    font-size: $nav-font-size;
-    line-height: 2em;
-    max-width: $PAGE-MAX-WIDTH;
-    padding-left: 150px;
-    padding-top: $nav-font-size;
-    position: fixed;
-    top: -3 * $nav-font-size;
-    transition: all 200ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    width: 100%;
-
-    a {
-        display: inline-block;
-        float: left;
-        text-align: center;
-        text-decoration: none;
-        text-transform: uppercase;
-        width: floor-decimal(1/$NUMBER_OF_PAGES) * 100%;
-    }
-}
-
 .scrolled nav {
     top: -$nav-font-size;
 }
@@ -449,11 +345,6 @@ nav {
     overflow-x: hidden;
     overflow-y: auto;
     height: 100vh;
-
-    .bubbles & {
-        // overflow: initial;
-        // perspective: initial;
-    }
 }
 
 .parallax-layer {
@@ -462,11 +353,4 @@ nav {
     right: 0;
     bottom: 0;
     left: 0;
-}
-
-#luma-card {
-    $image: map-get($luma-logo, 'media/images/luma/wide.png');
-
-    background: white url(#{$image}) no-repeat center/85%;
-    border: 2px solid black;
 }

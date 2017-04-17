@@ -2,7 +2,6 @@
 // Licensed under Apache License v2.0
 
 #details-source-gallery {
-    display: none;
     ul {
         padding: 0;
     }
@@ -11,7 +10,7 @@
         display: inline;
         margin: 5%;
 
-        & > a {
+        a {
             display: inline-block;
             width: 40%;
             height: 10em;

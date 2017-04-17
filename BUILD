@@ -74,7 +74,7 @@ font_generator(
 sass_library(
     name = "sass_libs",
     srcs =
-        glob([ "css/*.scss" ], exclude=[ "css/detail.scss" ]) +
+        glob([ "css/*.scss" ]) +
         [
             #"//media/images:optimized_pngs",
             "//media/images/engagement:engagement_map",
@@ -95,17 +95,7 @@ sass_binary(
 closure_compile(
     name = "main_js",
     srcs = [
-        "js/detail.js",
-        "js/flex_grid.js",
         "js/main.js",
-        "js/utils.js",
-    ],
-)
-
-closure_compile(
-    name = "rsvp_js",
-    srcs = [
-        "js/rsvp.js",
         "js/utils.js",
     ],
 )
@@ -125,9 +115,6 @@ html_page(
     css_files = [
         ":main_css",
         ":miama_css",
-    ],
-    js_files = [
-        ":rsvp_js",
     ],
     inline_js_files = [
         ":google_analytics_js",
