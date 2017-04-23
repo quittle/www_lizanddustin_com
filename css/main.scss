@@ -8,8 +8,8 @@
 @import 'directions';
 @import 'engagement-photos';
 @import 'gallery';
-@import 'luma_logo_map';
 @import 'large_map';
+@import 'luma_logo_map';
 @import 'math';
 @import 'music';
 @import 'nav-block';
@@ -17,36 +17,9 @@
 @import 'registries';
 @import 'rsvp';
 @import 'the-big-day';
+@import 'utils';
 
-@function floor-decimal($decimal) {
-    @return floor($decimal * 100000) / 100000;
-}
-
-$PREFIXES: 'webkit', 'moz', 'o', 'ms';
-
-@mixin prefix($property, $value) {
-    @each $prefix in $PREFIXES {
-        #{'-' + $prefix + '-' + $property}: $value;
-    }
-
-    #{$property}: $value;
-}
-
-@mixin prefix-value($property, $value-type, $values...) {
-    @each $prefix in $PREFIXES {
-        #{$property}: #{'-' + $prefix + '-' + $value-type + '(' + $values + ')'};
-    }
-
-    #{$property}: #{$value-type + '(' + $values + ')'};
-}
-
-$NUMBER_OF_PAGES: 4;
 $MAIN-BACKGROUND: white;
-
-$nav-font-size: 20px;
-
-$title-names-height: 10em;
-$title-date-height: 120px;
 
 html, body {
     height: 100%;
@@ -57,15 +30,15 @@ html, body {
 
 body {
     color: $FOREGROUND-COLOR-DARK;
-    font-family: sans-serif;
+    @include font-body;
     line-height: 1.5;
 }
 
 a {
+    border-radius: .15em;
     color: $FOREGROUND-COLOR-DARK;
     cursor: pointer;
     transition: all 150ms ease-in-out;
-    border-radius: .15em;
 
     // Cannot use `all` because of Edge.
     // See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4320439
@@ -78,8 +51,8 @@ a.block-link,
 .block-links a {
     &:focus,
     &:hover {
-        opacity: .9;
         box-shadow: 0 0 .5em #111;
+        opacity: .9;
     }
 }
 
@@ -88,8 +61,8 @@ a:active {
 }
 
 .clearfix::after {
-    content: '';
     clear: both;
+    content: '';
     display: block;
 }
 
@@ -101,16 +74,15 @@ input, textarea, select {
     background: #fafafa;
     border: 0;
     border-bottom: #{$INPUT-BORDER-WIDTH-EM}em dashed transparent;
-    padding: #{$INPUT-PADDING-EM}em;
-
     // Cut border width in half because there is only a bottom border
     font-size: adjusted-font-size($INPUT-BORDER-WIDTH-EM / 2, $INPUT-PADDING-EM);
+    padding: #{$INPUT-PADDING-EM}em;
     vertical-align: middle;
 
     @each $selector in $INVALID-SELECTORS {
         &#{$selector} {
-            box-shadow: none;
             border-color: #f06537;
+            box-shadow: none;
         }
     }
 }
@@ -119,19 +91,20 @@ select {
     $right-offset-em: .25;
     $arrow-height-em: .5;
     $side-length-em: $arrow-height-em * 1.1547;
+
+    @include prefix(appearance, none);
     background-image:
         linear-gradient(60deg, transparent 50%, gray 50%),
         linear-gradient(120deg, gray 50%, transparent 50%);
     background-position:
         calc(100% - #{$right-offset-em + $side-length-em}em) center,
-        calc(100% - #{$right-offset-em + $side-length-em / 2 + 0.02}em) center; // + 0.02 for chrome
+        calc(100% - #{$right-offset-em + $side-length-em / 2 + 0.02}em) center; // + 0.02 for Chrome
+    background-repeat: no-repeat;
     background-size:
         #{$side-length-em / 2}em #{$arrow-height-em}em,
         #{$side-length-em / 2}em #{$arrow-height-em}em;
-    background-repeat: no-repeat;
     padding-right: #{2 * $right-offset-em + $side-length-em}em;
 
-    @include prefix(appearance, none);
     &::-ms-expand {
         display: none;
     }
@@ -141,8 +114,8 @@ button, input[type=submit], input[type=button] {
     background: $BUTTON-BACKGROUND-COLOR;
     border: #{$BUTTON-BORDER-WIDTH-EM}em solid white;
     border-radius: .2em;
-    padding: #{$BUTTON-PADDING-EM}em;
     line-height: 1em;
+    padding: #{$BUTTON-PADDING-EM}em;
 }
 
 .divided-sections > * {
@@ -157,23 +130,16 @@ button, input[type=submit], input[type=button] {
 }
 
 main {
-    $border-height: 192px;
-
-    min-height: 100vh;
-    @include prefix(perspective, 1000);
-    text-align: center;
-    line-height: 0;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 1vw;
-
-
     background: $MAIN-BACKGROUND;
-    border-top: $border-height solid;
     background-clip: padding-box;
-    margin-top: -$border-height;
-    border-image: none !important; // Remove border stuff. not used anymore
-    border-color: transparent;
+    box-sizing: border-box;
+    line-height: 0;
+    min-height: 100vh;
+    padding: 1vw;
+    @include prefix(perspective, 1000);
+    position: relative; // For Safari and the title backround gradient
+    text-align: center;
+    width: 100%;
 
     // In IE 10/11 it won't show this element is set to the side for some reason and won't
     // serve as a backdrop for the page
@@ -188,45 +154,7 @@ main {
 }
 
 section {
-    $background-size-default: 2000px;
-    $hover-transition: 200ms ease-in-out;
-
     padding: 2em;
-
-    &.focused {
-         transform: rotateY(0);
-    }
-
-    &::before {
-        bottom: 0;
-        background-position-y: 1000px;
-        background-size: $background-size-default;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transform: rotateY(180deg);
-        transition: background-size 1s ease-in-out, box-shadow $hover-transition;
-    }
-
-    @for $i from 0 through 10 {
-        &:nth-child(#{$i})::before {
-            background-position-x: $i * 300px;
-        }
-    }
-}
-
-#wrapper::before {
-    @include prefix-value(background, linear-gradient, transparent, black);
-    bottom: -32vh;
-    content: '';
-    display: inline-block;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 81vh;
-    transform: translateZ(1px);
-    z-index: -1;
 }
 
 #wrapper {
@@ -234,20 +162,47 @@ section {
     height: 100%;
     margin: 0 auto;
     padding-top: 100vh;
+
+    &::before {
+        @include prefix-value(background, linear-gradient, transparent, black);
+        @include prefix(transform, translateZ(1px));
+
+        bottom: -32vh;
+        content: '';
+        display: inline-block;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 81vh;
+
+        // Appears on top of main
+        @include browser-safari71plus {
+            display: none;
+        }
+
+        // Hidden with parallax being disabled
+        @include browser-ie8plus {
+            display: none;
+        }
+    }
 }
 
 #title {
-    color: $FOREGROUND-COLOR-LIGHT;
-    background: rgba(0, 0, 0, 0.2);
+    @include prefix(transform, translateZ(-3px) scale(2.6));
+    @include prefix(user-select, none);
+
+    background: #ab945a
+            url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
+            center/cover
+            no-repeat;
     bottom: 0;
+    color: $FOREGROUND-COLOR-LIGHT;
     cursor: default;
-    font-family: 'Great Vibes', 'miama', sans-serif;
+    @include font-great-vibes;
     left: 0;
     right: 0;
     text-shadow: 0 0 20px black, 0 0 20px black;
     top: 0;
-    transform: translateZ(-3px) scale(2.6);
-    @include prefix(user-select, none);
     z-index: -4;
 
     // There's a rendering issue where scrolling back up results in the title rendering white and/or
@@ -256,24 +211,23 @@ section {
         transform: none;
     }
 
-    background: #ab945a
-            url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
-            center/cover
-            no-repeat
-            fixed;
+    // Disabled as main's background would not appear above title
+    @include browser-ie8plus {
+        @include prefix(transform, none);
+    }
 }
 
 #title-text {
     left: 0;
-    transform: translateY(-50%);
     position: absolute;
     text-align: center;
     top: 50%;
+    @include prefix(transform, translateY(-50%));
     width: 100%;
-}
 
-#title-text * {
-    transition: all linear 100ms;
+    * {
+        transition: all linear 100ms;
+    }
 }
 
 #title-text-names {
@@ -295,32 +249,19 @@ section {
 #title-scroll-tip {
     $font-size: 10vw;
 
-    font-size: $font-size;
     animation: title-scroll-tip-animation ease-in 1s infinite alternate;
     bottom: 0;
     display: inline-block;
+    font-size: $font-size;
     left: 50%;
     position: absolute;
     text-align: center;
     text-decoration: none;
-    transform: translateX(-50%) rotate(90deg);
+    @include prefix(transform, translateX(-50%) rotate(90deg));
 
     @media (max-height: 700px) {
         display: none;
     }
-}
-
-.scrolled #title-scroll-tip {
-    display: none;
-}
-
-#title-scroll-tip:hover {
-    animation: none;
-    color: $FOREGROUND-HOVER-COLOR-LIGHT;
-}
-
-#title-scroll-tip:active {
-    color: $FOREGROUND-SELECTED-COLOR-LIGHT;
 }
 
 @keyframes title-scroll-tip-animation {
@@ -332,25 +273,22 @@ section {
     }
 }
 
-.scrolled nav {
-    top: -$nav-font-size;
-}
-
 .disable-scrolling .parallax {
     overflow: hidden;
 }
 
 .parallax {
-    perspective: 2px;
+    height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
-    height: 100vh;
+    @include prefix(perspective, 2px);
+    transition: filter ease-in 150ms;
 }
 
 .parallax-layer {
-    position: absolute;
-    top: 0;
-    right: 0;
     bottom: 0;
     left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }

@@ -55,12 +55,13 @@ $engagement-photos: (
     "3143",
 );
 
+[data-eng-img] {
+    background: no-repeat center/cover;
+}
+
 @each $id in $engagement-photos {
     $path: map-get($engagement-photos-map, "media/images/engagement/#{$id}.jpg");
     [data-eng-img="#{$id}"] {
         background-image: url(/#{$path});
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
     }
 }

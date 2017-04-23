@@ -1,15 +1,10 @@
 // Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-$block-size: 100px;
-$block-padding: 16px;
-
-$block-size: 5vw;
 $block-padding: 1vw;
 $full-width: 100vw - 2 * $block-padding;
 
-$max-depth: 100;
-$max-depth: 12; // Only need up to 12 actually
+$max-depth: 12;
 
 @mixin mobile-support($property, $regular, $mobile) {
     #{$property}: $regular;
@@ -19,14 +14,9 @@ $max-depth: 12; // Only need up to 12 actually
 }
 
 .block-v > * {
-    clear: both;
-
     @include mobile-support(margin-bottom, $block-padding, $block-padding * 2);
-    // margin-bottom: $block-padding;
 
-    // @media (max-width: 1000px) {
-    //     margin-bottom: $block-padding * 2;
-    // }
+    clear: both;
 
     &:last-child {
         margin: 0;
@@ -35,7 +25,6 @@ $max-depth: 12; // Only need up to 12 actually
 
 .block-h > * {
     @include mobile-support(margin-right, $block-padding, $block-padding * 2);
-    //margin-right: calc(#{$block-padding} * var(--mobile-scale));
 
     &:last-child {
         margin: 0;
@@ -46,37 +35,11 @@ $max-depth: 12; // Only need up to 12 actually
     background: white;
 
     & > *::after {
-        content: '';
         clear: both;
+        content: '';
         display: block;
     }
 }
-
-
-// Disabled to save space
-
-// // Sizes
-// // let size = .5
-// // actual width = 100vw * size - mw / 2
-
-// @for $width from 1 through $max-depth {
-//     $block-width: 1vw * $width - $block-padding * (100 / $width) / ((100 / $width) - 1);
-//     @for $height from 1 through $max-depth {
-//         $block-height: 1vw * $height - $block-padding * (100 / $height) / ((100 / $height) - 1);
-//         .sblock-w#{$width}-h#{$height} {
-//             display: inline-block;
-
-//             width: calc(#{$block-width} * var(--mobile-scale));
-//             height: calc(#{$block-height} * var(--mobile-scale));
-
-//             box-sizing: content-box;
-//             //margin: $block-padding;
-//             float: left;
-//         }
-//     }
-// }
-
-
 
 // Sizes are n where n is the number of blocks across
 // 100vw = 2 * pw + n * bw + (n - 1) * mw
@@ -87,20 +50,15 @@ $max-depth: 12; // Only need up to 12 actually
 // (100vw - (n + 1) * mw) / n = bw
 @for $width from 1 through $max-depth {
     $block-width: ($full-width - ($width + 1) * $block-padding) / $width;
+
     @for $height from 1 through $max-depth {
         $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
-        .block-w#{$width}-h#{$height} {
-            display: inline-block;
-            // width: $block-size * $width + ($width - 1) * $block-padding;
-            // height: $block-size * $height + ($height - 1) * $block-padding;
 
-            @include mobile-support(width, $block-width, $block-width * 2);
+        .block-w#{$width}-h#{$height} {
             @include mobile-support(height, $block-height, $block-height * 2);
-            // width: calc(#{$block-width} * var(--mobile-scale));
-            // height: calc(#{$block-height} * var(--mobile-scale));
+            @include mobile-support(width, $block-width, $block-width * 2);
 
             box-sizing: border-box;
-            //margin: $block-padding;
             float: left;
         }
     }

@@ -11,8 +11,8 @@
         // Set up to match the input height next to it
         [type=submit] {
             border-width: #{$INPUT-BORDER-WIDTH-EM}em;
-            padding: #{$INPUT-PADDING-EM}em 2em;
             font-size: adjusted-font-size($INPUT-BORDER-WIDTH-EM, $INPUT-PADDING-EM);
+            padding: #{$INPUT-PADDING-EM}em 2em;
         }
     }
 }

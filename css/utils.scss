@@ -1,0 +1,24 @@
+// Copyright (c) 2017 Dustin Doloff
+// Licensed under Apache License v2.0
+
+@function floor-decimal($decimal) {
+    @return floor($decimal * 100000) / 100000;
+}
+
+$PREFIXES: 'webkit', 'moz', 'o', 'ms';
+
+@mixin prefix($property, $value) {
+    @each $prefix in $PREFIXES {
+        #{'-' + $prefix + '-' + $property}: $value;
+    }
+
+    #{$property}: $value;
+}
+
+@mixin prefix-value($property, $value-type, $values...) {
+    @each $prefix in $PREFIXES {
+        #{$property}: #{'-' + $prefix + '-' + $value-type + '(' + $values + ')'};
+    }
+
+    #{$property}: #{$value-type + '(' + $values + ')'};
+}

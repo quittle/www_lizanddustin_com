@@ -22,3 +22,15 @@ $BUTTON-BORDER-WIDTH-EM: 0.3;
 $BUTTON-PADDING-EM: 1;
 
 $INVALID-SELECTORS: (':invalid', ':-moz-ui-invalid', ':-moz-submit-invalid');
+
+@mixin font-body {
+    font-family: palatino, georgia, serif;
+}
+
+@mixin font-cookie {
+    font-family: 'Cookie', palatino, georgia, serif;
+}
+
+@mixin font-great-vibes {
+    font-family: 'Great Vibes', palatino, georgia, serif;
+}

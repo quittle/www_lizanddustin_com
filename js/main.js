@@ -21,11 +21,12 @@
             console.error('Unable to find submit button');
         }
 
-        ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
+        ajax(API_ENDPOINT + RSVP_PATH, ajax.HTTP_METHOD.POST, JSON.stringify(getFormData(form))).then(response => {
             console.log(response);
             if (submit) {
                 addClass(submit, 'sent');
             }
+            showDetail('Thank You!', null);
         }).catch(response => {
             if (submit) {
                 removeClass(submit, 'sending');
@@ -88,7 +89,10 @@
      * Navigates to the home state and out of any views.
      */
     function navigateHome() {
-        location.hash = '#!';
+        location.hash = '';
+        if (history.pushState) {
+            history.replaceState('', document.title, location.pathname + location.search);
+        }
     }
 
     /**
@@ -119,7 +123,7 @@
     /**
      * Gets the source element for a detail section
      * @param {!string} detailId The id of the detail section to show
-     * @return {?Element} A copy of the detail source to use or null if not found.
+     * @return {?HTMLElement} A copy of the detail source to use or null if not found.
      */
     function getDetailsSource(detailId) {
         /** @type {?Element} */ const link = document.getElementById(detailId);
@@ -128,7 +132,8 @@
             return null;
         }
 
-        /** @type {?string} */ const sourceId = link.getAttribute('data-source');
+        /** @type {?string} */ const sourceId = link.getAttribute('data-source') ||
+                'details-source-' + link.getAttribute('id');
         if (!sourceId) {
             console.error('data-source not found on: ' + detailId);
             return null;
@@ -140,26 +145,56 @@
             return null;
         }
 
-        return /** @type {?Element} */ (document.importNode(source, true));
+        return /** @type {?HTMLElement} */ (document.importNode(source, true));
     }
 
     /**
      * Shows the details animation for a link.
      * @param {!Element} link The link for the section to inflate
      */
-    function showDetail(link) {
+    function showDetailForLink(link) {
+        /** @type {?HTMLElement} */ const body = getDetailsSource(link.getAttribute('id'));
+        if (body) {
+            showDetail(link.innerHTML, body);
+        }
+        // addClass(getBody(), 'disable-scrolling');
+
+        // withAll(getRequiredElement('details-container'),
+        //         getRequiredElement('details-container-header'),
+        //         getRequiredElement('details-container-body'),
+        //         getDetailsSource(link.getAttribute('id')),
+        //         (detailsContainer, detailsContainerHeader, detailsContainerBody, copiedSource) => {
+        //             clearDetailsContainer();
+
+        //             detailsContainerHeader.innerHTML = link.innerHTML;
+
+        //             detailsContainerBody.appendChild(copiedSource);
+
+        //             onDetailShown();
+
+        //             addClass(getBody(), 'details-visible');
+        //         }
+        // );
+    }
+
+    /**
+     * Shows a detail section
+     * @param {!string} header The header text
+     * @param {?HTMLElement} body The body of the detail
+     */
+    function showDetail(header, body) {
         addClass(getBody(), 'disable-scrolling');
 
-        withAll(getRequiredElement('details-container'),
-                getRequiredElement('details-container-header'),
+        withAll(getRequiredElement('details-container-header'),
                 getRequiredElement('details-container-body'),
-                getDetailsSource(link.getAttribute('id')),
-                (detailsContainer, detailsContainerHeader, detailsContainerBody, copiedSource) => {
+                (detailsContainerHeader, detailsContainerBody) => {
                     clearDetailsContainer();
 
-                    detailsContainerHeader.innerHTML = link.innerHTML;
+                    detailsContainerHeader.innerHTML = header;
 
-                    detailsContainerBody.appendChild(copiedSource);
+                    if (body) {
+                        detailsContainerBody.appendChild(body);
+                    }
 
                     onDetailShown();
 
@@ -204,17 +239,20 @@
      * @param {!Event=} opt_e The hashchange event
      */
     function onHashChange(opt_e) {
+
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
         } else {
             /** @type {!string} */ const id = getIdFromHash(location.hash);
             /** @type {?Element} */ const el = document.getElementById(id);
             if (el) {
-                showDetail(el);
+                showDetailForLink(el);
             } else {
                 hideDetail();
             }
         }
+
+        forceRedraw();
 
         if (opt_e) {
             opt_e.preventDefault();
@@ -244,7 +282,7 @@
                     location.hash = target.getAttribute('href');
                 }
 
-                showDetail(target);
+                showDetailForLink(target);
             });
         }
 

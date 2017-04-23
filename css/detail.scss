@@ -1,45 +1,37 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-$DETAIL_BACKGROUND_COLOR: aliceblue;
+@import 'constants';
+@import 'utils';
 
-.bubbles {
+.details-visible {
+    overflow: hidden;
+
     .parallax {
-        transition: filter ease-in 150ms;
-    }
-
-    &.details-visible {
-        overflow: hidden;
-
-        .parallax {
-            filter: blur(16px);
-        }
-    }
-
-    #details-container {
-        position: fixed;
+        filter: blur(16px);
     }
 }
 
 #details-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    padding: 3em;
+    bottom: 0;
     display: none;
+    left: 0;
+    padding: 3em;
+    position: fixed;
+    right: 0;
+    top: 0;
 }
 
 #details-container-content {
-    display: inline-block;
-    width: 50%;
-    transform: translateX(-50%);
-    margin-left: 50%;
-    overflow: auto;
-    max-height: 100%;
+    background: aliceblue;
     border-radius: 0.15em;
+    display: inline-block;
+    margin-left: 50%;
+    max-height: 100%;
+    overflow: auto;
+    @include prefix(transform, translateX(-50%));
+    width: 50%;
 
     @media (max-width: 1600px) {
         width: 75%;
@@ -51,20 +43,16 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
 }
 
 #details-container-header {
+    @include font-cookie;
     font-size: 6em;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center;
-    text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.3);
-    background-position: center 100%;
-    background-color: $DETAIL_BACKGROUND_COLOR;
-    text-align: center;
-    padding: 1em 0.5em 0;
     line-height: 1em;
-    font-family: 'Cookie', 'miama', cursive, serif;
+    overflow: hidden;
+    padding: 1em 0.5em 0;
+    text-align: center;
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 
     @media (max-width: 600px) {
-        font-size: 4em;
+        font-size: 3em;
     }
 
     h1 {
@@ -72,15 +60,15 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
         font-weight: normal;
     }
 
-    &:after {
+    &::after {
+        background-image: url(/media/images/water-color/laurel.png);
+        background-repeat: no-repeat;
+        background-size: 100%;
         content: '';
         display: inline-block;
-        width: 100%;
         height: 0;
-        background-image: url(/media/images/water-color/laurel.png);
         padding-bottom: 28.125%; // This must match aspect ratio of laurel.png
-        background-size: 100%;
-        background-repeat: no-repeat;
+        width: 100%;
     }
 }
 
@@ -95,10 +83,13 @@ $DETAIL_BACKGROUND_COLOR: aliceblue;
                          13% 452px,
                          30% 787px,
                          0% 900px;
-    background-color: $DETAIL_BACKGROUND_COLOR;
     background-repeat: no-repeat;
     color: #0c0c0c;
     font-size: 1.5em;
+
+    @media (max-width: 600px) {
+        font-size: 4.5vw;
+    }
 }
 
 .details-visible {

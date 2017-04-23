@@ -1,14 +1,12 @@
-Clean up code
-Improve RSVP sent messaging
-Make mobile friendly
-Desktop sometimes thinks it's half width with 1300+ px width
+== Blocking
 Clean up text
+Validate cross-browser support
+
+== Not Blocking
 
 Improve watercolor background
-Move fonts locally
-Make registries spaced evenly
-Validate cross-browser support
-Care about IE9
+Fix photo crops
+Migrate popup from js to css if possible using :target selector
 
 Migrate box sizing to be in vms instead of 1/vms
 Add title-text parallax

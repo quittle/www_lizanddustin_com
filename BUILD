@@ -6,14 +6,6 @@ load("@io_bazel_rules_sass//sass:sass.bzl",
     "sass_library",
 )
 
-load("@rules_web//fonts:fonts.bzl",
-    "font_generator",
-    "minify_ttf",
-    "ttf_to_eot",
-    "ttf_to_woff",
-    "ttf_to_woff2",
-)
-
 load("@rules_web//html:html.bzl",
     "html_page",
     "inject_html",
@@ -40,35 +32,6 @@ file_list(
     name = "engagement_gallery",
     files = glob([ "!!media/images/engagement/*.jpg" ]),
     content = "<a href=\"#!gallery&image={file}\" style=\"background-image:url({file})\"></a>"
-)
-
-minify_ttf(
-    name = "miama_ttf",
-    ttf = "fonts/miama.ttf",
-)
-
-ttf_to_eot(
-    name = "miama_eot",
-    ttf = ":miama_ttf",
-)
-
-ttf_to_woff(
-    name = "miama_woff",
-    ttf = ":miama_ttf",
-)
-
-ttf_to_woff2(
-    name = "miama_woff2",
-    ttf = ":miama_ttf",
-)
-
-font_generator(
-    name = "miama_css",
-    font_name = "miama",
-    eot = ":miama_eot",
-    ttf = ":miama_ttf",
-    woff = ":miama_woff",
-    woff2 = ":miama_woff2",
 )
 
 sass_library(
@@ -114,7 +77,7 @@ html_page(
     body = "//:index_body.html",
     css_files = [
         ":main_css",
-        ":miama_css",
+      #  ":miama_css",
     ],
     inline_js_files = [
         ":google_analytics_js",
@@ -123,6 +86,7 @@ html_page(
         ":main_js", # BUG: Should be async (but not supported yet)
     ],
     deps = [
+        "css/ie.css",
         "cssPIE/PIE.htc",
         "//media/images:all_images",
         "//media/images:optimized_pngs",
@@ -130,7 +94,6 @@ html_page(
         "//media/images/luma:luma_logo",
     ],
 )
-
 
 inject_html(
     name = "index",
@@ -160,6 +123,7 @@ minify_site_zip(
         ":index_min",
     ],
     keep_extensions = True,
+    use_content_hash = True,
     minified_zip = "www_lizanddustin_com.min.zip",
 )
 

@@ -1,6 +1,13 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
+if (!window.console) {
+    window.console = /** @type {!Console} */ ({
+        log: () => {},
+        error: () => {},
+    });
+}
+
 /**
  * @param {...*} args_ The args to check
  * The last parameter should be a function that takes all the previous arguments when all are
@@ -56,9 +63,13 @@ function addClass(element, className) {
         element.classList.add(className);
     } else {
         var classString = element.getAttribute('class');
-        var currentClasses = classString.split(' ');
-        if (currentClasses.indexOf(className) == -1) {
-            element.setAttribute('class', classString + ' ' + className);
+        if (!classString) {
+            element.setAttribute('class', className);
+        } else {
+            var currentClasses = classString.split(' ');
+            if (currentClasses.indexOf(className) == -1) {
+                element.setAttribute('class', classString + ' ' + className);
+            }
         }
     }
 }
@@ -72,7 +83,11 @@ function removeClass(element, className) {
     if (element.classList) {
         element.classList.remove(className);
     } else {
-        var currentClasses = element.getAttribute('class').split(' ');
+        var currentClasses = element.getAttribute('class');
+        if (!currentClasses) {
+            return;
+        }
+        currentClasses = currentClasses.split(' ');
 
         do {
             var index = currentClasses.indexOf(className);
@@ -186,4 +201,40 @@ function getFormData(form) {
         ret[name] = value;
     });
     return ret;
+}
+
+/**
+ * Removes an inline style
+ * @param {!HTMLElement} element The element to modify
+ * @param {!string} property The style to remove
+ */
+function removeInlineStyle(element, property) {
+    /** @type {!CSSStyleDeclaration} */ const style = element.style;
+    if (style.removeProperty) {
+        style.removeProperty(property);
+    } else if (style.removeAttribute) {
+        style.removeAttribute(property);
+    } else {
+        style[property] = undefined;
+    }
+}
+
+/**
+ * Force the browser to re-render and therefore redraw the page to fix potential glitches
+ */
+function forceRedraw() {
+    console.log('redrawing')
+    /** @type {!HTMLBodyElement} */ const body = getBody();
+    /** @type {string?} */ const prevDisplay = body.style.display;
+    if (prevDisplay === 'block') {
+        body.style.display = 'flex';
+    } else {
+        body.style.display = 'block';
+    }
+
+    if (prevDisplay) {
+        body.style.display = prevDisplay;
+    } else {
+        removeInlineStyle(body, 'display')
+    }
 }

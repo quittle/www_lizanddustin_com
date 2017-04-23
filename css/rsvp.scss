@@ -40,7 +40,7 @@
                     height: 30%;
                     position: absolute;
                     left: 23%;
-                    transform: rotateZ(-46deg);
+                    @include prefix(transform, rotateZ(-46deg));
                     top: 23%;
                 }
             }

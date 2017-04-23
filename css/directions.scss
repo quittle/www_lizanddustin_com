@@ -1,57 +1,14 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
-.directions-table-horizontal {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
+#details-source-directions {
+    .divided-sections > * {
+        width: 50%;
 
-    & > * {
-        $border-width: .15em;
-
-        display: table-cell;
-        padding: 0 1em;
-        border: $border-width solid #aaa;
-        border-top-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 1em;
-
-        &:first-child {
-            border-left: none;
-            text-align: right;
-        }
-
-        &:last-child {
+        @media (max-width: 700px) {
+            width: 100%;
             border-right: none;
-            text-align: left;
-        }
-
-        &:nth-child(2n) {
-            border-bottom-width: 0;
-            border-top-width: $border-width;
-        }
-
-        &:nth-child(2n + 1) {
-            border-bottom-width: $border-width;
-            border-top-width: 0;
+            border-bottom: 0.1em solid $FOREGROUND-COLOR-DARK;
         }
     }
-}
-
-.directions-table-vertical {
-    & > * {
-        padding: 1em 0;
-
-        &:first-child {
-            padding-top: 0;
-        }
-
-        &:last-child {
-            padding-bottom: 0;
-        }
-    }
-}
-
-.divided-sections > * {
-    width: 50%;
 }

@@ -11,37 +11,31 @@ main a {
     $ribbon-color: rgba(255, 255, 255, .6);
     $ribbon-cutback-skew: -25.2deg;
 
-    color: $FOREGROUND-COLOR-LIGHT;
-
-    background-color: $BACKGROUND-COLOR;
-    background-size: cover;
-    background-position: center;
     display: inline-block;
+    line-height: normal;
     padding: 3em;
     position: relative;
-    float: left; // TODO: Investigate if this makes the layout worse
-    line-height: normal;
 
     &.left-text > h1 {
+        left: 0;
         padding-left: $text-near-padding;
         padding-right: $text-far-padding;
         right: auto; // IE
         right: initial;
-        left: 0;
 
         &::before {
+            border-left-color: $ribbon-color;
+            border-right-color: transparent;
             left: auto; // IE
             left: initial;
             right: $ribbon-cutback;
-            border-left-color: $ribbon-color;
-            border-right-color: transparent;
         }
 
         &::after {
             left: auto; // IE
             left: initial;
             right: 0;
-            transform: skewY(-$ribbon-cutback-skew);
+            @include prefix(transform, skewY(-$ribbon-cutback-skew));
         }
     }
 
@@ -54,19 +48,17 @@ main a {
     }
 
     & > h1 {
+        background: $ribbon-color;
+        bottom: $BOX-PADDING;
+        color: black;
+        @include font-cookie;
+        font-size: 3em;
+        font-weight: normal;
+        padding: .2em $text-near-padding .2em $text-far-padding;
+        position: absolute;
+        right: 0;
         text-align: right;
         text-align: end;
-        position: absolute;
-        bottom: $BOX-PADDING;
-        right: 0;
-
-        font-family: 'Cookie', 'miama', cursive, serif;
-        font-weight: normal;
-        font-size: 3em;
-
-        padding: .2em $text-near-padding .2em $text-far-padding;
-        background: $ribbon-color;
-        color: black;
 
         @media (max-width: 500px) {
             & {
@@ -75,27 +67,26 @@ main a {
         }
 
         &::before {
+            border: 0 solid $ribbon-color;
+            border-left-color: transparent;
+            border-width: 0.7em 0.8em;
             content: '';
-            width: 0;
             height: 0;
+            left: $ribbon-cutback;
             position: absolute;
             top: -0.2em;
-            left: $ribbon-cutback;
-
-            border: 0 solid $ribbon-color;
-            border-width: 0.7em 0.8em;
-            border-left-color: transparent;
+            width: 0;
         }
 
         &::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: -0.15em;
-            width: 0.5em;
-            height: 100%;
             background: $ribbon-color;
-            transform: skewY(-25.2deg);
+            content: '';
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: -0.15em;
+            @include prefix(transform, skewY(-25.2deg));
+            width: 0.5em;
         }
     }
 }

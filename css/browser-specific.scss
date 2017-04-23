@@ -1,6 +1,12 @@
 // Copyright (c) 2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
+@mixin browser-ie8plus {
+    @media screen\0 {
+        @content;
+    }
+}
+
 @mixin browser-ie10plus {
     @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
         @content;
@@ -18,5 +24,11 @@
         & {
             @content;
         }
+    }
+}
+
+@mixin browser-safari71plus() {
+    @at-root _::-webkit-full-page-media, _:future, :root & {
+        @content;
     }
 }
