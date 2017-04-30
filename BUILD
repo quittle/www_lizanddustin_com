@@ -149,16 +149,15 @@ zip_server(
     port = 8080,
 )
 
-deploy_site_zip_s3_script(
-    name = "deploy_alpha_lizanddustin_com",
-    bucket = "alpha.lizanddustin.com",
-    zip_file = ":rename_index_www_lizanddustin_com_zip",
-    cache_duration = CACHE_DURATION_IMMUTABLE,
-)
+# Use list comprehension for a for loop in BUILD file
+# Deploy to alpha when testing and www in CI
+[
+    deploy_site_zip_s3_script(
+        name = "deploy_{site}".format(site=bucket),
+        bucket = bucket,
+        zip_file = ":rename_index_www_lizanddustin_com_zip",
+        cache_duration = CACHE_DURATION_IMMUTABLE,
+    )
 
-deploy_site_zip_s3_script(
-    name = "deploy_www_lizanddustin_com",
-    bucket = "www.lizanddustin.com",
-    zip_file = ":rename_index_www_lizanddustin_com_zip",
-    cache_duration = CACHE_DURATION_IMMUTABLE,
-)
+    for bucket in [ "alpha.lizanddustin.com", "www.lizanddustin.com" ]
+]
