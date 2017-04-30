@@ -16,7 +16,7 @@ load("//rules:utils.bzl",
 all_images_filegroup(filegroup, glob)
 
 resize_image(
-    name = "luma_logo",
+    name = "luma_logo.png",
     image = "wide.png",
     width = 600,
     visibility = [ "//visibility:public" ],
@@ -25,6 +25,6 @@ resize_image(
 file_map(
     name = "luma_logo_map",
     sources = [ "wide.png" ],
-    destinations = [ ":luma_logo" ],
+    destinations = [ ":luma_logo.png" ],
     variable_name = "luma-logo",
 )

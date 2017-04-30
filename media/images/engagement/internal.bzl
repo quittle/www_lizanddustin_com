@@ -1,15 +1,25 @@
 # Copyright (c) 2017 Dustin Doloff
 # Licensed under Apache License v2.0
 
+load("@bazel_toolbox//collections:collections.bzl",
+    "merge_dicts",
+)
+
 load("@rules_web//images:images.bzl",
     "resize_image",
 )
 
 def _file_map_impl(ctx):
-    mapping = {}
+    source_map = {}
+    for destination in ctx.attr.destination:
+        source_map = merge_dicts(source_map, getattr(destination, "source_map", {}))
+
+    mapping = dict(zip(source_map.keys(), [v.path for v in source_map.values()]))
+
     for i in range(len(ctx.files.source)):
         source = ctx.files.source[i]
         destination = ctx.files.destination[i]
+
         mapping[source.path] = destination.path
 
     ctx.file_action(
@@ -40,7 +50,7 @@ def resize_all_images(images, file_map_name, root_variable, height = None, width
     destination = []
     targets = []
     for image in images:
-        resize_name = "shrunk_{file_map}_{image}".format(file_map=file_map_name, image=image)
+        resize_name = "shrunk_{file_map}_{image}".format(file_map=file_map_name, image=image.replace(":", ""))
         resize_image(
             name = resize_name,
             image = image,

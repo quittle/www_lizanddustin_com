@@ -1,20 +1,27 @@
 // Copyright (c) 2016-2017 Dustin Doloff
 // Licensed under Apache License v2.0
 
+$block-mobile-break: 1000px;
+
 $block-padding: 1vw;
 $full-width: 100vw - 2 * $block-padding;
 
 $max-depth: 12;
 
+@mixin block-padding($property, $multiplier: 1) {
+    $block-padding: $block-padding * $multiplier;
+    @include mobile-support($property, $block-padding, $block-padding * 2);
+}
+
 @mixin mobile-support($property, $regular, $mobile) {
     #{$property}: $regular;
-    @media (max-width: 1000px) {
+    @media (max-width: $block-mobile-break) {
         #{$property}: $mobile;
     }
 }
 
 .block-v > * {
-    @include mobile-support(margin-bottom, $block-padding, $block-padding * 2);
+    @include block-padding(margin-bottom);
 
     clear: both;
 
@@ -24,7 +31,7 @@ $max-depth: 12;
 }
 
 .block-h > * {
-    @include mobile-support(margin-right, $block-padding, $block-padding * 2);
+    @include block-padding(margin-right);
 
     &:last-child {
         margin: 0;

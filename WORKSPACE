@@ -4,14 +4,9 @@
 workspace(name = "www_lizanddustin_com")
 
 git_repository(
-    name = "rules_webs",
-    commit = "c754be1a35f3623917b2f43e9f98b761952ecbfc",
-    remote = "https://github.com/quittle/rules_web.git",
-)
-
-local_repository(
     name = "rules_web",
-    path = "../rules_web",
+    commit = "49002feac07bb8d18e810b92cde83f2d4ee00296",
+    remote = "https://github.com/quittle/rules_web.git",
 )
 
 load("@rules_web//:rules_web_repositories.bzl", "rules_web_repositories")

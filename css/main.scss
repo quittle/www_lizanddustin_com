@@ -149,7 +149,8 @@ main {
 
     // Add margins to the outer-most entries
     & > div {
-        margin: $block-padding / 2;
+        @include block-padding(margin, 0.5);
+//        margin: $block-padding / 2;
     }
 }
 
@@ -218,6 +219,7 @@ section {
 }
 
 #title-text {
+    background: rgba(255, 255, 255, .2);
     left: 0;
     position: absolute;
     text-align: center;

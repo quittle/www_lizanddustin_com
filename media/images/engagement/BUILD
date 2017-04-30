@@ -4,23 +4,34 @@
 load("@rules_web//generate:generate.bzl",
     "generate_variables",
 )
+
+load("@rules_web//images:images.bzl",
+    "crop_image",
+)
+
 load("//media/images:internal.bzl",
     "all_images_filegroup",
 )
 
 load(":internal.bzl",
-    "resize_all_images"
+    "resize_all_images",
 )
 
 all_images_filegroup(filegroup, glob)
 
-all_images = glob([ "*.jpg" ])
+crop_image(
+    name = "cropped_2894.jpg",
+    image = "2894.jpg",
+    height = "50%",
+    y_offset = "50%",
+    map_source = True,
+)
 
-# filegroup(
-#     name = "original_images",
-#     srcs = all_images,
-#     visibility = [ "//visibility:public" ],
-# )
+cropped_images = [
+    "2894.jpg",
+]
+
+all_images = glob([ "*.jpg" ], exclude = cropped_images) + [ ":cropped_2894.jpg" ]
 
 filegroup(
     name = "shrunk_images",

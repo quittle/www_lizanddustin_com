@@ -4,64 +4,119 @@
  @import 'engagement_map';
 
 $engagement-photos: (
-    "0728",
-    "0753",
-    "0767",
-    "0788",
-    "0795",
-    "0803",
-    "0815",
-    "0820",
-    "0838",
-    "0843",
-    "0855",
-    "0879",
-    "0885",
-    "0893",
-    "0898",
-    "2795",
-    "2808",
-    "2812",
-    "2818",
-    "2835",
-    "2839",
-    "2845",
-    "2855",
-    "2888",
-    "2894",
-    "2903",
-    "2910",
-    "2930",
-    "2935",
-    "2942",
-    "2961",
-    "2966",
-    "2975",
-    "2981",
-    "3001",
-    "3010",
-    "3016",
-    "3019",
-    "3027",
-    "3036",
-    "3048",
-    "3060",
-    "3068",
-    "3073",
-    "3087",
-    "3095",
-    "3100-2",
-    "3100",
-    "3143",
+    "0728": (),
+    "0753": (),
+    "0767": (),
+    "0788": (),
+    "0795": (),
+    "0803": (),
+    "0815": (
+        "scale": 1.5,
+        "translate": (
+            "x": 4%,
+            "y": 15%,
+        ),
+    ),
+    "0820": (),
+    "0838": (),
+    "0843": (),
+    "0855": (),
+    "0879": (),
+    "0885": (),
+    "0893": (),
+    "0898": (),
+    "2795": (),
+    "2808": (),
+    "2812": (),
+    "2818": (),
+    "2835": (),
+    "2839": (),
+    "2845": (),
+    "2855": (),
+    "2888": (),
+    "2894": (
+        "translate": (
+            "y": 19%,
+        ),
+    ),
+    "2903": (),
+    "2910": (),
+    "2930": (),
+    "2935": (),
+    "2942": (),
+    "2961": (),
+    "2966": (),
+    "2975": (),
+    "2981": (),
+    "3001": (),
+    "3010": (),
+    "3016": (),
+    "3019": (),
+    "3027": (),
+    "3036": (),
+    "3048": (),
+    "3060": (),
+    "3068": (),
+    "3073": (),
+    "3087": (),
+    "3095": (),
+    "3100-2": (),
+    "3100": (),
+    "3143": (),
 );
 
 [data-eng-img] {
-    background: no-repeat center/cover;
+    overflow: hidden; // Hides zoomed in images
+    position: relative;
+
+    &::before {
+        background: no-repeat center/cover;
+        content: '';
+        display: inline-block;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
 }
 
-@each $id in $engagement-photos {
-    $path: map-get($engagement-photos-map, "media/images/engagement/#{$id}.jpg");
-    [data-eng-img="#{$id}"] {
+@each $id, $settings in $engagement-photos {
+    $path: map-get($engagement-photos-map, 'media/images/engagement/#{$id}.jpg');
+    [data-eng-img="#{$id}"]::before {
         background-image: url(/#{$path});
+
+        $transform-content: '';
+
+        $scale: map-get($settings, "scale");
+        $scaling: type-of($scale) == "number";
+        @if $scaling {
+            $transform-content: '#{$transform-content} scale(#{$scale})';
+        }
+
+        $translate: map-get($settings, "translate");
+        @if type-of($translate) == "map" {
+            $translateX: map-get($translate, "x");
+            @if type-of($translateX) == "number" {
+                @if $scaling {
+                    $transform-content: '#{$transform-content} translateX(#{$translateX})';
+                } @else {
+                    background-position-x: $translateX;
+                }
+            }
+
+            $translateY: map-get($translate, "y");
+            @if type-of($translateY) == "number" {
+                @if $scaling {
+                    $transform-content: '#{$transform-content} translateY(#{$translateY})';
+                } @else {
+                    background-position-y: $translateY;
+                }
+            }
+        }
+
+        @if str-length($transform-content) > 0 {
+            transform: unquote($transform-content);
+        }
     }
 }

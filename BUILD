@@ -6,6 +6,11 @@ load("@io_bazel_rules_sass//sass:sass.bzl",
     "sass_library",
 )
 
+load("@rules_web//deploy:deploy.bzl",
+    "CACHE_DURATION_IMMUTABLE",
+    "deploy_site_zip_s3_script",
+)
+
 load("@rules_web//html:html.bzl",
     "html_page",
     "inject_html",
@@ -39,7 +44,6 @@ sass_library(
     srcs =
         glob([ "css/*.scss" ]) +
         [
-            #"//media/images:optimized_pngs",
             "//media/images/engagement:engagement_map",
             "//media/images/engagement:large_images",
             "//media/images/luma:luma_logo_map",
@@ -91,7 +95,7 @@ html_page(
         "//media/images:all_images",
         "//media/images:optimized_pngs",
         "//media/images/engagement:shrunk_images",
-        "//media/images/luma:luma_logo",
+        "//media/images/luma:luma_logo.png",
     ],
 )
 
@@ -143,4 +147,18 @@ zip_server(
     name = "www_lizanddustin_com_zip_server",
     zip = ":rename_index_www_lizanddustin_com_zip",
     port = 8080,
+)
+
+deploy_site_zip_s3_script(
+    name = "deploy_alpha_lizanddustin_com",
+    bucket = "alpha.lizanddustin.com",
+    zip_file = ":rename_index_www_lizanddustin_com_zip",
+    cache_duration = CACHE_DURATION_IMMUTABLE,
+)
+
+deploy_site_zip_s3_script(
+    name = "deploy_www_lizanddustin_com",
+    bucket = "www.lizanddustin.com",
+    zip_file = ":rename_index_www_lizanddustin_com_zip",
+    cache_duration = CACHE_DURATION_IMMUTABLE,
 )
