@@ -283,6 +283,9 @@ section {
     height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
+    // Only works in WebKit browsers but prevents half width card section due to wrapping
+    // Firefox has much more narrow scrollbars so it isn't that big a problem.
+    overflow-y: overlay;
     @include prefix(perspective, 2px);
     transition: filter ease-in 150ms;
 }
