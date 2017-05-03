@@ -156,7 +156,10 @@ zip_server(
         name = "deploy_{site}".format(site=bucket),
         bucket = bucket,
         zip_file = ":rename_index_www_lizanddustin_com_zip",
-        cache_duration = CACHE_DURATION_IMMUTABLE,
+        cache_durations = [
+            60 * 15, [ "index.html" ],
+            CACHE_DURATION_IMMUTABLE, [ "*" ],
+        ]
     )
 
     for bucket in [ "alpha.lizanddustin.com", "www.lizanddustin.com" ]
