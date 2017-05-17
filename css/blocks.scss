@@ -40,13 +40,18 @@ $max-depth: 12;
 
 .block-h, .block-v {
     background: white;
-    box-sizing: border-box;
-    float: left;
 
     & > *::after {
         clear: both;
         content: '';
         display: block;
+    }
+}
+
+.block-v, .block-h {
+    &, & > * {
+        box-sizing: border-box;
+        float: left;
     }
 }
 
