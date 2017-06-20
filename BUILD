@@ -159,7 +159,10 @@ zip_server(
         cache_durations = [
             60 * 15, [ "index.html" ],
             CACHE_DURATION_IMMUTABLE, [ "*" ],
-        ]
+        ],
+        path_redirects = {
+            "/rsvp": "/#rsvp",
+        },
     )
 
     for bucket in [ "alpha.lizanddustin.com", "www.lizanddustin.com" ]
