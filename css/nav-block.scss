@@ -5,8 +5,8 @@
 
 // Anchor elements may not be nested so no worry about nested anchors
 main a {
-    $text-near-padding: 1em;
-    $text-far-padding: 0.5em;
+    $text-near-padding: 10%;
+    $text-far-padding: 0.8em;
     $ribbon-cutback: -1.1em;
     $ribbon-color: rgba(255, 255, 255, .6);
     $ribbon-cutback-skew: -25.2deg;

@@ -223,7 +223,6 @@ function removeInlineStyle(element, property) {
  * Force the browser to re-render and therefore redraw the page to fix potential glitches
  */
 function forceRedraw() {
-    console.log('redrawing')
     /** @type {!HTMLBodyElement} */ const body = getBody();
     /** @type {string?} */ const prevDisplay = body.style.display;
     if (prevDisplay === 'block') {

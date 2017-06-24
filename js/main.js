@@ -239,7 +239,6 @@
      * @param {!Event=} opt_e The hashchange event
      */
     function onHashChange(opt_e) {
-
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
         } else {
