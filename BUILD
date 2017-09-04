@@ -146,6 +146,7 @@ rename_zip_paths(
 zip_server(
     name = "www_lizanddustin_com_zip_server",
     zip = ":rename_index_www_lizanddustin_com_zip",
+    host = "0.0.0.0",
     port = 8080,
 )
 

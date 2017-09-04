@@ -5,7 +5,7 @@
     'use strict';
 
     const API_ENDPOINT = 'https://api.lizanddustin.com';
-    const RSVP_PATH = '/rsvp'
+    const RSVP_PATH = '/rsvp';
 
     function onRSVPSubmit() {
         /** @type {HTMLFormElement?} */ const form =
@@ -13,7 +13,7 @@
                         (document.querySelector('#details-container form#rsvp-form'));
         if (!form) {
             console.error('RSVP form not found');
-            return
+            return;
         }
 
         let submit = form.querySelector('button[type=submit]');
@@ -219,7 +219,7 @@
      * @return {!string} The id of an element extracted from the hash
      */
     function getIdFromHash(hash) {
-        return hash.replace(/^#?!?/, '').split('&')[0]
+        return hash.replace(/^#?!?/, '').split('&')[0];
     }
 
     /**
@@ -237,6 +237,7 @@
     /**
      * Callback for the hashchange event.
      * @param {!Event=} opt_e The hashchange event
+     * @return {boolean|undefined} the return value for the hashchange event if |opt_e| is defined.
      */
     function onHashChange(opt_e) {
         if (!location.hash || location.hash.length < 2) {

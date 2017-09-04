@@ -207,6 +207,7 @@ function getFormData(form) {
  * Removes an inline style
  * @param {!HTMLElement} element The element to modify
  * @param {!string} property The style to remove
+ * @suppress {invalidCasts}
  */
 function removeInlineStyle(element, property) {
     /** @type {!CSSStyleDeclaration} */ const style = element.style;
@@ -215,7 +216,7 @@ function removeInlineStyle(element, property) {
     } else if (style.removeAttribute) {
         style.removeAttribute(property);
     } else {
-        style[property] = undefined;
+        style[property] = /** @type {string} */ (undefined);
     }
 }
 
@@ -234,6 +235,6 @@ function forceRedraw() {
     if (prevDisplay) {
         body.style.display = prevDisplay;
     } else {
-        removeInlineStyle(body, 'display')
+        removeInlineStyle(body, 'display');
     }
 }
