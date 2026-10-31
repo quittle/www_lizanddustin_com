@@ -1,6 +1,3 @@
-// Copyright (c) 2016-2017 Dustin Doloff
-// Licensed under Apache License v2.0
-
 // Build-time asset preparation, mirroring what the previous build pipeline did:
 //   - engagement photos resized (height 1000px; 2961.jpg to width 2000px;
 //     2894.jpg cropped to its bottom half first, as in media/images/engagement/BUILD)

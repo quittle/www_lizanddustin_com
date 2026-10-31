@@ -1,6 +1,3 @@
-// Copyright (c) 2016-2017 Dustin Doloff
-// Licensed under Apache License v2.0
-
 // Vite build for the static site. This replaces the previous build
 // (see BUILD, removed in a follow-up PR); the page it produces is the same one
 // the old html_page + minify_site_zip pipeline produced:
