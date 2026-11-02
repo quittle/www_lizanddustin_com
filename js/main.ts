@@ -17,16 +17,14 @@ import {
     const API_ENDPOINT = 'https://api.lizanddustin.com';
     const RSVP_PATH = '/rsvp';
 
-    function onRSVPSubmit() {
-        /** @type {HTMLFormElement?} */ const form =
-                /** @type {HTMLFormElement?} */
-                        (document.querySelector('#details-container form#rsvp-form'));
+    function onRSVPSubmit(): void {
+        const form = document.querySelector<HTMLFormElement>('#details-container form#rsvp-form');
         if (!form) {
             console.error('RSVP form not found');
             return;
         }
 
-        let submit = form.querySelector('button[type=submit]');
+        const submit = form.querySelector<HTMLButtonElement>('button[type=submit]');
         if (!submit) {
             console.error('Unable to find submit button');
         }
@@ -49,15 +47,15 @@ import {
     /**
      * Called when the RSVP details are shown
      */
-    function onRSVPDetailShown() {
-        if (!withAll(document.querySelector('#details-container select[name=contact-type]'),
-                document.querySelector('#details-container input[name=contact-value]'),
-                document.querySelector('#details-container form#rsvp-form'),
-                document.querySelector('#details-container button[type=submit]'),
+    function onRSVPDetailShown(): void {
+        if (!withAll(document.querySelector<HTMLSelectElement>('#details-container select[name=contact-type]'),
+                document.querySelector<HTMLInputElement>('#details-container input[name=contact-value]'),
+                document.querySelector<HTMLFormElement>('#details-container form#rsvp-form'),
+                document.querySelector<HTMLButtonElement>('#details-container button[type=submit]'),
                 (detailsContactType, detailsContactValue, form, submitButton) => {
                     detailsContactType.addEventListener('change', e => {
-                        /** @type {!string} */ const value = detailsContactType.value;
-                        /** @type {!string} */ let contactValuePattern;
+                        const value: string = detailsContactType.value;
+                        let contactValuePattern: string;
                         switch (value) {
                             case 'email':
                                 contactValuePattern = '^.+@.+$';
@@ -87,7 +85,7 @@ import {
     /**
      * Called when a detail section is shown.
      */
-    function onDetailShown() {
+    function onDetailShown(): void {
         switch (getIdFromHash(location.hash)) {
             case 'rsvp':
                 onRSVPDetailShown();
@@ -98,9 +96,9 @@ import {
     /**
      * Navigates to the home state and out of any views.
      */
-    function navigateHome() {
+    function navigateHome(): void {
         location.hash = '';
-        if (history.pushState) {
+        if (typeof history.pushState === 'function') {
             history.replaceState('', document.title, location.pathname + location.search);
         }
     }
@@ -108,23 +106,20 @@ import {
     /**
      * Empties the contents of the details container.
      */
-    function clearDetailsContainer() {
-        /** @type {?Element} */ const detailsContainerContent =
-                getRequiredElement('details-container-content');
+    function clearDetailsContainer(): void {
+        const detailsContainerContent = getRequiredElement('details-container-content');
 
         if (detailsContainerContent) {
             detailsContainerContent.scrollTop = 0;
         }
 
-        /** @type {?Element} */ const detailsContainerHeader =
-                getRequiredElement('details-container-header');
+        const detailsContainerHeader = getRequiredElement('details-container-header');
 
         if (detailsContainerHeader) {
             emptyContents(detailsContainerHeader);
         }
 
-        /** @type {?Element} */ const detailsContainerBody =
-                getRequiredElement('details-container-body');
+        const detailsContainerBody = getRequiredElement('details-container-body');
         if (detailsContainerBody) {
             emptyContents(detailsContainerBody);
         }
@@ -132,38 +127,38 @@ import {
 
     /**
      * Gets the source element for a detail section
-     * @param {!string} detailId The id of the detail section to show
-     * @return {?HTMLElement} A copy of the detail source to use or null if not found.
+     * @param detailId The id of the detail section to show
+     * @return A copy of the detail source to use or null if not found.
      */
-    function getDetailsSource(detailId) {
-        /** @type {?Element} */ const link = document.getElementById(detailId);
+    function getDetailsSource(detailId: string): HTMLElement | null {
+        const link = document.getElementById(detailId);
         if (!link) {
             console.error('Unable to find element for detail section: ' + detailId);
             return null;
         }
 
-        /** @type {?string} */ const sourceId = link.getAttribute('data-source') ||
+        const sourceId: string | null = link.getAttribute('data-source') ||
                 'details-source-' + link.getAttribute('id');
         if (!sourceId) {
             console.error('data-source not found on: ' + detailId);
             return null;
         }
 
-        /** @type {?Element} */ const source = document.getElementById(sourceId);
+        const source = document.getElementById(sourceId);
         if (!source) {
             console.error('Unable to get detail source element: ' + sourceId);
             return null;
         }
 
-        return /** @type {?HTMLElement} */ (document.importNode(source, true));
+        return document.importNode(source, true);
     }
 
     /**
      * Shows the details animation for a link.
-     * @param {!Element} link The link for the section to inflate
+     * @param link The link for the section to inflate
      */
-    function showDetailForLink(link) {
-        /** @type {?HTMLElement} */ const body = getDetailsSource(link.getAttribute('id'));
+    function showDetailForLink(link: Element): void {
+        const body = getDetailsSource(link.getAttribute('id') ?? '');
         if (body) {
             showDetail(link.innerHTML, body);
         }
@@ -189,10 +184,10 @@ import {
 
     /**
      * Shows a detail section
-     * @param {!string} header The header text
-     * @param {?HTMLElement} body The body of the detail
+     * @param header The header text
+     * @param body The body of the detail
      */
-    function showDetail(header, body) {
+    function showDetail(header: string, body: HTMLElement | null): void {
         addClass(getBody(), 'disable-scrolling');
 
         withAll(getRequiredElement('details-container-header'),
@@ -216,7 +211,7 @@ import {
     /**
      * Hides the detail section.
      */
-    function hideDetail() {
+    function hideDetail(): void {
         clearDetailsContainer();
 
         removeClass(getBody(), 'details-visible');
@@ -225,18 +220,17 @@ import {
 
     /**
      * Gets an id from a location hash string.
-     * @param {!string} hash The hash string
-     * @return {!string} The id of an element extracted from the hash
+     * @param hash The hash string
+     * @return The id of an element extracted from the hash
      */
-    function getIdFromHash(hash) {
+    function getIdFromHash(hash: string): string {
         return hash.replace(/^#?!?/, '').split('&')[0];
     }
 
     /**
      * Callback for the onkeydown event.
-     * @type {!EventListener} The keydown event.
      */
-    function onKeyDown(e) {
+    function onKeyDown(e: KeyboardEvent): void {
         switch (e.keyCode) {
             case 27: // Escape
                 navigateHome();
@@ -246,15 +240,15 @@ import {
 
     /**
      * Callback for the hashchange event.
-     * @param {!Event=} opt_e The hashchange event
-     * @return {boolean|undefined} the return value for the hashchange event if |opt_e| is defined.
+     * @param opt_e The hashchange event
+     * @return the return value for the hashchange event if |opt_e| is defined.
      */
-    function onHashChange(opt_e) {
+    function onHashChange(opt_e?: HashChangeEvent): boolean | undefined {
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
         } else {
-            /** @type {!string} */ const id = getIdFromHash(location.hash);
-            /** @type {?Element} */ const el = document.getElementById(id);
+            const id: string = getIdFromHash(location.hash);
+            const el = document.getElementById(id);
             if (el) {
                 showDetailForLink(el);
             } else {
@@ -272,24 +266,23 @@ import {
 
     /**
      * Callback for the onresize event.
-     * @param {!Event} e The resize event
      */
-    function onResize(e) {
+    function onResize(e: UIEvent): void {
     }
 
     /**
      * Initializer method
      */
-    function init() {
-        /** @type {!NodeList} */ const navLinks = document.body.querySelectorAll('main > a');
+    function init(): void {
+        const navLinks = document.body.querySelectorAll('main > a');
         for (let i = 0; i < navLinks.length; i++) {
-            /** @type {!Node} */ const navLink = navLinks[i];
+            const navLink = navLinks[i];
             navLink.addEventListener('click', e => {
-                const target = /** @type {!HTMLAnchorElement} */ (e.currentTarget);
-                if(history.pushState) {
+                const target = e.currentTarget as HTMLAnchorElement;
+                if (typeof history.pushState === 'function') {
                     history.pushState(null, '', target.getAttribute('href'));
                 } else {
-                    location.hash = target.getAttribute('href');
+                    location.hash = target.getAttribute('href') ?? '';
                 }
 
                 showDetailForLink(target);
@@ -301,10 +294,9 @@ import {
 
     /**
      * Callback for when the details container is clicked
-     * @param {!Event} e The click event
      */
-    function onDetailsContainerClick(e) {
-        if (e.target.getAttribute('id') === 'details-container') {
+    function onDetailsContainerClick(e: MouseEvent): void {
+        if (e.target instanceof Element && e.target.getAttribute('id') === 'details-container') {
             navigateHome();
         }
     }
@@ -312,9 +304,8 @@ import {
     /**
      * Initializer event
      */
-    function onDOMContentLoaded() {
-        /** @type {?Element} */ const detailsContainer =
-                getRequiredElement('details-container');
+    function onDOMContentLoaded(): void {
+        const detailsContainer = getRequiredElement('details-container');
         if (detailsContainer) {
             detailsContainer.addEventListener('click', onDetailsContainerClick);
         }

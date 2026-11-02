@@ -12,7 +12,7 @@
 //   - generated/scss/*.scss   SCSS maps, consumed by css/main.scss via includePaths
 //   - generated/manifest.json original path -> served path, for the HTML plugin
 //   - files[]                 { fileName, source } buffers, emitted at the site
-//                             root by vite.config.js (generateBundle)
+//                             root by vite.config.ts (generateBundle)
 import { createHash } from 'node:crypto';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -23,10 +23,20 @@ const GENERATED_DIR = path.join(ROOT, 'generated');
 const SCSS_DIR = path.join(GENERATED_DIR, 'scss');
 const ENGAGEMENT_DIR = path.join(ROOT, 'media/images/engagement');
 
-const sha1 = (buffer) => createHash('sha1').update(buffer).digest('hex');
+export interface PreparedAssetFile {
+    fileName: string;
+    source: Buffer;
+}
+
+export interface PreparedAssets {
+    manifest: Record<string, string>;
+    files: PreparedAssetFile[];
+}
+
+const sha1 = (buffer: Buffer): string => createHash('sha1').update(buffer).digest('hex');
 
 // Resize one engagement photo the way the old BUILD did, and return its bytes.
-async function resizeEngagementPhoto(file) {
+async function resizeEngagementPhoto(file: string): Promise<Buffer> {
     const input = sharp(path.join(ENGAGEMENT_DIR, file));
     if (file === '2961.jpg') {
         return input.resize({ width: 2000 }).jpeg().toBuffer();
@@ -34,6 +44,9 @@ async function resizeEngagementPhoto(file) {
     if (file === '2894.jpg') {
         // crop_image(height="50%", y_offset="50%") takes the bottom half.
         const { width, height } = await input.metadata();
+        if (width === undefined || height === undefined) {
+            throw new Error(`Cannot read dimensions of ${file}`);
+        }
         const top = Math.floor(height / 2);
         return input
             .extract({ left: 0, top, width, height: height - top })
@@ -44,25 +57,25 @@ async function resizeEngagementPhoto(file) {
     return input.resize({ height: 1000 }).jpeg().toBuffer();
 }
 
-function scssMap(variable, entries) {
+function scssMap(variable: string, entries: Record<string, string>): string {
     const lines = Object.entries(entries).map(
         ([key, value]) => `    '${key}': '${value}',`,
     );
     return `$${variable}: (\n${lines.join('\n')}\n);\n`;
 }
 
-export async function prepareAssets() {
+export async function prepareAssets(): Promise<PreparedAssets> {
     await mkdir(SCSS_DIR, { recursive: true });
 
-    const files = [];
-    const manifest = {};
+    const files: PreparedAssetFile[] = [];
+    const manifest: Record<string, string> = {};
 
     // Engagement photos: resize + hash, and build the two SCSS maps.
     const engagementFiles = (await readdir(ENGAGEMENT_DIR))
         .filter((file) => file.endsWith('.jpg'))
         .sort();
-    const engagementMap = {};
-    const largeMap = {};
+    const engagementMap: Record<string, string> = {};
+    const largeMap: Record<string, string> = {};
     for (const file of engagementFiles) {
         const buffer = await resizeEngagementPhoto(file);
         const served = `/${sha1(buffer)}.jpg`;
