@@ -1,0 +1,17 @@
+{
+  "name": "www-lizanddustin-com",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The source for the website www.lizanddustin.com",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.107.0",
+    "sharp": "^0.35.5",
+    "vite": "^7.3.7"
+  }
+}

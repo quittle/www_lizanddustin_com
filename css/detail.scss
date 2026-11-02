@@ -61,7 +61,7 @@
     }
 
     &::after {
-        background-image: url(/media/images/water-color/laurel.png);
+        background-image: url(../media/images/water-color/laurel.png);
         background-repeat: no-repeat;
         background-size: 100%;
         content: '';
@@ -73,11 +73,11 @@
 }
 
 #details-container-body {
-    background-image: url(/media/images/water-color/blue-clouds.png),
-                      url(/media/images/water-color/pink-splashes.png),
-                      url(/media/images/water-color/grey-cloud.png),
-                      url(/media/images/water-color/color-splashes.png),
-                      url(/media/images/water-color/grey-splash.png);
+    background-image: url(../media/images/water-color/blue-clouds.png),
+                      url(../media/images/water-color/pink-splashes.png),
+                      url(../media/images/water-color/grey-cloud.png),
+                      url(../media/images/water-color/color-splashes.png),
+                      url(../media/images/water-color/grey-splash.png);
     background-position: 0 0,
                          100% 210px,
                          13% 452px,
