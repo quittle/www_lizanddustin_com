@@ -14,7 +14,7 @@ if (!window.console) {
  * non-null, non-undefined.
  * @return {boolean} True if func was called, otherwise false.
  */
-function withAll(args_) {
+export function withAll(args_) {
     const args = [];
     for (let i = 0; i < arguments.length - 1; i++) {
         let value = arguments[i];
@@ -32,7 +32,7 @@ function withAll(args_) {
  * Gets |document.body|, which should always be non-null.
  * @return {!HTMLBodyElement} The document body element.
  */
-function getBody() {
+export function getBody() {
     /** @type {?HTMLBodyElement} */ const body = document.body;
     if (!body) {
         console.error('document.body was null');
@@ -45,7 +45,7 @@ function getBody() {
  * @param {!Node} node The node to analyze
  * @return {!number} The offset from the top of the page in pixels.
  */
-function offsetTop(node) {
+export function offsetTop(node) {
     if (node) {
         return parseInt(node.offsetTop, 10) + offsetTop(node.offsetParent);
     } else {
@@ -58,7 +58,7 @@ function offsetTop(node) {
  * @param {!Element} element The element to add the class to
  * @param {!string} className The class to add.
  */
-function addClass(element, className) {
+export function addClass(element, className) {
     if (element.classList) {
         element.classList.add(className);
     } else {
@@ -79,7 +79,7 @@ function addClass(element, className) {
  * @param {!Element} element The element to remove the class from
  * @param {!string} className The class to remove.
  */
-function removeClass(element, className) {
+export function removeClass(element, className) {
     if (element.classList) {
         element.classList.remove(className);
     } else {
@@ -104,7 +104,7 @@ function removeClass(element, className) {
  * Removes all the children of |el|
  * @param {!Element} el The element to remove
  */
-function emptyContents(el) {
+export function emptyContents(el) {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
     }
@@ -115,7 +115,7 @@ function emptyContents(el) {
  * @param {!string} id The id of the element to get
  * @return {?Element} The element if found or null if not found.
  */
-function getRequiredElement(id) {
+export function getRequiredElement(id) {
     /** @type {?Element} */ const element = document.getElementById(id);
     if (!element) {
         console.error('Unable to find required element: ' + id);
@@ -127,7 +127,7 @@ function getRequiredElement(id) {
  * Registers a callback to run when the DOM conetnt is loaded or run immediately if already loaded.
  * @param {!function()} callback The callback to register.
  */
-function registerOnDOMContentLoaded(callback) {
+export function registerOnDOMContentLoaded(callback) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', callback);
     } else {
@@ -143,7 +143,7 @@ function registerOnDOMContentLoaded(callback) {
  * @return {!Promise<!string>} A Promise that will resolve/reject if the request succeeds/fails,
  *                            passing in the response data.
  */
-function ajax(url, method = ajax.HTTP_METHOD.GET, data = '') {
+export function ajax(url, method = ajax.HTTP_METHOD.GET, data = '') {
     const xhr = new XMLHttpRequest();
 
     const ret = new Promise((resolve, reject) => {
@@ -175,7 +175,7 @@ ajax.HTTP_METHOD = {
  * @param {!NodeList} nodeList The NodeList to convert
  * @return {!Array<!Element>} An array of the elements in nodeList.
  */
-function nodeListToArray(nodeList) {
+export function nodeListToArray(nodeList) {
     return Array.prototype.slice.call(nodeList);
 }
 
@@ -184,7 +184,7 @@ function nodeListToArray(nodeList) {
  * @param {!HTMLFormElement} form The form to extract from
  * @return {!Object<!string, !string>} An object representing the name/value pairs in the form.
  */
-function getFormData(form) {
+export function getFormData(form) {
     /** @type {!Array<!HTMLElement>} */ const inputs = /** @type {!Array<!HTMLElement>} */ (
             nodeListToArray(form.querySelectorAll('input')).concat(
             nodeListToArray(form.querySelectorAll('select'))).concat(
@@ -209,7 +209,7 @@ function getFormData(form) {
  * @param {!string} property The style to remove
  * @suppress {invalidCasts}
  */
-function removeInlineStyle(element, property) {
+export function removeInlineStyle(element, property) {
     /** @type {!CSSStyleDeclaration} */ const style = element.style;
     if (style.removeProperty) {
         style.removeProperty(property);
@@ -223,7 +223,7 @@ function removeInlineStyle(element, property) {
 /**
  * Force the browser to re-render and therefore redraw the page to fix potential glitches
  */
-function forceRedraw() {
+export function forceRedraw() {
     /** @type {!HTMLBodyElement} */ const body = getBody();
     /** @type {string?} */ const prevDisplay = body.style.display;
     if (prevDisplay === 'block') {

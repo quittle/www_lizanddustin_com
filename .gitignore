@@ -6,3 +6,8 @@
 /bazel-out
 /bazel-testlogs
 /bazel-www.lizanddustin.com
+
+# Vite build
+/node_modules
+/dist
+/generated
