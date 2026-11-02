@@ -7,11 +7,14 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/node": "^24.19.2",
     "sass": "^1.107.0",
     "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
     "vite": "^7.3.7"
   }
 }
