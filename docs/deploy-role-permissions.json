@@ -1,0 +1,99 @@
+{
+  "Statement": [
+    {
+      "Action": [
+        "cloudformation:CreateChangeSet",
+        "cloudformation:CreateStack",
+        "cloudformation:DeleteChangeSet",
+        "cloudformation:DeleteStack",
+        "cloudformation:DescribeChangeSet",
+        "cloudformation:DescribeStackEvents",
+        "cloudformation:DescribeStackResources",
+        "cloudformation:DescribeStacks",
+        "cloudformation:ExecuteChangeSet",
+        "cloudformation:UpdateStack"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:cloudformation:us-east-1:915290536872:stack/lizanddustin-com*",
+      "Sid": "CloudFormationStacks"
+    },
+    {
+      "Action": "cloudformation:ValidateTemplate",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "CloudFormationValidate"
+    },
+    {
+      "Action": "cloudformation:GetTemplateSummary",
+      "Effect": "Allow",
+      "Resource": "arn:aws:cloudformation:us-east-1:915290536872:stack/lizanddustin-com*",
+      "Sid": "CloudFormationGetTemplate"
+    },
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sam-915290536872",
+        "arn:aws:s3:::sam-915290536872/*"
+      ],
+      "Sid": "PackagingBucket"
+    },
+    {
+      "Action": "s3:PutObject",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::www.lizanddustin.com/rsvp",
+        "arn:aws:s3:::alpha.lizanddustin.com/rsvp"
+      ],
+      "Sid": "WebsiteBucketRedirect"
+    },
+    {
+      "Action": [
+        "lambda:AddPermission",
+        "lambda:CreateFunction",
+        "lambda:DeleteFunction",
+        "lambda:GetFunction",
+        "lambda:RemovePermission",
+        "lambda:TagResource",
+        "lambda:UntagResource",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:lambda:us-east-1:915290536872:function:lizanddustin-com*",
+      "Sid": "LambdaUploadFunction"
+    },
+    {
+      "Action": [
+        "lambda:DeleteLayerVersion",
+        "lambda:GetLayerVersion",
+        "lambda:PublishLayerVersion"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:lambda:us-east-1:915290536872:layer:lizanddustin-com*",
+      "Sid": "LambdaUploadLayer"
+    },
+    {
+      "Action": [
+        "iam:AttachRolePolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:DeleteRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:GetRole",
+        "iam:PassRole",
+        "iam:PutRolePolicy",
+        "iam:TagRole",
+        "iam:UntagRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:iam::915290536872:role/lizanddustin-com*",
+      "Sid": "LambdaExecutionRole"
+    }
+  ],
+  "Version": "2012-10-17"
+}

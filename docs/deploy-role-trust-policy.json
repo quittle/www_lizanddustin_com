@@ -1,0 +1,18 @@
+{
+  "Statement": [
+    {
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+          "token.actions.githubusercontent.com:sub": "repo:quittle/www_lizanddustin_com:ref:refs/heads/master"
+        }
+      },
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::915290536872:oidc-provider/token.actions.githubusercontent.com"
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

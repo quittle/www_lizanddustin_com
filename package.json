@@ -7,9 +7,13 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "preview": "vite preview"
+    "deploy": "./scripts/deploy",
+    "deploy-test": "./scripts/deploy test",
+    "preview": "vite preview",
+    "release": "npm run build && npm run deploy"
   },
   "devDependencies": {
+    "s3-upload-custom-resource-lambda-layer": "^1.2.3",
     "sass": "^1.107.0",
     "sharp": "^0.35.5",
     "vite": "^7.3.7"

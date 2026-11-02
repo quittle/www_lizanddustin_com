@@ -6,6 +6,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,3 +21,13 @@ jobs:
           cache: npm
       - run: npm ci --no-audit
       - run: npm run build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        if: github.ref == 'refs/heads/master'
+        with:
+          role-to-assume: arn:aws:iam::915290536872:role/www.lizanddustin.com-deploy
+          role-session-name: Deploy_via_GitHub_to_AWS_via_FederatedOIDC
+          aws-region: us-east-1
+      - name: Deploy
+        if: github.ref == 'refs/heads/master'
+        run: npm run deploy
