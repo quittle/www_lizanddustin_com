@@ -1,0 +1,77 @@
+#!/bin/bash -ex
+# Deploy www.lizanddustin.com. Adapted from lifeofbobostrosky.com's
+# scripts/deploy (same s3-upload-custom-resource-lambda-layer pattern).
+#
+# Usage:
+#   ./scripts/deploy           Deploy to www.lizanddustin.com
+#   ./scripts/deploy test      Deploy to alpha.lizanddustin.com (staging)
+#
+# Prerequisites (run once, not by this script):
+#   - `npm ci` (installs s3-upload-custom-resource-lambda-layer, whose
+#     dist/layer.zip the template references)
+#   - `npm run build` (produces dist/)
+#   - AWS credentials: locally, any identity allowed to assume the deploy
+#     role; in CI, the www.lizanddustin.com-deploy OIDC role
+#     (docs/deploy-role-trust-policy.json, docs/deploy-role-permissions.json)
+#     via aws-actions/configure-aws-credentials in .github/workflows/build.yml.
+#   - The template lives at config/cloudformation.yml; the object config at
+#     config/.s3uploadconfig.json (copied into dist/ below, as the upload
+#     Lambda requires it at the root of the packaged files).
+#
+# First-deploy warning: the upload Lambda's Create handler FAILS unless the
+# target bucket is empty, and its Update handler DELETES every object in the
+# bucket before re-uploading. So the first deploy to www empties the live
+# bucket (brief outage until the upload finishes) and wipes the legacy
+# Bazel files. Rehearse on alpha first (`./scripts/deploy test`), and back
+# up the www bucket before the first prod deploy:
+#   aws s3 sync s3://www.lizanddustin.com ./backup-www-before-first-deploy
+# A failed first attempt is safe: Create fails before anything is deleted.
+# The alpha bucket is non-empty today too (3 legacy images + the rsvp
+# redirect object, all also present in www), so empty it before the first
+# test deploy as well.
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+export AWS_DEFAULT_REGION=us-east-1
+
+# Optional argument that deploys to the alpha bucket instead of www.
+readonly target=$1
+
+stack_name="lizanddustin-com"
+website_bucket="www.lizanddustin.com"
+if [ "$target" = "test" ]; then
+    stack_name="lizanddustin-com-test"
+    website_bucket="alpha.lizanddustin.com"
+fi
+
+# The upload Lambda requires .s3uploadconfig.json at the root of dist/.
+cp "${DIR}/../config/.s3uploadconfig.json" "${DIR}/../dist/.s3uploadconfig.json"
+
+generated_template="/tmp/lizanddustin.com-generated-cloudformation.yml"
+
+aws cloudformation package \
+    --template-file "${DIR}/../config/cloudformation.yml" \
+    --s3-bucket sam-915290536872 \
+    --output-template-file "${generated_template}" \
+    --use-json
+
+code_uri="$(jq '.Resources.S3UploadLambda.Properties.CodeUri' "${generated_template}" --raw-output)"
+
+aws cloudformation deploy \
+    --template-file "${generated_template}" \
+    --stack-name "${stack_name}" \
+    --capabilities CAPABILITY_IAM \
+    --no-fail-on-empty-changeset \
+    --parameter-overrides \
+    "DeploymentContentVersion=${code_uri}" \
+    "WebsiteBucketName=${website_bucket}"
+
+# The upload wipes the bucket on every deploy, including the /rsvp redirect
+# object (a hosting concern, not part of the build). Recreate it: the AWS
+# scan confirmed rsvp is a 0-byte object with WebsiteRedirectLocation
+# /#rsvp, not a bucket routing rule, so nothing about the redirect survives
+# the wipe.
+aws s3api put-object \
+    --bucket "${website_bucket}" \
+    --key rsvp \
+    --website-redirect-location '/#rsvp'

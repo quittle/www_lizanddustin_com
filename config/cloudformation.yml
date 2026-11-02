@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Deploy the www.lizanddustin.com static site to the existing S3 bucket.
+# ---------------------------------------------------------------------------
+# Re-uses the existing hosting resources (created by the old Bazel/Travis
+# deploy, still serving the site today):
+#   - S3 bucket www.lizanddustin.com (us-east-1, website hosting enabled)
+#   - the CloudFront distribution fronting it, its ACM certificate, and the
+#     Route 53 records for lizanddustin.com / www.lizanddustin.com
+#
+# This stack creates ONLY the upload machinery: the S3Upload Lambda layer +
+# function and the Custom::UploadFilesToS3 resource that syncs the Vite build
+# output (dist/) into the bucket. It deliberately does NOT define the bucket,
+# the distribution, the certificate, or any DNS records.
+#
+# Pattern copied from lifeofbobostrosky.com (config/cloudformation.yml), which
+# uses the same s3-upload-custom-resource-lambda-layer. Differences from that
+# template: no bucket, no CloudFront, no certificate, no Route 53, no API or
+# DynamoDB resources -- this site is static-only.
+#
+# Known behavior of the upload layer (from its source, verified 2026-11-02):
+#   - Create FAILS unless the bucket is empty ("Bucket must be empty"). The
+#     first deploy therefore needs the bucket emptied first -- back it up
+#     (aws s3 sync s3://www.lizanddustin.com ./backup-...) and empty it
+#     before the first prod deploy; rehearse on alpha first
+#     (./scripts/deploy test). A failed first attempt is safe: Create fails
+#     before anything is deleted.
+#   - Update/Delete wipe EVERY object in the bucket (no prefix) and re-upload
+#     the build output. The /rsvp redirect object is NOT part of the build,
+#     so scripts/deploy recreates it after every deploy. (Verified by the
+#     AWS scan: rsvp is a 0-byte S3 redirect object with
+#     WebsiteRedirectLocation /#rsvp, not a bucket routing rule, so nothing
+#     about the redirect survives the wipe.)
+#   - .s3uploadconfig.json must exist at the root of dist/ at package time;
+#     scripts/deploy copies config/.s3uploadconfig.json there. The file
+#     itself is not uploaded.
+#   - No CloudFront invalidation is done (same as lifeofbobostrosky). The
+#     config gives index.html max-age=900, so the new index is picked up
+#     within 15 minutes; all other assets are content-hashed and immutable.
+# ---------------------------------------------------------------------------
+Parameters:
+  DeploymentContentVersion:
+    Type: String
+    Description: Any unique string identifying the files being deployed. The deploy script passes the packaged CodeUri (an S3 URI that changes whenever the content changes).
+  WebsiteBucketName:
+    Type: String
+    Default: www.lizanddustin.com
+    Description: Name of the existing S3 bucket serving the site. Override to alpha.lizanddustin.com for a staging deploy (see scripts/deploy).
+
+Resources:
+  # Deployment
+  S3UploadLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ../node_modules/s3-upload-custom-resource-lambda-layer/dist/layer.zip
+  S3UploadLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Layers: [!Ref S3UploadLambdaLayer]
+      CodeUri: ../dist
+      Handler: s3-upload-custom-resource.handler
+      MemorySize: 10240
+      Timeout: 180
+      Runtime: nodejs22.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref WebsiteBucketName
+  DeployWebsite:
+    Type: Custom::UploadFilesToS3
+    Properties:
+      ServiceToken: !GetAtt S3UploadLambda.Arn
+      BucketName: !Ref WebsiteBucketName
+      ContentVersion: !Ref DeploymentContentVersion
+
+Outputs:
+  WebsiteBucket:
+    Description: The existing bucket the site is deployed to.
+    Value: !Ref WebsiteBucketName
+  S3UploadLambdaArn:
+    Description: The upload Lambda backing the DeployWebsite custom resource.
+    Value: !GetAtt S3UploadLambda.Arn

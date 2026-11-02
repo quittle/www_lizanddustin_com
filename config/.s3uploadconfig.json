@@ -1,0 +1,46 @@
+{
+  "**/*.css": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "text/css"
+  },
+  "**/*.gif": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "image/gif"
+  },
+  "**/*.html": {
+    "cacheControl": "public, max-age=900",
+    "contentType": "text/html"
+  },
+  "**/*.jpe?g": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "image/jpeg"
+  },
+  "**/*.js": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "text/javascript"
+  },
+  "**/*.png": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "image/png"
+  },
+  "**/*.svg": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "image/svg+xml"
+  },
+  "**/*.ttf": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "font/ttf"
+  },
+  "**/*.webp": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "image/webp"
+  },
+  "**/*.woff": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "font/woff"
+  },
+  "**/*.woff2": {
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentType": "font/woff2"
+  }
+}
