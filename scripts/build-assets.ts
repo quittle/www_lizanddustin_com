@@ -9,10 +9,9 @@
 // minify_site_zip build, which served every asset at /<sha1>.<ext>.
 //
 // Outputs:
-//   - generated/scss/*.scss   SCSS maps, consumed by css/main.scss via includePaths
-//   - generated/manifest.json original path -> served path, for the HTML plugin
-//   - files[]                 { fileName, source } buffers, emitted at the site
-//                             root by vite.config.ts (generateBundle)
+//   - generated/scss/*.scss   SCSS maps, consumed via includePaths (see vite.config.ts)
+//   - { manifest, files }     original path -> served path, and the { fileName, source }
+//                             buffers, emitted at the site root by the plugin (generateBundle)
 import { createHash } from 'node:crypto';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -105,15 +104,9 @@ export async function prepareAssets(): Promise<PreparedAssets> {
         .toBuffer();
     const lumaServed = `/${sha1(lumaBuffer)}.png`;
     files.push({ fileName: lumaServed.slice(1), source: lumaBuffer });
-    manifest['media/images/luma/wide.png'] = lumaServed;
     await writeFile(
         path.join(SCSS_DIR, 'luma_logo_map.scss'),
         scssMap('luma-logo', { 'media/images/luma/wide.png': lumaServed }),
-    );
-
-    await writeFile(
-        path.join(GENERATED_DIR, 'manifest.json'),
-        JSON.stringify(manifest, null, 2) + '\n',
     );
 
     return { manifest, files };
