@@ -5,8 +5,6 @@
 @import 'directions';
 @import 'engagement-photos';
 @import 'gallery';
-@import 'large_map';
-@import 'luma_logo_map';
 @import 'math';
 @import 'music';
 @import 'nav-block';
@@ -190,7 +188,7 @@ section {
     @include prefix(user-select, none);
 
     background: #ab945a
-            url(#{map-get($large-images-map, 'media/images/engagement/2961.jpg')})
+            url(../generated/engagement/2961.jpg)
             center/cover
             no-repeat;
     bottom: 0;

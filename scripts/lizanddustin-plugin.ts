@@ -1,19 +1,26 @@
 // The bespoke pieces of the build, which no Vite loader expresses: the
 // engagement photos need the old pipeline's treatment (resize, the 2894
-// bottom-half crop, SHA-1 content names, and the SCSS hash maps), so they
-// are prepared up front and emitted as assets; the gallery is then injected
-// into #engagement-shoot from the same manifest, the Analytics snippet is
-// inlined from js/google-analytics.js, and the body is minified the way the
-// old minify_html step did. Everything else the old plugin did — the <head>
-// composition, the body assembly, the relative <img> paths — now lives in
-// index.html itself, so Vite handles it.
+// bottom-half crop), so they are prepared up front — resized once to
+// generated/ with stable names — and the stylesheets reference them via
+// plain url(), so Vite bundles and content-hashes them. The gallery is
+// injected into #engagement-shoot at transform time carrying only the
+// photo id; its thumbnails get their background from the per-id CSS rules
+// in css/engagement-photos.scss, which reference the same url() as the
+// detail ::before rules, so the gallery and the CSS share one file per
+// photo. The Analytics snippet is inlined from js/google-analytics.js,
+// and the body is minified the way the old minify_html step did. Everything
+// else the old plugin did — the <head> composition, the body assembly, the
+// relative <img> paths — now lives in index.html itself, so Vite handles it.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
 import { prepareAssets } from './build-assets';
-import type { PreparedAssets } from './build-assets';
 
-let prepared: PreparedAssets | null = null;
+// The sorted engagement filenames, as written to generated/ by
+// prepareAssets(). The gallery <li>s are injected in the same order the
+// old manifest build used: sorted by original path, so '3100-2.jpg'
+// precedes '3100.jpg' ('-' < '.'), which a plain id sort would reverse.
+let engagementFiles: string[] | null = null;
 
 // The script-include tag in index.html that transformIndexHtml replaces
 // with the inlined Analytics snippet from js/google-analytics.js.
@@ -24,18 +31,9 @@ export function lizanddustinPlugin(): Plugin {
         name: 'lizanddustin-build',
 
         async buildStart() {
-            // Resize + hash images and generate the SCSS maps before Sass runs.
-            prepared = await prepareAssets();
-        },
-
-        generateBundle() {
-            if (!prepared) {
-                throw new Error('assets were not prepared before generateBundle');
-            }
-            // Emit the hashed images at the site root.
-            for (const file of prepared.files) {
-                this.emitFile({ type: 'asset', fileName: file.fileName, source: file.source });
-            }
+            // Resize the images to generated/ before Sass runs, so the
+            // url()s in the stylesheets resolve to real files.
+            engagementFiles = await prepareAssets();
         },
 
         // Runs before Vite's own index.html processing so the injected
@@ -44,7 +42,7 @@ export function lizanddustinPlugin(): Plugin {
         transformIndexHtml: {
             order: 'pre',
             handler(html: string): string {
-                if (!prepared) {
+                if (!engagementFiles) {
                     throw new Error('assets were not prepared before transformIndexHtml');
                 }
                 // Inline the Analytics snippet from its own source file,
@@ -58,14 +56,19 @@ export function lizanddustinPlugin(): Plugin {
                         `<script>${readFileSync(path.join(import.meta.dirname, '..', 'js', 'google-analytics.js'), 'utf8').trim()}</script>`,
                 );
 
-                // Generate the engagement gallery from the JPG glob.
-                const galleryItems = Object.entries(prepared.manifest)
-                    .filter(([original]) => original.startsWith('media/images/engagement/'))
-                    .sort(([a], [b]) => (a < b ? -1 : 1))
-                    .map(
-                        ([, served]) =>
-                            `<li><a href="#!gallery&image=${served}" style="background-image:url(${served})"></a></li>`,
-                    )
+                // Generate the engagement gallery. Each <li> carries only
+                // the photo id — the thumbnail background comes from the
+                // per-id CSS rule, and the href carries the id the same
+                // way the old build's image= value did (nothing reads
+                // that value; getIdFromHash only takes the part before
+                // '&', so the click opens the gallery detail as before).
+                const galleryItems = engagementFiles
+                    .map((file) => `media/images/engagement/${file}`)
+                    .sort()
+                    .map((original) => {
+                        const id = path.basename(original, '.jpg');
+                        return `<li><a data-gallery-img="${id}" href="#!gallery&image=${id}"></a></li>`;
+                    })
                     .join('');
                 const withGallery = withAnalytics.replace(
                     '<div id="engagement-shoot"></div>',
