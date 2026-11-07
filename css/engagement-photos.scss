@@ -1,6 +1,4 @@
- @import 'engagement_map';
-
-$engagement-photos: (
+ $engagement-photos: (
     "0728": (),
     "0753": (),
     "0767": (),
@@ -79,9 +77,8 @@ $engagement-photos: (
 }
 
 @each $id, $settings in $engagement-photos {
-    $path: map-get($engagement-photos-map, 'media/images/engagement/#{$id}.jpg');
     [data-eng-img="#{$id}"]::before {
-        background-image: url(/#{$path});
+        background-image: url(../generated/engagement/#{$id}.jpg);
 
         $transform-content: '';
 
