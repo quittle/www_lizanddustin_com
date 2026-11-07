@@ -1,10 +1,11 @@
-$engagement-photos: (
-    "0728": (),
-    "0753": (),
-    "0767": (),
-    "0788": (),
-    "0795": (),
-    "0803": (),
+// Per-photo detail settings only. The photo list itself is generated
+// from the folder — generated/scss/engagement-photo-ids.scss, written by
+// scripts/build-assets.ts from media/images/engagement — so only the
+// photos with non-default settings appear here, and the list can never
+// drift from the folder. Everything else defaults to no zoom/shift.
+@import 'engagement-photo-ids';
+
+$engagement-photo-settings: (
     "0815": (
         "scale": 1.5,
         "translate": (
@@ -12,52 +13,11 @@ $engagement-photos: (
             "y": 15%,
         ),
     ),
-    "0820": (),
-    "0838": (),
-    "0843": (),
-    "0855": (),
-    "0879": (),
-    "0885": (),
-    "0893": (),
-    "0898": (),
-    "2795": (),
-    "2808": (),
-    "2812": (),
-    "2818": (),
-    "2835": (),
-    "2839": (),
-    "2845": (),
-    "2855": (),
-    "2888": (),
     "2894": (
         "translate": (
             "y": 19%,
         ),
     ),
-    "2903": (),
-    "2910": (),
-    "2930": (),
-    "2935": (),
-    "2942": (),
-    "2961": (),
-    "2966": (),
-    "2975": (),
-    "2981": (),
-    "3001": (),
-    "3010": (),
-    "3016": (),
-    "3019": (),
-    "3027": (),
-    "3036": (),
-    "3048": (),
-    "3060": (),
-    "3068": (),
-    "3073": (),
-    "3087": (),
-    "3095": (),
-    "3100-2": (),
-    "3100": (),
-    "3143": (),
 );
 
 [data-eng-img] {
@@ -76,7 +36,12 @@ $engagement-photos: (
     }
 }
 
-@each $id, $settings in $engagement-photos {
+@each $id in $engagement-photo-ids {
+    $settings: map-get($engagement-photo-settings, $id);
+    @if $settings == null {
+        $settings: ();
+    }
+
     [data-eng-img="#{$id}"]::before {
         background-image: url(../generated/engagement/#{$id}.jpg);
 
