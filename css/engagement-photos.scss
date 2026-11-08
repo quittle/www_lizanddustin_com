@@ -1,5 +1,5 @@
 // Per-photo detail settings only. The photo list itself is generated
-// from the folder — generated/scss/engagement-photo-ids.scss, written by
+// from the folder — css/engagement-photo-ids.scss, written by
 // scripts/build-assets.ts from media/images/engagement — so only the
 // photos with non-default settings appear here, and the list can never
 // drift from the folder. Everything else defaults to no zoom/shift.
@@ -43,7 +43,7 @@ $engagement-photo-settings: (
     }
 
     [data-eng-img="#{$id}"]::before {
-        background-image: url(../generated/engagement/#{$id}.jpg);
+        background-image: url(../media/images/engagement/#{$id}.jpg);
 
         $transform-content: '';
 
@@ -86,6 +86,6 @@ $engagement-photo-settings: (
     // scale/translate for the detail view) does not also render over
     // the thumbnail.
     #engagement-shoot a[data-gallery-img="#{$id}"] {
-        background-image: url(../generated/engagement/#{$id}.jpg);
+        background-image: url(../media/images/engagement/#{$id}.jpg);
     }
 }

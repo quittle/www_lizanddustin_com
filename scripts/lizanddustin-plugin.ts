@@ -1,11 +1,10 @@
 // The bespoke pieces of the build, which no Vite loader expresses: the
-// engagement photos need the old pipeline's treatment (resize, the 2894
-// bottom-half crop), so they are prepared up front — resized once to
-// generated/ with stable names — and the stylesheets reference them via
-// plain url(), so Vite bundles and content-hashes them. The gallery is
-// injected into #engagement-shoot at transform time carrying only the
-// photo id; its thumbnails get their background from the per-id CSS rules
-// in css/engagement-photos.scss, which reference the same url() as the
+// engagement photos live in media/images/engagement/ at their served size
+// (resized in place), so the stylesheets reference them via plain url()
+// and Vite bundles + content-hashes them. The gallery is injected into
+// #engagement-shoot at transform time carrying only the photo id; its
+// thumbnails get their background from the per-id CSS rules in
+// css/engagement-photos.scss, which reference the same url() as the
 // detail ::before rules, so the gallery and the CSS share one file per
 // photo. The Analytics snippet is inlined from js/google-analytics.js,
 // and the body is minified the way the old minify_html step did. Everything
@@ -16,10 +15,10 @@ import path from 'node:path';
 import type { Plugin } from 'vite';
 import { prepareAssets } from './build-assets';
 
-// The sorted engagement filenames, as written to generated/ by
-// prepareAssets(). The gallery <li>s are injected in the same order the
-// old manifest build used: sorted by original path, so '3100-2.jpg'
-// precedes '3100.jpg' ('-' < '.'), which a plain id sort would reverse.
+// The sorted engagement filenames, in media/images/engagement/. The
+// gallery <li>s are injected in the same order the old manifest build
+// used: sorted by original path, so '3100-2.jpg' precedes '3100.jpg'
+// ('-' < '.'), which a plain id sort would reverse.
 let engagementFiles: string[] | null = null;
 
 // The script-include tag in index.html that transformIndexHtml replaces
@@ -31,8 +30,8 @@ export function lizanddustinPlugin(): Plugin {
         name: 'lizanddustin-build',
 
         async buildStart() {
-            // Resize the images to generated/ before Sass runs, so the
-            // url()s in the stylesheets resolve to real files.
+            // Write the photo id list before Sass runs, so the stylesheet
+            // iterates the folder contents.
             engagementFiles = await prepareAssets();
         },
 
