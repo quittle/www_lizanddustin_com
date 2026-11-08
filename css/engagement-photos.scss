@@ -1,5 +1,3 @@
- @import 'engagement_map';
-
 $engagement-photos: (
     "0728": (),
     "0753": (),
@@ -79,9 +77,8 @@ $engagement-photos: (
 }
 
 @each $id, $settings in $engagement-photos {
-    $path: map-get($engagement-photos-map, 'media/images/engagement/#{$id}.jpg');
     [data-eng-img="#{$id}"]::before {
-        background-image: url(/#{$path});
+        background-image: url(../generated/engagement/#{$id}.jpg);
 
         $transform-content: '';
 
@@ -115,5 +112,15 @@ $engagement-photos: (
         @if str-length($transform-content) > 0 {
             transform: unquote($transform-content);
         }
+    }
+
+    // Gallery thumbnail: the <li> anchor carries no URL, so its
+    // background comes from this rule, which references the same url()
+    // as the detail rule above — Vite emits the file once. A separate
+    // attribute, not data-eng-img, so the detail ::before (with its
+    // scale/translate for the detail view) does not also render over
+    // the thumbnail.
+    #engagement-shoot a[data-gallery-img="#{$id}"] {
+        background-image: url(../generated/engagement/#{$id}.jpg);
     }
 }

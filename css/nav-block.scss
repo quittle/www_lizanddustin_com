@@ -89,8 +89,6 @@ main a {
 }
 
 #luma-card {
-    $image: map-get($luma-logo, 'media/images/luma/wide.png');
-
-    background: white url(#{$image}) no-repeat center/85%;
+    background: white url(../generated/luma/wide.png) no-repeat center/85%;
     border: 2px solid black;
 }

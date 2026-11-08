@@ -17,12 +17,8 @@
 //     build ran pngtastic over them).
 //   - The /rsvp -> /#rsvp redirect is a hosting concern, not part of the
 //     build; it belongs in the deploy configuration (follow-up PR).
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { UserConfig } from 'vite';
 import { lizanddustinPlugin } from './scripts/lizanddustin-plugin';
-
-const ROOT = path.dirname(fileURLToPath(import.meta.url));
 
 const config: UserConfig = {
     plugins: [lizanddustinPlugin()],
@@ -38,7 +34,6 @@ const config: UserConfig = {
     css: {
         preprocessorOptions: {
             scss: {
-                loadPaths: [path.join(ROOT, 'generated/scss')],
                 // The legacy SCSS uses @import, `/` division and the global
                 // map-get() builtin; keep it compiling as-is rather than
                 // modernizing it in this migration.
