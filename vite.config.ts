@@ -18,7 +18,6 @@
 //   - The /rsvp -> /#rsvp redirect is a hosting concern, not part of the
 //     build; it belongs in the deploy configuration (follow-up PR).
 import type { UserConfig } from 'vite';
-import path from 'node:path';
 import { lizanddustinPlugin } from './scripts/lizanddustin-plugin';
 
 const config: UserConfig = {
@@ -35,10 +34,6 @@ const config: UserConfig = {
     css: {
         preprocessorOptions: {
             scss: {
-                // generated/scss holds the folder-derived photo id list
-                // (see scripts/build-assets.ts); the stylesheet imports
-                // it by bare name.
-                loadPaths: [path.join(import.meta.dirname, 'generated', 'scss')],
                 // The legacy SCSS uses @import, `/` division and the global
                 // map-get() builtin; keep it compiling as-is rather than
                 // modernizing it in this migration.

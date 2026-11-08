@@ -1,4 +1,5 @@
 # Vite build
 /node_modules
 /dist
-/generated
+# Generated at build time by scripts/build-assets.ts; do not edit by hand.
+/css/engagement-photo-ids.scss
