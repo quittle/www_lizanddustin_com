@@ -1,24 +1,10 @@
-// Per-photo detail settings only. The photo list itself is generated
-// from the folder — css/engagement-photo-ids.scss, written by
-// scripts/build-assets.ts from media/images/engagement — so only the
-// photos with non-default settings appear here, and the list can never
-// drift from the folder. Everything else defaults to no zoom/shift.
+// The photo list is generated from the folder —
+// css/engagement-photo-ids.scss, written by scripts/build-assets.ts from
+// media/images/engagement — so the loop below can never drift from the
+// folder. Only two photos have non-default detail settings; they get
+// explicit rules at the bottom, and the loop only emits the shared
+// background-image. Everything else defaults to no zoom/shift.
 @import 'engagement-photo-ids';
-
-$engagement-photo-settings: (
-    "0815": (
-        "scale": 1.5,
-        "translate": (
-            "x": 4%,
-            "y": 15%,
-        ),
-    ),
-    "2894": (
-        "translate": (
-            "y": 19%,
-        ),
-    ),
-);
 
 [data-eng-img] {
     overflow: hidden; // Hides zoomed in images
@@ -37,46 +23,8 @@ $engagement-photo-settings: (
 }
 
 @each $id in $engagement-photo-ids {
-    $settings: map-get($engagement-photo-settings, $id);
-    @if $settings == null {
-        $settings: ();
-    }
-
     [data-eng-img="#{$id}"]::before {
         background-image: url(../media/images/engagement/#{$id}.jpg);
-
-        $transform-content: '';
-
-        $scale: map-get($settings, "scale");
-        $scaling: type-of($scale) == "number";
-        @if $scaling {
-            $transform-content: '#{$transform-content} scale(#{$scale})';
-        }
-
-        $translate: map-get($settings, "translate");
-        @if type-of($translate) == "map" {
-            $translateX: map-get($translate, "x");
-            @if type-of($translateX) == "number" {
-                @if $scaling {
-                    $transform-content: '#{$transform-content} translateX(#{$translateX})';
-                } @else {
-                    background-position-x: $translateX;
-                }
-            }
-
-            $translateY: map-get($translate, "y");
-            @if type-of($translateY) == "number" {
-                @if $scaling {
-                    $transform-content: '#{$transform-content} translateY(#{$translateY})';
-                } @else {
-                    background-position-y: $translateY;
-                }
-            }
-        }
-
-        @if str-length($transform-content) > 0 {
-            transform: unquote($transform-content);
-        }
     }
 
     // Gallery thumbnail: the <li> anchor carries no URL, so its
@@ -88,4 +36,14 @@ $engagement-photo-settings: (
     #engagement-shoot a[data-gallery-img="#{$id}"] {
         background-image: url(../media/images/engagement/#{$id}.jpg);
     }
+}
+
+// The two photos with non-default detail settings, as explicit rules
+// instead of a settings map the loop has to interpret.
+[data-eng-img="0815"]::before {
+    transform: scale(1.5) translateX(4%) translateY(15%);
+}
+
+[data-eng-img="2894"]::before {
+    background-position-y: 19%;
 }
