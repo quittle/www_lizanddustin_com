@@ -7,8 +7,8 @@
 // css/engagement-photos.scss, which reference the same url() as the
 // detail ::before rules, so the gallery and the CSS share one file per
 // photo. The photo id list the stylesheet iterates is served in memory
-// by a Sass custom importer below — no file is written to disk. The body
-// is minified. index.html holds the head and body.
+// by a Sass custom importer below — no file is written to disk. index.html
+// holds the head and body.
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Importer } from 'sass';
@@ -81,13 +81,7 @@ export function lizanddustinPlugin(): Plugin {
                     `<div id="engagement-shoot"><ul>${galleryItems}</ul></div>`,
                 );
 
-                return withGallery.replace(
-                    /(<body>)([\s\S]*?)(<\/body>)/,
-                    (_match: string, open: string, content: string, close: string) =>
-                        open +
-                        content.replace(/<!--[\s\S]*?-->/g, '').replace(/>\s+</g, '><').trim() +
-                        close,
-                );
+                return withGallery;
             },
         },
     };
