@@ -22,10 +22,6 @@ import { lizanddustinPlugin } from './scripts/lizanddustin-plugin';
 
 const config: UserConfig = {
     plugins: [lizanddustinPlugin()],
-    // Nothing is served verbatim: every served file comes from the build
-    // (the Analytics snippet is inlined from js/google-analytics.js), so
-    // there is no public/ directory to copy.
-    publicDir: false,
     build: {
         // Never inline assets as data: URLs; the old build served every
         // image as its own content-hashed file.
@@ -34,10 +30,9 @@ const config: UserConfig = {
     css: {
         preprocessorOptions: {
             scss: {
-                // The legacy SCSS uses @import, `/` division and the global
-                // map-get() builtin; keep it compiling as-is rather than
-                // modernizing it in this migration.
-                silenceDeprecations: ['import', 'slash-div', 'global-builtin'],
+                // The legacy SCSS uses @import and `/` division; keep it
+                // compiling as-is rather than modernizing it in this migration.
+                silenceDeprecations: ['import', 'slash-div'],
             },
         },
     },

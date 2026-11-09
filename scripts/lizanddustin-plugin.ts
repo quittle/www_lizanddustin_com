@@ -17,12 +17,6 @@ import path from 'node:path';
 import type { Importer } from 'sass';
 import type { Plugin } from 'vite';
 
-// The sorted engagement filenames, in media/images/engagement/. The
-// gallery <li>s are injected in the same order the old manifest build
-// used: sorted by original path, so '3100-2.jpg' precedes '3100.jpg'
-// ('-' < '.'), which a plain id sort would reverse.
-let engagementFiles: string[] | null = null;
-
 const ENGAGEMENT_DIR = path.join(import.meta.dirname, '..', 'media', 'images', 'engagement');
 
 // The folder contents, read once and cached. Both the gallery injection
@@ -32,6 +26,8 @@ function readEngagementFiles(): string[] {
     if (cachedFiles === null) {
         cachedFiles = readdirSync(ENGAGEMENT_DIR)
             .filter((file) => file.endsWith('.jpg'))
+            // Sorted by original path, so '3100-2.jpg' precedes '3100.jpg'
+            // ('-' < '.'), which a plain id sort would reverse.
             .sort();
     }
     return cachedFiles;
@@ -86,21 +82,12 @@ export function lizanddustinPlugin(): Plugin {
             };
         },
 
-        buildStart() {
-            // Read the folder before anything else runs, so the gallery
-            // injection and the Sass importer both see the same list.
-            engagementFiles = readEngagementFiles();
-        },
-
         // Runs before Vite's own index.html processing so the injected
         // gallery <li>s and the inlined Analytics snippet are in place
         // when it bundles the page.
         transformIndexHtml: {
             order: 'pre',
             handler(html: string): string {
-                if (!engagementFiles) {
-                    throw new Error('assets were not prepared before transformIndexHtml');
-                }
                 // Inline the Analytics snippet from its own source file,
                 // as the old build did.
                 if (!html.includes(GA_SCRIPT_TAG)) {
@@ -118,11 +105,9 @@ export function lizanddustinPlugin(): Plugin {
                 // way the old build's image= value did (nothing reads
                 // that value; getIdFromHash only takes the part before
                 // '&', so the click opens the gallery detail as before).
-                const galleryItems = engagementFiles
-                    .map((file) => `media/images/engagement/${file}`)
-                    .sort()
-                    .map((original) => {
-                        const id = path.basename(original, '.jpg');
+                const galleryItems = readEngagementFiles()
+                    .map((file) => {
+                        const id = path.basename(file, '.jpg');
                         return `<li><a data-gallery-img="${id}" href="#!gallery&image=${id}"></a></li>`;
                     })
                     .join('');
