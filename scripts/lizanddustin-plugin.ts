@@ -6,69 +6,29 @@
 // thumbnails get their background from the per-id CSS rules in
 // css/engagement-photos.scss, which reference the same url() as the
 // detail ::before rules, so the gallery and the CSS share one file per
-// photo. The photo id list the stylesheet iterates is served in memory
-// by a Sass custom importer below — no file is written to disk. The
+// photo. The photo id list the stylesheet iterates is injected by
+// vite.config.ts via additionalData — no file is written to disk. The
 // Analytics snippet is inlined from js/google-analytics.js. Everything
 // else the old plugin did — the <head> composition, the body assembly,
 // the relative <img> paths — now lives in index.html itself, so Vite
 // handles it. HTML minification is handled by vite-plugin-minify.
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import type { Importer } from 'sass';
 import type { Plugin } from 'vite';
 
 const ENGAGEMENT_DIR = path.join(import.meta.dirname, '..', 'media', 'images', 'engagement');
 
-function readEngagementFiles(): string[] {
+export function readEngagementFiles(): string[] {
     return readdirSync(ENGAGEMENT_DIR)
         .filter((file) => file.endsWith('.jpg'))
         .sort();
 }
-
-// The photo id list as an in-memory file: a Sass custom importer serves
-// it when main.scss asks for it, so no file is written to disk.
-// (Sass requires canonicalize + load for a custom importer — findFileUrl
-// is only for file-based importers, and may not be combined with load.)
-const engagementIdsImporter: Importer<'async'> = {
-    async canonicalize(url: string) {
-        // Sass resolves relative imports to file:// URLs before calling
-        // canonicalize, so match the resolved path as well as the bare name.
-        const pathname = url.startsWith('file://') ? new URL(url).pathname : url;
-        if (
-            url === 'engagement-photo-ids' ||
-            pathname.endsWith('/engagement-photo-ids') ||
-            pathname.endsWith('/engagement-photo-ids.scss')
-        ) {
-            return new URL('in-memory:engagement-photo-ids');
-        }
-        return null;
-    },
-    async load(_url: URL) {
-        const ids = readEngagementFiles().map((file) => file.slice(0, -'.jpg'.length));
-        return {
-            contents: `$engagement-photo-ids: (${ids.map((id) => `"${id}"`).join(', ')});`,
-            syntax: 'scss' as const,
-        };
-    },
-};
 
 const GA_SCRIPT_TAG = '<script src="/js/google-analytics.js"></script>';
 
 export function lizanddustinPlugin(): Plugin {
     return {
         name: 'lizanddustin-build',
-
-        config() {
-            return {
-                css: {
-                    preprocessorOptions: {
-                        scss: {
-                            importer: engagementIdsImporter,
-                        },
-                    },
-                },
-            };
-        },
 
         transformIndexHtml: {
             order: 'pre',

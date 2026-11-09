@@ -1,4 +1,4 @@
-// The loop iterates the folder's photo ids (imported by main.scss),
+// The loop iterates the folder's photo ids (injected by vite.config.ts),
 // so it can never drift. Only 0815 and 2894 have non-default
 // settings; the loop only emits the shared background-image.
 
