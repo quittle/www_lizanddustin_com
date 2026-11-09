@@ -44,9 +44,6 @@ import {
         });
     }
 
-    /**
-     * Called when the RSVP details are shown
-     */
     function onRSVPDetailShown(): void {
         if (!withAll(document.querySelector<HTMLSelectElement>('#details-container select[name=contact-type]'),
                 document.querySelector<HTMLInputElement>('#details-container input[name=contact-value]'),
@@ -78,13 +75,10 @@ import {
                     });
                 })
         ) {
-            console.error('Unable to all necesary rsvp elements');
+            console.error('Unable to all necessary rsvp elements');
         }
     }
 
-    /**
-     * Called when a detail section is shown.
-     */
     function onDetailShown(): void {
         switch (getIdFromHash(location.hash)) {
             case 'rsvp':
@@ -93,9 +87,6 @@ import {
         }
     }
 
-    /**
-     * Navigates to the home state and out of any views.
-     */
     function navigateHome(): void {
         location.hash = '';
         if (typeof history.pushState === 'function') {
@@ -103,9 +94,6 @@ import {
         }
     }
 
-    /**
-     * Empties the contents of the details container.
-     */
     function clearDetailsContainer(): void {
         const detailsContainerContent = getRequiredElement('details-container-content');
 
@@ -125,11 +113,6 @@ import {
         }
     }
 
-    /**
-     * Gets the source element for a detail section
-     * @param detailId The id of the detail section to show
-     * @return A copy of the detail source to use or null if not found.
-     */
     function getDetailsSource(detailId: string): HTMLElement | null {
         const link = document.getElementById(detailId);
         if (!link) {
@@ -153,10 +136,6 @@ import {
         return document.importNode(source, true);
     }
 
-    /**
-     * Shows the details animation for a link.
-     * @param link The link for the section to inflate
-     */
     function showDetailForLink(link: Element): void {
         const body = getDetailsSource(link.getAttribute('id') ?? '');
         if (body) {
@@ -164,11 +143,6 @@ import {
         }
     }
 
-    /**
-     * Shows a detail section
-     * @param header The header text
-     * @param body The body of the detail
-     */
     function showDetail(header: string, body: HTMLElement | null): void {
         addClass(getBody(), 'disable-scrolling');
 
@@ -190,9 +164,6 @@ import {
         );
     }
 
-    /**
-     * Hides the detail section.
-     */
     function hideDetail(): void {
         clearDetailsContainer();
 
@@ -200,18 +171,10 @@ import {
         removeClass(getBody(), 'disable-scrolling');
     }
 
-    /**
-     * Gets an id from a location hash string.
-     * @param hash The hash string
-     * @return The id of an element extracted from the hash
-     */
     function getIdFromHash(hash: string): string {
         return hash.replace(/^#?!?/, '').split('&')[0];
     }
 
-    /**
-     * Callback for the onkeydown event.
-     */
     function onKeyDown(e: KeyboardEvent): void {
         switch (e.keyCode) {
             case 27: // Escape
@@ -220,11 +183,6 @@ import {
         }
     }
 
-    /**
-     * Callback for the hashchange event.
-     * @param opt_e The hashchange event
-     * @return the return value for the hashchange event if |opt_e| is defined.
-     */
     function onHashChange(opt_e?: HashChangeEvent): boolean | undefined {
         if (!location.hash || location.hash.length < 2) {
             hideDetail();
@@ -246,9 +204,6 @@ import {
         }
     }
 
-    /**
-     * Initializer method
-     */
     function init(): void {
         const navLinks = document.body.querySelectorAll('main > a');
         for (let i = 0; i < navLinks.length; i++) {
@@ -268,18 +223,12 @@ import {
         onHashChange();
     }
 
-    /**
-     * Callback for when the details container is clicked
-     */
     function onDetailsContainerClick(e: MouseEvent): void {
         if (e.target instanceof Element && e.target.getAttribute('id') === 'details-container') {
             navigateHome();
         }
     }
 
-    /**
-     * Initializer event
-     */
     function onDOMContentLoaded(): void {
         const detailsContainer = getRequiredElement('details-container');
         if (detailsContainer) {

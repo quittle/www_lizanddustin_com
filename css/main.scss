@@ -99,10 +99,6 @@ select {
         #{$side-length-em / 2}em #{$arrow-height-em}em,
         #{$side-length-em / 2}em #{$arrow-height-em}em;
     padding-right: #{2 * $right-offset-em + $side-length-em}em;
-
-    &::-ms-expand {
-        display: none;
-    }
 }
 
 button, input[type=submit], input[type=button] {
@@ -132,20 +128,12 @@ main {
     min-height: 100vh;
     padding: 1vw;
     @include prefix(perspective, 1000);
-    position: relative; // For Safari and the title backround gradient
+    position: relative; // For Safari and the title background gradient
     text-align: center;
     width: 100%;
 
-    // In IE 10/11 it won't show this element is set to the side for some reason and won't
-    // serve as a backdrop for the page
-    @include browser-ie10plus {
-        background: none;
-    }
-
-    // Add margins to the outer-most entries
     & > div {
         @include block-padding(margin, 0.5);
-//        margin: $block-padding / 2;
     }
 }
 
@@ -175,11 +163,6 @@ section {
         @include browser-safari71plus {
             display: none;
         }
-
-        // Hidden with parallax being disabled
-        @include browser-ie8plus {
-            display: none;
-        }
     }
 }
 
@@ -206,11 +189,6 @@ section {
     @include browser-edge {
         transform: none;
     }
-
-    // Disabled as main's background would not appear above title
-    @include browser-ie8plus {
-        @include prefix(transform, none);
-    }
 }
 
 #title-text {
@@ -234,13 +212,6 @@ section {
 
 #title-text-date {
     font-size: 7vw;
-}
-
-#title-text-names,
-#title-text-date {
-    @include browser-ie11 {
-        width: 100%;
-    }
 }
 
 #title-scroll-tip {

@@ -3,7 +3,7 @@
 // settings; the loop only emits the shared background-image.
 
 [data-eng-img] {
-    overflow: hidden; // Hides zoomed in images
+    overflow: hidden;
     position: relative;
 
     &::before {
@@ -23,19 +23,15 @@
         background-image: url(../media/images/engagement/#{$id}.jpg);
     }
 
-    // Gallery thumbnail: the <li> anchor carries no URL, so its
-    // background comes from this rule, which references the same url()
-    // as the detail rule above — Vite emits the file once. A separate
-    // attribute, not data-eng-img, so the detail ::before (with its
-    // scale/translate for the detail view) does not also render over
-    // the thumbnail.
+    // Gallery thumbnail: same url() as the detail rule above, so Vite
+    // emits the file once. A separate attribute, not data-eng-img, so the
+    // detail ::before does not also render over the thumbnail.
     #engagement-shoot a[data-gallery-img="#{$id}"] {
         background-image: url(../media/images/engagement/#{$id}.jpg);
     }
 }
 
-// The two photos with non-default detail settings, as explicit rules
-// instead of a settings map the loop has to interpret.
+// The two photos with non-default detail settings.
 [data-eng-img="0815"]::before {
     transform: scale(1.5) translateX(4%) translateY(15%);
 }
