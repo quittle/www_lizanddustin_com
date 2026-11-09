@@ -1,10 +1,6 @@
-// The photo list is generated from the folder —
-// css/engagement-photo-ids.scss, written by scripts/lizanddustin-plugin.ts from
-// media/images/engagement — so the loop below can never drift from the
-// folder. Only two photos have non-default detail settings; they get
-// explicit rules at the bottom, and the loop only emits the shared
-// background-image. Everything else defaults to no zoom/shift.
-@import 'engagement-photo-ids';
+// The loop iterates the folder's photo ids (imported by main.scss),
+// so it can never drift. Only 0815 and 2894 have non-default
+// settings; the loop only emits the shared background-image.
 
 [data-eng-img] {
     overflow: hidden; // Hides zoomed in images
