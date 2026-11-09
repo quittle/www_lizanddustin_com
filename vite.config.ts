@@ -21,7 +21,7 @@
 import path from 'node:path';
 import type { UserConfig } from 'vite';
 import { ViteMinifyPlugin } from 'vite-plugin-minify';
-import { lizanddustinPlugin, readEngagementFiles } from './scripts/lizanddustin-plugin';
+import { lizanddustinPlugin, readEngagementFiles } from './scripts/lizanddustin-plugin.ts';
 
 const config: UserConfig = {
     plugins: [lizanddustinPlugin(), ViteMinifyPlugin()],
