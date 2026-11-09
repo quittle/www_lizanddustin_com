@@ -37,19 +37,6 @@ export function getBody(): HTMLBodyElement {
 }
 
 /**
- * Calculates the node offset from the top of the page.
- * @param node The node to analyze
- * @return The offset from the top of the page in pixels.
- */
-export function offsetTop(node: HTMLElement | null): number {
-    if (node) {
-        return parseInt(String(node.offsetTop), 10) + offsetTop(node.offsetParent as HTMLElement | null);
-    } else {
-        return 0;
-    }
-}
-
-/**
  * Adds a class to an element.
  * @param element The element to add the class to
  * @param className The class to add.
