@@ -18,6 +18,7 @@
 //     build ran pngtastic over them).
 //   - The /rsvp -> /#rsvp redirect is a hosting concern, not part of the
 //     build; it belongs in the deploy configuration (follow-up PR).
+import path from 'node:path';
 import type { UserConfig } from 'vite';
 import { ViteMinifyPlugin } from 'vite-plugin-minify';
 import { lizanddustinPlugin, readEngagementFiles } from './scripts/lizanddustin-plugin';
@@ -40,7 +41,7 @@ const config: UserConfig = {
                 // project, so a plain prepend is safe). Re-reads the
                 // folder on each compilation, so no file is written to disk.
                 additionalData: (source: string) => {
-                    const ids = readEngagementFiles().map((file) => file.slice(0, -'.jpg'.length));
+                    const ids = readEngagementFiles().map((file) => path.basename(file, '.jpg'));
                     return `$engagement-photo-ids: (${ids.map((id) => `"${id}"`).join(', ')});\n${source}`;
                 },
             },
