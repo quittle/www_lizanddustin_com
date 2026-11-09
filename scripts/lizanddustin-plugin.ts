@@ -26,8 +26,6 @@ function readEngagementFiles(): string[] {
     if (cachedFiles === null) {
         cachedFiles = readdirSync(ENGAGEMENT_DIR)
             .filter((file) => file.endsWith('.jpg'))
-            // Sorted by original path, so '3100-2.jpg' precedes '3100.jpg'
-            // ('-' < '.'), which a plain id sort would reverse.
             .sort();
     }
     return cachedFiles;
