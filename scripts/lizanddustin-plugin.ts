@@ -19,14 +19,10 @@ import type { Plugin } from 'vite';
 
 const ENGAGEMENT_DIR = path.join(import.meta.dirname, '..', 'media', 'images', 'engagement');
 
-let cachedFiles: string[] | null = null;
 function readEngagementFiles(): string[] {
-    if (cachedFiles === null) {
-        cachedFiles = readdirSync(ENGAGEMENT_DIR)
-            .filter((file) => file.endsWith('.jpg'))
-            .sort();
-    }
-    return cachedFiles;
+    return readdirSync(ENGAGEMENT_DIR)
+        .filter((file) => file.endsWith('.jpg'))
+        .sort();
 }
 
 // The photo id list as an in-memory file: a Sass custom importer serves
