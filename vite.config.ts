@@ -3,9 +3,10 @@
 // Google Analytics snippet, which the plugin inlines into the built page)
 // and the body are written out in full there, and Vite bundles the module
 // script, the stylesheet, and the relative <img> paths. The bespoke
-// steps — the engagement photos, the gallery injection, the Analytics
-// inlining, and the body minify — live in scripts/lizanddustin-plugin.ts;
-// see that file for why no stock loader covers them.
+// steps — the engagement photos, the gallery injection, and the Analytics
+// inlining — live in scripts/lizanddustin-plugin.ts; see that file for
+// why no stock loader covers them. HTML minification is handled by
+// vite-plugin-minify (its defaults strip comments and collapse whitespace).
 //
 // Notes / known deltas vs the old Bazel build:
 //   - The old build's gallery glob matched nothing, so the live site's
@@ -18,10 +19,11 @@
 //   - The /rsvp -> /#rsvp redirect is a hosting concern, not part of the
 //     build; it belongs in the deploy configuration (follow-up PR).
 import type { UserConfig } from 'vite';
+import { ViteMinifyPlugin } from 'vite-plugin-minify';
 import { lizanddustinPlugin } from './scripts/lizanddustin-plugin';
 
 const config: UserConfig = {
-    plugins: [lizanddustinPlugin()],
+    plugins: [lizanddustinPlugin(), ViteMinifyPlugin()],
     build: {
         // Never inline assets as data: URLs; the old build served every
         // image as its own content-hashed file.
