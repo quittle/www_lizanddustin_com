@@ -19,8 +19,6 @@ import type { Plugin } from 'vite';
 
 const ENGAGEMENT_DIR = path.join(import.meta.dirname, '..', 'media', 'images', 'engagement');
 
-// The folder contents, read once and cached. Both the gallery injection
-// (below) and the Sass importer use this, so the folder is read once.
 let cachedFiles: string[] | null = null;
 function readEngagementFiles(): string[] {
     if (cachedFiles === null) {
@@ -32,9 +30,7 @@ function readEngagementFiles(): string[] {
 }
 
 // The photo id list as an in-memory file: a Sass custom importer serves
-// it when css/engagement-photos.scss asks for 'engagement-photo-ids',
-// so no file is written to disk and nothing is checked in or ignored.
-// Anything else falls through to Sass's default filesystem importer.
+// it when main.scss asks for it, so no file is written to disk.
 // (Sass requires canonicalize + load for a custom importer — findFileUrl
 // is only for file-based importers, and may not be combined with load.)
 const engagementIdsImporter: Importer<'async'> = {
