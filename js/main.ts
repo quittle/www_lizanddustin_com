@@ -162,24 +162,6 @@ import {
         if (body) {
             showDetail(link.innerHTML, body);
         }
-        // addClass(getBody(), 'disable-scrolling');
-
-        // withAll(getRequiredElement('details-container'),
-        //         getRequiredElement('details-container-header'),
-        //         getRequiredElement('details-container-body'),
-        //         getDetailsSource(link.getAttribute('id')),
-        //         (detailsContainer, detailsContainerHeader, detailsContainerBody, copiedSource) => {
-        //             clearDetailsContainer();
-
-        //             detailsContainerHeader.innerHTML = link.innerHTML;
-
-        //             detailsContainerBody.appendChild(copiedSource);
-
-        //             onDetailShown();
-
-        //             addClass(getBody(), 'details-visible');
-        //         }
-        // );
     }
 
     /**
@@ -265,12 +247,6 @@ import {
     }
 
     /**
-     * Callback for the onresize event.
-     */
-    function onResize(e: UIEvent): void {
-    }
-
-    /**
      * Initializer method
      */
     function init(): void {
@@ -314,6 +290,5 @@ import {
     window.addEventListener('load', init);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('hashchange', onHashChange, false);
-    window.addEventListener('resize', onResize);
     registerOnDOMContentLoaded(onDOMContentLoaded);
 })();

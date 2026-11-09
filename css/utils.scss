@@ -1,7 +1,3 @@
-@function floor-decimal($decimal) {
-    @return floor($decimal * 100000) / 100000;
-}
-
 $PREFIXES: 'webkit', 'moz', 'o', 'ms';
 
 @mixin prefix($property, $value) {
