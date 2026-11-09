@@ -20,7 +20,7 @@
 //     build; it belongs in the deploy configuration (follow-up PR).
 import type { UserConfig } from 'vite';
 import { ViteMinifyPlugin } from 'vite-plugin-minify';
-import { lizanddustinPlugin } from './scripts/lizanddustin-plugin';
+import { lizanddustinPlugin, readEngagementFiles } from './scripts/lizanddustin-plugin';
 
 const config: UserConfig = {
     plugins: [lizanddustinPlugin(), ViteMinifyPlugin()],
@@ -35,6 +35,14 @@ const config: UserConfig = {
                 // The legacy SCSS uses @import and `/` division; keep it
                 // compiling as-is rather than modernizing it in this migration.
                 silenceDeprecations: ['import', 'slash-div'],
+                // The photo id list for the engagement-photos loop,
+                // injected above every SCSS file's source (no @use in the
+                // project, so a plain prepend is safe). Re-reads the
+                // folder on each compilation, so no file is written to disk.
+                additionalData: (source: string) => {
+                    const ids = readEngagementFiles().map((file) => file.slice(0, -'.jpg'.length));
+                    return `$engagement-photo-ids: (${ids.map((id) => `"${id}"`).join(', ')});\n${source}`;
+                },
             },
         },
     },
