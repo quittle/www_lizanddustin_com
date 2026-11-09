@@ -8,10 +8,10 @@
 // detail ::before rules, so the gallery and the CSS share one file per
 // photo. The photo id list the stylesheet iterates is served in memory
 // by a Sass custom importer below — no file is written to disk. The
-// Analytics snippet is inlined from js/google-analytics.js, and the body
-// is minified the way the old minify_html step did. Everything else the
-// old plugin did — the <head> composition, the body assembly, the
-// relative <img> paths — now lives in index.html itself, so Vite handles it.
+// Analytics snippet is inlined from js/google-analytics.js. Everything
+// else the old plugin did — the <head> composition, the body assembly,
+// the relative <img> paths — now lives in index.html itself, so Vite
+// handles it. HTML minification is handled by vite-plugin-minify.
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Importer } from 'sass';
@@ -95,13 +95,7 @@ export function lizanddustinPlugin(): Plugin {
                     `<div id="engagement-shoot"><ul>${galleryItems}</ul></div>`,
                 );
 
-                return withGallery.replace(
-                    /(<body>)([\s\S]*?)(<\/body>)/,
-                    (_match: string, open: string, content: string, close: string) =>
-                        open +
-                        content.replace(/<!--[\s\S]*?-->/g, '').replace(/>\s+</g, '><').trim() +
-                        close,
-                );
+                return withGallery;
             },
         },
     };
