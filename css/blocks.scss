@@ -3,9 +3,7 @@ $block-mobile-break: 1000px;
 $block-padding: 1vw;
 $full-width: 100vw - 2 * $block-padding;
 
-// The only block sizes used in index.html.
-$used-sizes: (2, 2), (2, 3), (2, 4), (2, 6), (3, 3), (3, 4), (3, 6),
-    (4, 3), (4, 4), (4, 6), (4, 12), (6, 2), (6, 4), (6, 6);
+$max-depth: 12;
 
 @mixin block-padding($property, $multiplier: 1) {
     $block-padding: $block-padding * $multiplier;
@@ -61,14 +59,17 @@ $used-sizes: (2, 2), (2, 3), (2, 4), (2, 6), (3, 3), (3, 4), (3, 6),
 // 100vw = (n + 1) * mw + n * bw
 // 100vw - (n + 1) * mw = n * bw
 // (100vw - (n + 1) * mw) / n = bw
-@each $size in $used-sizes {
-    $width: nth($size, 1);
-    $height: nth($size, 2);
+@for $width from 1 through $max-depth {
     $block-width: ($full-width - ($width + 1) * $block-padding) / $width;
-    $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
 
-    .block-w#{$width}-h#{$height} {
-        @include mobile-support(height, $block-height, $block-height * 2);
-        @include mobile-support(width, $block-width, $block-width * 2);
+    @for $height from 1 through $max-depth {
+        $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
+
+        // This could be improved by inverting the loop and put everything in one media query
+        // instead of 1 for each.
+        .block-w#{$width}-h#{$height} {
+            @include mobile-support(height, $block-height, $block-height * 2);
+            @include mobile-support(width, $block-width, $block-width * 2);
+        }
     }
 }
