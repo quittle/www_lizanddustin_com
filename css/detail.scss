@@ -7,6 +7,10 @@
     .parallax {
         filter: blur(16px);
     }
+
+    #details-container {
+        display: inline-block;
+    }
 }
 
 #details-container {
@@ -86,11 +90,5 @@
 
     @media (max-width: 600px) {
         font-size: 4.5vw;
-    }
-}
-
-.details-visible {
-    #details-container {
-        display: inline-block;
     }
 }
