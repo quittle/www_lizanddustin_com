@@ -1,12 +1,10 @@
+import '../css/main.scss';
 import {
     addClass,
     ajax,
-    emptyContents,
     forceRedraw,
-    getBody,
     getFormData,
     getRequiredElement,
-    registerOnDOMContentLoaded,
     removeClass,
     withAll,
 } from './utils.js';
@@ -29,8 +27,7 @@ import {
             console.error('Unable to find submit button');
         }
 
-        ajax(API_ENDPOINT + RSVP_PATH, ajax.HTTP_METHOD.POST, JSON.stringify(getFormData(form))).then(response => {
-            console.log(response);
+        ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
             if (submit) {
                 addClass(submit, 'sent');
             }
@@ -98,9 +95,7 @@ import {
      */
     function navigateHome(): void {
         location.hash = '';
-        if (typeof history.pushState === 'function') {
-            history.replaceState('', document.title, location.pathname + location.search);
-        }
+        history.replaceState('', document.title, location.pathname + location.search);
     }
 
     /**
@@ -116,12 +111,12 @@ import {
         const detailsContainerHeader = getRequiredElement('details-container-header');
 
         if (detailsContainerHeader) {
-            emptyContents(detailsContainerHeader);
+            detailsContainerHeader.replaceChildren();
         }
 
         const detailsContainerBody = getRequiredElement('details-container-body');
         if (detailsContainerBody) {
-            emptyContents(detailsContainerBody);
+            detailsContainerBody.replaceChildren();
         }
     }
 
@@ -137,12 +132,8 @@ import {
             return null;
         }
 
-        const sourceId: string | null = link.getAttribute('data-source') ||
+        const sourceId: string = link.getAttribute('data-source') ||
                 'details-source-' + link.getAttribute('id');
-        if (!sourceId) {
-            console.error('data-source not found on: ' + detailId);
-            return null;
-        }
 
         const source = document.getElementById(sourceId);
         if (!source) {
@@ -170,7 +161,7 @@ import {
      * @param body The body of the detail
      */
     function showDetail(header: string, body: HTMLElement | null): void {
-        addClass(getBody(), 'disable-scrolling');
+        addClass(document.body, 'disable-scrolling');
 
         withAll(getRequiredElement('details-container-header'),
                 getRequiredElement('details-container-body'),
@@ -185,7 +176,7 @@ import {
 
                     onDetailShown();
 
-                    addClass(getBody(), 'details-visible');
+                    addClass(document.body, 'details-visible');
                 }
         );
     }
@@ -196,8 +187,8 @@ import {
     function hideDetail(): void {
         clearDetailsContainer();
 
-        removeClass(getBody(), 'details-visible');
-        removeClass(getBody(), 'disable-scrolling');
+        removeClass(document.body, 'details-visible');
+        removeClass(document.body, 'disable-scrolling');
     }
 
     /**
@@ -255,11 +246,7 @@ import {
             const navLink = navLinks[i];
             navLink.addEventListener('click', e => {
                 const target = e.currentTarget as HTMLAnchorElement;
-                if (typeof history.pushState === 'function') {
-                    history.pushState(null, '', target.getAttribute('href'));
-                } else {
-                    location.hash = target.getAttribute('href') ?? '';
-                }
+                history.pushState(null, '', target.getAttribute('href'));
 
                 showDetailForLink(target);
             });
@@ -290,5 +277,5 @@ import {
     window.addEventListener('load', init);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('hashchange', onHashChange, false);
-    registerOnDOMContentLoaded(onDOMContentLoaded);
+    onDOMContentLoaded();
 })();
