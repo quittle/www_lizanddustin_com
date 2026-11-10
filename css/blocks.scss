@@ -65,8 +65,6 @@ $max-depth: 12;
     @for $height from 1 through $max-depth {
         $block-height: ($full-width - ($height + 1) * $block-padding) / $height;
 
-        // This could be improved by inverting the loop and put everything in one media query
-        // instead of 1 for each.
         .block-w#{$width}-h#{$height} {
             @include mobile-support(height, $block-height, $block-height * 2);
             @include mobile-support(width, $block-width, $block-width * 2);

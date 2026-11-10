@@ -1,11 +1,9 @@
 import '../css/main.scss';
 import {
-    addClass,
     ajax,
     forceRedraw,
     getFormData,
     getRequiredElement,
-    removeClass,
     withAll,
 } from './utils.js';
 
@@ -29,13 +27,13 @@ import {
 
         ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
             if (submit) {
-                addClass(submit, 'sent');
+                submit.classList.add('sent');
             }
             showDetail('Thank You!', null);
         }).catch(response => {
             if (submit) {
-                removeClass(submit, 'sending');
-                removeClass(submit, 'sent');
+                submit.classList.remove('sending');
+                submit.classList.remove('sent');
                 submit.blur();
             }
         });
@@ -69,13 +67,13 @@ import {
                     }, false);
 
                     form.addEventListener('submit', e => {
-                        addClass(submitButton, 'sending');
+                        submitButton.classList.add('sending');
                         onRSVPSubmit();
                         e.preventDefault();
                     });
                 })
         ) {
-            console.error('Unable to all necesary rsvp elements');
+            console.error('Unable to all necessary rsvp elements');
         }
     }
 
@@ -161,7 +159,7 @@ import {
      * @param body The body of the detail
      */
     function showDetail(header: string, body: HTMLElement | null): void {
-        addClass(document.body, 'disable-scrolling');
+        document.body.classList.add('disable-scrolling');
 
         withAll(getRequiredElement('details-container-header'),
                 getRequiredElement('details-container-body'),
@@ -176,7 +174,7 @@ import {
 
                     onDetailShown();
 
-                    addClass(document.body, 'details-visible');
+                    document.body.classList.add('details-visible');
                 }
         );
     }
@@ -187,8 +185,8 @@ import {
     function hideDetail(): void {
         clearDetailsContainer();
 
-        removeClass(document.body, 'details-visible');
-        removeClass(document.body, 'disable-scrolling');
+        document.body.classList.remove('details-visible');
+        document.body.classList.remove('disable-scrolling');
     }
 
     /**
