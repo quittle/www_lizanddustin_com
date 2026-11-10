@@ -1,10 +1,3 @@
-if (!window.console) {
-    window.console = {
-        log: () => {},
-        error: () => {},
-    } as unknown as Console;
-}
-
 /**
  * Calls `func` with the preceding arguments when all of them are
  * non-null and non-undefined.
@@ -22,54 +15,6 @@ export function withAll<T extends unknown[]>(
     const func = args[args.length - 1] as unknown as (...args: unknown[]) => void;
     func.apply(null, values);
     return true;
-}
-
-/**
- * Adds a class to an element.
- * @param element The element to add the class to
- * @param className The class to add.
- */
-export function addClass(element: Element, className: string): void {
-    if (element.classList) {
-        element.classList.add(className);
-    } else {
-        const classString = element.getAttribute('class');
-        if (!classString) {
-            element.setAttribute('class', className);
-        } else {
-            const currentClasses = classString.split(' ');
-            if (currentClasses.indexOf(className) == -1) {
-                element.setAttribute('class', classString + ' ' + className);
-            }
-        }
-    }
-}
-
-/**
- * Removes a class from an element.
- * @param element The element to remove the class from
- * @param className The class to remove.
- */
-export function removeClass(element: Element, className: string): void {
-    if (element.classList) {
-        element.classList.remove(className);
-    } else {
-        const classAttr = element.getAttribute('class');
-        if (!classAttr) {
-            return;
-        }
-        const currentClasses = classAttr.split(' ');
-
-        let index: number;
-        do {
-            index = currentClasses.indexOf(className);
-            if (index != -1) {
-                currentClasses.splice(index, 1);
-            }
-        } while (index != -1);
-
-        element.setAttribute('class', currentClasses.join(' '));
-    }
 }
 
 /**

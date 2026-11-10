@@ -17,22 +17,14 @@ import type { Plugin } from 'vite';
 
 const ENGAGEMENT_DIR = path.join(import.meta.dirname, '..', 'media', 'images', 'engagement');
 
-// The folder contents, read once and cached. Both the gallery injection
-// (below) and the Sass importer use this, so the folder is read once.
-let cachedFiles: string[] | null = null;
 function readEngagementFiles(): string[] {
-    if (cachedFiles === null) {
-        cachedFiles = readdirSync(ENGAGEMENT_DIR)
-            .filter((file) => file.endsWith('.jpg'))
-            .sort();
-    }
-    return cachedFiles;
+    return readdirSync(ENGAGEMENT_DIR)
+        .filter((file) => file.endsWith('.jpg'))
+        .sort();
 }
 
 // The photo id list as an in-memory file: a Sass custom importer serves
-// it when css/engagement-photos.scss asks for 'engagement-photo-ids',
-// so no file is written to disk and nothing is checked in or ignored.
-// Anything else falls through to Sass's default filesystem importer.
+// it when main.scss asks for it, so no file is written to disk.
 // (Sass requires canonicalize + load for a custom importer — findFileUrl
 // is only for file-based importers, and may not be combined with load.)
 const engagementIdsImporter: Importer<'async'> = {
@@ -58,8 +50,6 @@ const engagementIdsImporter: Importer<'async'> = {
     },
 };
 
-// The script-include tag in index.html that transformIndexHtml replaces
-// with the inlined Analytics snippet from js/google-analytics.js.
 const GA_SCRIPT_TAG = '<script src="/js/google-analytics.js"></script>';
 
 export function lizanddustinPlugin(): Plugin {
@@ -78,14 +68,9 @@ export function lizanddustinPlugin(): Plugin {
             };
         },
 
-        // Runs before Vite's own index.html processing so the injected
-        // gallery <li>s and the inlined Analytics snippet are in place
-        // when it bundles the page.
         transformIndexHtml: {
             order: 'pre',
             handler(html: string): string {
-                // Inline the Analytics snippet from its own source file,
-                // as the old build did.
                 if (!html.includes(GA_SCRIPT_TAG)) {
                     throw new Error('google-analytics script tag not found in index.html');
                 }
@@ -95,12 +80,8 @@ export function lizanddustinPlugin(): Plugin {
                         `<script>${readFileSync(path.join(import.meta.dirname, '..', 'js', 'google-analytics.js'), 'utf8').trim()}</script>`,
                 );
 
-                // Generate the engagement gallery. Each <li> carries only
-                // the photo id — the thumbnail background comes from the
-                // per-id CSS rule, and the href carries the id the same
-                // way the old build's image= value did (nothing reads
-                // that value; getIdFromHash only takes the part before
-                // '&', so the click opens the gallery detail as before).
+                // The href's image= value is never read; getIdFromHash
+                // only takes the part before '&'.
                 const galleryItems = readEngagementFiles()
                     .map((file) => {
                         const id = path.basename(file, '.jpg');
@@ -112,8 +93,6 @@ export function lizanddustinPlugin(): Plugin {
                     `<div id="engagement-shoot"><ul>${galleryItems}</ul></div>`,
                 );
 
-                // Minify the body: drop comments and collapse whitespace
-                // between tags.
                 return withGallery.replace(
                     /(<body>)([\s\S]*?)(<\/body>)/,
                     (_match: string, open: string, content: string, close: string) =>

@@ -1,21 +1,3 @@
-@mixin browser-ie8plus {
-    @media screen\0 {
-        @content;
-    }
-}
-
-@mixin browser-ie10plus {
-    @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-        @content;
-    }
-}
-
-@mixin browser-ie11() {
-    @at-root _:-ms-fullscreen, :root & {
-        @content;
-    }
-}
-
 @mixin browser-edge() {
     @supports (-ms-ime-align:auto) {
         & {

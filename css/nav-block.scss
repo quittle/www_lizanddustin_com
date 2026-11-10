@@ -17,19 +17,16 @@ main a {
         left: 0;
         padding-left: $text-near-padding;
         padding-right: $text-far-padding;
-        right: auto; // IE
         right: initial;
 
         &::before {
             border-left-color: $ribbon-color;
             border-right-color: transparent;
-            left: auto; // IE
             left: initial;
             right: $ribbon-cutback;
         }
 
         &::after {
-            left: auto; // IE
             left: initial;
             right: 0;
             @include prefix(transform, skewY(-$ribbon-cutback-skew));
