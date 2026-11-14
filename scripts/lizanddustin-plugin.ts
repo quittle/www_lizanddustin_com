@@ -7,10 +7,9 @@
 // css/engagement-photos.scss, which reference the same url() as the
 // detail ::before rules, so the gallery and the CSS share one file per
 // photo. The photo id list the stylesheet iterates is served in memory
-// by a Sass custom importer below — no file is written to disk. The
-// Analytics snippet is inlined from js/google-analytics.js, and the body
+// by a Sass custom importer below — no file is written to disk. The body
 // is minified. index.html holds the head and body.
-import { readFileSync, readdirSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Importer } from 'sass';
 import type { Plugin } from 'vite';
@@ -50,8 +49,6 @@ const engagementIdsImporter: Importer<'async'> = {
     },
 };
 
-const GA_SCRIPT_TAG = '<script src="/js/google-analytics.js"></script>';
-
 export function lizanddustinPlugin(): Plugin {
     return {
         name: 'lizanddustin-build',
@@ -71,15 +68,6 @@ export function lizanddustinPlugin(): Plugin {
         transformIndexHtml: {
             order: 'pre',
             handler(html: string): string {
-                if (!html.includes(GA_SCRIPT_TAG)) {
-                    throw new Error('google-analytics script tag not found in index.html');
-                }
-                const withAnalytics = html.replace(
-                    GA_SCRIPT_TAG,
-                    () =>
-                        `<script>${readFileSync(path.join(import.meta.dirname, '..', 'js', 'google-analytics.js'), 'utf8').trim()}</script>`,
-                );
-
                 // The href's image= value is never read; getIdFromHash
                 // only takes the part before '&'.
                 const galleryItems = readEngagementFiles()
@@ -88,7 +76,7 @@ export function lizanddustinPlugin(): Plugin {
                         return `<li><a data-gallery-img="${id}" href="#!gallery&image=${id}"></a></li>`;
                     })
                     .join('');
-                const withGallery = withAnalytics.replace(
+                const withGallery = html.replace(
                     '<div id="engagement-shoot"></div>',
                     `<div id="engagement-shoot"><ul>${galleryItems}</ul></div>`,
                 );
