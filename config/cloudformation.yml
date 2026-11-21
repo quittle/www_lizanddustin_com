@@ -35,6 +35,111 @@ Resources:
       BucketName: !Ref WebsiteBucketName
       ContentVersion: !Ref DeploymentContentVersion
 
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: www.lizanddustin.com
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DeletionPolicy: Retain
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: AllowPublicAccess
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${WebsiteBucket}/*"
+  ApexBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: lizanddustin.com
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: www.lizanddustin.com
+          Protocol: https
+  ApexBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DeletionPolicy: Retain
+    Properties:
+      Bucket: !Ref ApexBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: StaticWebsiteAccess
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${ApexBucket}/*"
+  WwwDistribution:
+    Type: AWS::CloudFront::Distribution
+    DeletionPolicy: Retain
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - www.lizanddustin.com
+        DefaultCacheBehavior:
+          Compress: true
+          TargetOriginId: S3-lizanddustin.com
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        Enabled: true
+        IPV6Enabled: false
+        Origins:
+          - Id: S3-lizanddustin.com
+            DomainName: www.lizanddustin.com.s3-website-us-east-1.amazonaws.com
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+              OriginSSLProtocols:
+                - TLSv1
+                - TLSv1.1
+                - TLSv1.2
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:915290536872:certificate/dd5de085-76c6-4eee-9bdd-054f16e7b4f1
+          MinimumProtocolVersion: TLSv1.1_2016
+          SslSupportMethod: sni-only
+  ApexDistribution:
+    Type: AWS::CloudFront::Distribution
+    DeletionPolicy: Retain
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - lizanddustin.com
+        DefaultCacheBehavior:
+          Compress: true
+          TargetOriginId: Custom-lizanddustin.com.s3-website-us-east-1.amazonaws.com
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        Enabled: true
+        IPV6Enabled: false
+        Origins:
+          - Id: Custom-lizanddustin.com.s3-website-us-east-1.amazonaws.com
+            DomainName: lizanddustin.com.s3-website-us-east-1.amazonaws.com
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+              OriginSSLProtocols:
+                - TLSv1
+                - TLSv1.1
+                - TLSv1.2
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:915290536872:certificate/dd5de085-76c6-4eee-9bdd-054f16e7b4f1
+          MinimumProtocolVersion: TLSv1.1_2016
+          SslSupportMethod: sni-only
+
 Outputs:
   WebsiteBucket:
     Description: The existing bucket the site is deployed to.
