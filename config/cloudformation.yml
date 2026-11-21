@@ -1,10 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Transform: AWS::Serverless-2016-10-31
 Description: Deploy the www.lizanddustin.com static site to the existing S3 bucket.
 Parameters:
   DeploymentContentVersion:
     Type: String
-    Description: Any unique string identifying the files being deployed. The deploy script passes the packaged CodeUri (an S3 URI that changes whenever the content changes).
+    Description: Any unique string identifying the files being deployed. The deploy script passes the packaged code's S3 URI (which changes whenever the content changes).
   WebsiteBucketName:
     Type: String
     Default: www.lizanddustin.com
@@ -13,21 +12,46 @@ Parameters:
 Resources:
   # Deployment
   S3UploadLambdaLayer:
-    Type: AWS::Serverless::LayerVersion
+    Type: AWS::Lambda::LayerVersion
     Properties:
-      ContentUri: ../node_modules/s3-upload-custom-resource-lambda-layer/dist/layer.zip
+      Content: ../node_modules/s3-upload-custom-resource-lambda-layer/dist/layer.zip
+      CompatibleRuntimes:
+        - nodejs24.x
+  S3UploadLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: WebsiteBucketAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${WebsiteBucketName}
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub arn:aws:s3:::${WebsiteBucketName}/*
   S3UploadLambda:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
       Layers: [!Ref S3UploadLambdaLayer]
-      CodeUri: ../dist
+      Code: ../dist
       Handler: s3-upload-custom-resource.handler
       MemorySize: 10240
       Timeout: 180
       Runtime: nodejs24.x
-      Policies:
-        - S3CrudPolicy:
-            BucketName: !Ref WebsiteBucketName
+      Role: !GetAtt S3UploadLambdaRole.Arn
   DeployWebsite:
     Type: Custom::UploadFilesToS3
     Properties:
