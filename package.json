@@ -7,11 +7,15 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "deploy": "./scripts/deploy",
+    "deploy-test": "./scripts/deploy test",
     "preview": "vite preview",
+    "release": "npm run build && npm run deploy",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "s3-upload-custom-resource-lambda-layer": "^1.4.0",
     "sass": "^1.108.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.6",
