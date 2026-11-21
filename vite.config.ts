@@ -14,6 +14,7 @@ const config: UserConfig = {
     build: {
         // Never inline assets as data: URLs.
         assetsInlineLimit: 0,
+        sourcemap: true,
     },
     css: {
         preprocessorOptions: {
