@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Deploy the www.lizanddustin.com static site to the existing S3 bucket.
+Parameters:
+  DeploymentContentVersion:
+    Type: String
+    Description: Any unique string identifying the files being deployed. The deploy script passes the packaged CodeUri (an S3 URI that changes whenever the content changes).
+  WebsiteBucketName:
+    Type: String
+    Default: www.lizanddustin.com
+    Description: Name of the existing S3 bucket serving the site. Override to alpha.lizanddustin.com for a staging deploy (see scripts/deploy).
+
+Resources:
+  # Deployment
+  S3UploadLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ../node_modules/s3-upload-custom-resource-lambda-layer/dist/layer.zip
+  S3UploadLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Layers: [!Ref S3UploadLambdaLayer]
+      CodeUri: ../dist
+      Handler: s3-upload-custom-resource.handler
+      MemorySize: 10240
+      Timeout: 180
+      Runtime: nodejs24.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref WebsiteBucketName
+  DeployWebsite:
+    Type: Custom::UploadFilesToS3
+    Properties:
+      ServiceToken: !GetAtt S3UploadLambda.Arn
+      BucketName: !Ref WebsiteBucketName
+      ContentVersion: !Ref DeploymentContentVersion
+
+Outputs:
+  WebsiteBucket:
+    Description: The existing bucket the site is deployed to.
+    Value: !Ref WebsiteBucketName
+  S3UploadLambdaArn:
+    Description: The upload Lambda backing the DeployWebsite custom resource.
+    Value: !GetAtt S3UploadLambda.Arn
