@@ -42,6 +42,14 @@ Resources:
       BucketName: www.lizanddustin.com
       WebsiteConfiguration:
         IndexDocument: index.html
+        RoutingRules:
+          - RoutingRuleCondition:
+              KeyPrefixEquals: rsvp
+            RedirectRule:
+              Protocol: https
+              HostName: www.lizanddustin.com
+              ReplaceKeyWith: '#rsvp'
+              HttpRedirectCode: '301'
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     DeletionPolicy: Retain
