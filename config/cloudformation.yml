@@ -94,13 +94,9 @@ Resources:
         Aliases:
           - www.lizanddustin.com
         DefaultCacheBehavior:
-          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           TargetOriginId: S3-lizanddustin.com
           ViewerProtocolPolicy: redirect-to-https
-          ForwardedValues:
-            QueryString: false
-            Cookies:
-              Forward: none
         Enabled: true
         IPV6Enabled: false
         Origins:
@@ -115,7 +111,7 @@ Resources:
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref SiteCertificate
-          MinimumProtocolVersion: TLSv1.1_2016
+          MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
   ApexDistribution:
     Type: AWS::CloudFront::Distribution
@@ -125,13 +121,9 @@ Resources:
         Aliases:
           - lizanddustin.com
         DefaultCacheBehavior:
-          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           TargetOriginId: Custom-lizanddustin.com.s3-website-us-east-1.amazonaws.com
           ViewerProtocolPolicy: redirect-to-https
-          ForwardedValues:
-            QueryString: false
-            Cookies:
-              Forward: none
         Enabled: true
         IPV6Enabled: false
         Origins:
@@ -146,7 +138,7 @@ Resources:
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref SiteCertificate
-          MinimumProtocolVersion: TLSv1.1_2016
+          MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
 
 Outputs:
