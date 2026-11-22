@@ -77,6 +77,20 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource: !Sub "arn:aws:s3:::${ApexBucket}/*"
+  SiteCertificate:
+    Type: AWS::CertificateManager::Certificate
+    DeletionPolicy: Retain
+    Properties:
+      DomainName: lizanddustin.com
+      SubjectAlternativeNames:
+        - '*.lizanddustin.com'
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: lizanddustin.com
+          HostedZoneId: Z1NBRA3OCKK23Y
+        - DomainName: '*.lizanddustin.com'
+          HostedZoneId: Z1NBRA3OCKK23Y
+
   WwwDistribution:
     Type: AWS::CloudFront::Distribution
     DeletionPolicy: Retain
@@ -105,7 +119,7 @@ Resources:
                 - TLSv1.2
         PriceClass: PriceClass_100
         ViewerCertificate:
-          AcmCertificateArn: arn:aws:acm:us-east-1:915290536872:certificate/dd5de085-76c6-4eee-9bdd-054f16e7b4f1
+          AcmCertificateArn: !Ref SiteCertificate
           MinimumProtocolVersion: TLSv1.1_2016
           SslSupportMethod: sni-only
   ApexDistribution:
@@ -136,7 +150,7 @@ Resources:
                 - TLSv1.2
         PriceClass: PriceClass_100
         ViewerCertificate:
-          AcmCertificateArn: arn:aws:acm:us-east-1:915290536872:certificate/dd5de085-76c6-4eee-9bdd-054f16e7b4f1
+          AcmCertificateArn: !Ref SiteCertificate
           MinimumProtocolVersion: TLSv1.1_2016
           SslSupportMethod: sni-only
 
