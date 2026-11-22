@@ -1,92 +1,12 @@
 import '../css/main.scss';
 import {
-    ajax,
     forceRedraw,
-    getFormData,
     getRequiredElement,
     withAll,
 } from './utils.js';
 
 (function() {
     'use strict';
-
-    const API_ENDPOINT = 'https://api.lizanddustin.com';
-    const RSVP_PATH = '/rsvp';
-
-    function onRSVPSubmit(): void {
-        const form = document.querySelector<HTMLFormElement>('#details-container form#rsvp-form');
-        if (!form) {
-            console.error('RSVP form not found');
-            return;
-        }
-
-        const submit = form.querySelector<HTMLButtonElement>('button[type=submit]');
-        if (!submit) {
-            console.error('Unable to find submit button');
-        }
-
-        ajax(API_ENDPOINT + RSVP_PATH, 'POST', JSON.stringify(getFormData(form))).then(response => {
-            if (submit) {
-                submit.classList.add('sent');
-            }
-            showDetail('Thank You!', null);
-        }).catch(response => {
-            if (submit) {
-                submit.classList.remove('sending');
-                submit.classList.remove('sent');
-                submit.blur();
-            }
-        });
-    }
-
-    /**
-     * Called when the RSVP details are shown
-     */
-    function onRSVPDetailShown(): void {
-        if (!withAll(document.querySelector<HTMLSelectElement>('#details-container select[name=contact-type]'),
-                document.querySelector<HTMLInputElement>('#details-container input[name=contact-value]'),
-                document.querySelector<HTMLFormElement>('#details-container form#rsvp-form'),
-                document.querySelector<HTMLButtonElement>('#details-container button[type=submit]'),
-                (detailsContactType, detailsContactValue, form, submitButton) => {
-                    detailsContactType.addEventListener('change', e => {
-                        const value: string = detailsContactType.value;
-                        let contactValuePattern: string;
-                        switch (value) {
-                            case 'email':
-                                contactValuePattern = '^.+@.+$';
-                                break;
-                            case 'phone':
-                                contactValuePattern = '^[\\(\\)+\\- \\d]+$';
-                                break;
-                            default:
-                                console.error('Unknown contact type value: ' + value);
-                                return;
-                        }
-
-                        detailsContactValue.setAttribute('pattern', contactValuePattern);
-                    }, false);
-
-                    form.addEventListener('submit', e => {
-                        submitButton.classList.add('sending');
-                        onRSVPSubmit();
-                        e.preventDefault();
-                    });
-                })
-        ) {
-            console.error('Unable to all necessary rsvp elements');
-        }
-    }
-
-    /**
-     * Called when a detail section is shown.
-     */
-    function onDetailShown(): void {
-        switch (getIdFromHash(location.hash)) {
-            case 'rsvp':
-                onRSVPDetailShown();
-                break;
-        }
-    }
 
     /**
      * Navigates to the home state and out of any views.
@@ -171,8 +91,6 @@ import {
                     if (body) {
                         detailsContainerBody.appendChild(body);
                     }
-
-                    onDetailShown();
 
                     document.body.classList.add('details-visible');
                 }
