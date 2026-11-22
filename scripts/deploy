@@ -23,7 +23,7 @@ aws cloudformation package \
     --output-template-file "${generated_template}" \
     --use-json
 
-code_uri="$(jq '.Resources.S3UploadLambda.Properties.CodeUri' "${generated_template}" --raw-output)"
+code_uri="$(jq '.Resources.S3UploadLambda.Properties.Code | "s3://\(.S3Bucket)/\(.S3Key)"' "${generated_template}" --raw-output)"
 
 aws cloudformation deploy \
     --template-file "${generated_template}" \
