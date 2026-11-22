@@ -85,11 +85,6 @@ Resources:
       SubjectAlternativeNames:
         - '*.lizanddustin.com'
       ValidationMethod: DNS
-      DomainValidationOptions:
-        - DomainName: lizanddustin.com
-          HostedZoneId: Z1NBRA3OCKK23Y
-        - DomainName: '*.lizanddustin.com'
-          HostedZoneId: Z1NBRA3OCKK23Y
 
   WwwDistribution:
     Type: AWS::CloudFront::Distribution
