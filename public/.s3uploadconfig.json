@@ -13,7 +13,7 @@
       "cacheControl": "public, max-age=900",
       "contentType": "text/html"
     },
-    "**/*.jpe?g": {
+    "**/*.{jpg,jpeg}": {
       "cacheControl": "public, max-age=31536000, immutable",
       "contentType": "image/jpeg"
     },
